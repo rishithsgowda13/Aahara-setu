@@ -14,6 +14,8 @@ const SAFETY_CHECKLIST = [
   'Prepared in a clean & hygienic environment',
 ];
 
+const FSSAI_STORAGE_KEY = 'aahara_setu_fssai_id';
+
 const FOOD_CATEGORIES = [
   { value: 'Main Course', label: 'Main Course' },
   { value: 'Bakery', label: 'Bakery' },
@@ -41,6 +43,7 @@ export const Upload: React.FC = () => {
   const [dietary, setDietary] = useState('None');
   const [unit, setUnit] = useState('portions');
   const allChecked = checkedItems.every(Boolean);
+  const fssaiId = localStorage.getItem(FSSAI_STORAGE_KEY);
 
   const toggleCheck = (i: number) => {
     setCheckedItems(prev => prev.map((v, idx) => idx === i ? !v : v));
@@ -123,6 +126,40 @@ export const Upload: React.FC = () => {
               <Button onClick={() => setSubmitted(false)} variant="glass">New Donation</Button>
               <Button onClick={() => window.location.href = '/profile'}>View Dashboard</Button>
             </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  if (!fssaiId) {
+    return (
+      <div className="upload-container">
+        <div className="verification-required-state" style={{ 
+          maxWidth: '600px', margin: '80px auto', textAlign: 'center' 
+        }}>
+          <Card className="verification-card glass-card hover-lift" style={{ padding: '60px', borderRadius: '40px' }}>
+            <div style={{ fontSize: '5rem', marginBottom: '32px' }}>🔒</div>
+            <h2 className="gradient-text" style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '20px' }}>License Required</h2>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '1.1rem', marginBottom: '40px', lineHeight: '1.6' }}>
+              To ensure public safety, all donors must provide a verified **FSSAI License ID** before initiating a food rescue listing.
+            </p>
+            
+            <div style={{ 
+              background: 'rgba(0,0,0,0.03)', padding: '32px', borderRadius: '24px', 
+              textAlign: 'left', marginBottom: '40px' 
+            }}>
+              <h4 style={{ marginBottom: '16px', color: 'var(--color-primary)' }}>Why is this needed?</h4>
+              <ul style={{ paddingLeft: '24px', color: 'var(--color-text)' }}>
+                <li style={{ marginBottom: '12px' }}>Indian Food Safety Compliance (FSSAI)</li>
+                <li style={{ marginBottom: '12px' }}>Builds trust with matched NGOs and shelters</li>
+                <li>Full legal traceability for every batch</li>
+              </ul>
+            </div>
+
+            <Button onClick={() => window.location.href = '/profile'} fullWidth size="lg" style={{ height: '64px', fontSize: '1.1rem' }}>
+              ACTIVATE DONOR LICENSE
+            </Button>
           </Card>
         </div>
       </div>

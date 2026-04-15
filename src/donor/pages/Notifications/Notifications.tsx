@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
-import { Bell, BellOff, Zap, CheckCircle2, Clock, RefreshCw, MapPin, Wifi } from 'lucide-react';
+import { Bell, BellOff, CheckCircle2, Clock } from 'lucide-react';
 import './Notifications.css';
 
 interface Notification {

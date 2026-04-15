@@ -12,13 +12,13 @@
 
 .auth-split-card {
   width: 100%;
-  max-width: 1000px;
-  min-height: 600px;
+  max-width: 1100px;
+  min-height: 520px;
   background: white;
-  border-radius: 60px; /* Ultra rounded corners */
+  border-radius: 60px;
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  box-shadow: 0 40px 100px rgba(79, 99, 61, 0.12); /* Subtle green-tinted shadow */
+  grid-template-columns: 1.15fr 0.85fr;
+  box-shadow: 0 40px 100px rgba(79, 99, 61, 0.12);
   overflow: hidden;
   position: relative;
   z-index: 10;
@@ -26,30 +26,30 @@
 
 /* Left Panel: Visual Branding (Dark Greenish Theme) */
 .auth-visual-panel {
-  background: linear-gradient(135deg, #4f633d 0%, #2d3a24 100%); /* Deep Aahara Green Gradient */
-  padding: 80px 60px;
+  background: linear-gradient(135deg, #4f633d 0%, #2d3a24 100%);
+  padding: 50px 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: #fff; /* White text for high contrast on green */
+  color: #fff;
   position: relative;
 }
 
 .visual-eyebrow {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 4px;
-  color: #c7d9b7; /* Soft light green accent */
-  margin-bottom: 30px;
+  color: #c7d9b7;
+  margin-bottom: 20px;
   text-transform: uppercase;
 }
 
 .visual-title {
-  font-size: 4rem;
+  font-size: 3.2rem;
   line-height: 1.1;
   font-weight: 700;
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 
 .title-serif {
@@ -77,21 +77,21 @@
 
 /* Right Panel: Form Logic */
 .auth-form-panel {
-  padding: 80px 60px;
+  padding: 50px 60px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
 }
 
 .auth-form-header {
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 
 .welcome-text {
   font-family: serif;
-  font-size: 2.8rem;
+  font-size: 2.2rem;
   font-weight: 500;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: #1a1a1a;
 }
 
@@ -107,8 +107,8 @@
 .role-selector-premium {
   display: flex;
   gap: 10px;
-  margin-bottom: 40px;
-  background: #f1f5f1; /* Very light green tinted background for toggle */
+  margin-bottom: 30px;
+  background: #f1f5f1;
   padding: 6px;
   border-radius: 100px;
 }
@@ -169,14 +169,14 @@
 }
 
 .auth-main-btn {
-  background: #4f633d !important; /* Unified Brand Green Button */
+  background: #4f633d !important;
   color: #fff !important;
-  height: 64px !important;
+  height: 56px !important;
   border-radius: 100px !important;
-  font-size: 0.85rem !important;
+  font-size: 0.8rem !important;
   font-weight: 900 !important;
   letter-spacing: 2px !important;
-  margin-top: 20px !important;
+  margin-top: 15px !important;
   transition: all 0.3s ease !important;
   border: none !important;
 }

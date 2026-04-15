@@ -60,7 +60,7 @@ const PAST_CLAIMS: ClaimedItem[] = [
 ];
 
 export const Receiver: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'active' | 'pending_proofs' | 'history'>('pending_proofs');
+  const [activeTab, setActiveTab] = useState<'active' | 'pending_proofs' | 'history' | 'ai_match'>('ai_match');
   
   const [items, setItems] = useState({
     active: ACTIVE_CLAIMS,
@@ -203,10 +203,45 @@ export const Receiver: React.FC = () => {
           >
             Completed History
           </button>
+          <button 
+            className={`claims-tab ai-match-tab ${activeTab === 'ai_match' ? 'active' : ''}`} 
+            onClick={() => setActiveTab('ai_match')}
+          >
+            <Zap size={14} /> Aahara AI Match
+            <span className="tab-badge pulse-badge">1</span>
+          </button>
         </div>
 
         <div className="claims-list">
-          {displayItems.length === 0 ? (
+          {activeTab === 'ai_match' ? (
+            <div className="ai-match-view">
+              <Card className="ai-discovery-card glass">
+                <div className="ai-discovery-header">
+                  <div className="ai-tag">SMART BUNDLE READY</div>
+                  <h3>We found a perfect pairing!</h3>
+                </div>
+                <div className="match-visual-row">
+                  <div className="match-item-bubble">
+                    <span className="bubble-label">You Claimed</span>
+                    <p>Rice</p>
+                  </div>
+                  <div className="match-connector">
+                    <Zap size={20} className="text-warning" />
+                  </div>
+                  <div className="match-item-bubble highlight">
+                    <span className="bubble-label">AI Suggests</span>
+                    <p>Sambar</p>
+                  </div>
+                </div>
+                <p className="ai-suggestion-text">
+                  Distributing <strong>Rice</strong> alone often leads to lower satisfaction. 
+                  A donor just listed <strong>Mixed Vegetable Sambar</strong> 0.6km away. 
+                  Claiming them together increases your impact score by <strong>+45%</strong>.
+                </p>
+                <Button fullWidth className="ai-primary-btn">Claim Matching Sambar Now</Button>
+              </Card>
+            </div>
+          ) : displayItems.length === 0 ? (
             <div className="empty-claims">No records found.</div>
           ) : (
             displayItems.map(item => (

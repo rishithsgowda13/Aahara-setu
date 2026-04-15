@@ -7,6 +7,7 @@ import { Upload } from './donor/pages/Upload/Upload';
 import { Dashboard } from './donor/pages/Dashboard/Dashboard';
 import { Notifications } from './donor/pages/Notifications/Notifications';
 import { Profile } from './donor/pages/Profile/Profile';
+import { Explore } from './donor/pages/Explore/Explore';
 import { Toast } from './donor/components/ui/Toast/Toast';
 import type { ToastMessage } from './donor/components/ui/Toast/Toast';
 import './donor/styles/App.css';
@@ -46,6 +47,7 @@ function AppContent() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/explore" element={<Explore />} />
           <Route path="/notifications" element={<Notifications />} />
         </Routes>
       </main>

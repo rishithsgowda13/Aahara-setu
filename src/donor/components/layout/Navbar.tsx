@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio, Trophy, Globe } from 'lucide-react';
+import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio, Trophy } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
-  const { lang, setLang, t } = useTranslation();
+  const { t } = useTranslation();
   const location = useLocation();
 
   const navLinks = [
@@ -38,21 +38,6 @@ export const Navbar: React.FC = () => {
             </Link>
           ))}
 
-          {/* Language Switcher MAGIC TOGGLE */}
-          <div className="lang-switcher-wrap">
-            <Globe size={16} className="lang-icon" />
-            <div className="lang-btns">
-              {(['EN', 'HI', 'KA'] as const).map(l => (
-                <button 
-                  key={l}
-                  className={`lang-toggle-btn ${lang === l ? 'active' : ''}`}
-                  onClick={() => setLang(l)}
-                >
-                  {l}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </nav>

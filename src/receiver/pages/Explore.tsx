@@ -107,7 +107,7 @@ export const Explore: React.FC = () => {
   useEffect(() => {
     // 1. Fetch existing items
     const fetchItems = async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('donations')
         .select('*, profiles(organization_name)')
         .eq('status', 'available')

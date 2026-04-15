@@ -203,118 +203,207 @@
   .profile-grid { grid-template-columns: 1fr; }
 }
 
-/* Auth / Login Styles (Integrated) */
-.login-container {
-  display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  min-height: calc(100vh - 120px);
-  gap: 40px;
+/* Heritage Login (Integrated) */
+.login-heritage-container {
+  display: flex;
   align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
   padding: 40px 0;
 }
 
-.login-visual {
+.login-heritage-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  max-width: 1000px;
+  min-height: 600px;
+  overflow: hidden;
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.1);
+}
+
+.heritage-visual-side {
+  position: relative;
+  background-size: cover;
+  background-position: center;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  justify-content: flex-end;
+  padding: 48px;
 }
 
-.login-logo {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+.heritage-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+  z-index: 1;
 }
 
-.login-logo h1 {
-  font-size: 2.8rem;
+.heritage-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+.heritage-tagline {
+  font-size: 0.8rem;
+  letter-spacing: 4px;
   font-weight: 800;
-  color: var(--color-primary);
+  color: var(--color-secondary);
+  margin-bottom: 12px;
+  display: block;
 }
 
-.login-visual p {
-  font-size: 1.1rem;
-  color: var(--color-text-muted);
-  line-height: 1.6;
-  max-width: 450px;
-}
-
-.trust-stats {
-  display: flex;
-  gap: 24px;
-}
-
-.tstat {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  color: var(--color-primary);
-  background: rgba(79, 99, 61, 0.08);
-  padding: 8px 16px;
-  border-radius: var(--radius-full);
-}
-
-.auth-card {
-  padding: 40px !important;
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.auth-header {
-  text-align: center;
+.heritage-title {
+  font-family: 'Playfair Display', serif; /* Assuming user might have this or standard serif */
+  font-size: 3.5rem;
+  line-height: 1.1;
   margin-bottom: 24px;
 }
 
-.auth-header h2 {
-  font-size: 1.8rem;
+.heritage-desc {
+  font-size: 1rem;
+  opacity: 0.8;
+  max-width: 320px;
+  line-height: 1.6;
+}
+
+.heritage-form-side {
+  background: white;
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.heritage-form-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 32px;
+  color: var(--color-text);
+}
+
+.heritage-form-header h1 span {
+  color: var(--color-primary);
+}
+
+.heritage-form-header h2 {
+  font-size: 2.2rem;
+  font-family: serif;
   margin-bottom: 8px;
 }
 
-.auth-form {
+.heritage-form-header p {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 40px;
+}
+
+.heritage-auth-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.auth-error {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--color-error);
-  padding: 10px;
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  text-align: center;
-  border: 1px solid rgba(239, 68, 68, 0.2);
+.heritage-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #F8F9F8;
+  border-radius: 50px;
+  padding: 4px 20px;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
 }
 
-.auth-footer {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 0.9rem;
+.heritage-input-wrap:focus-within {
+  background: white;
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 12px rgba(79, 99, 61, 0.1);
+}
+
+.h-input-icon {
+  margin-right: 12px;
   color: var(--color-text-muted);
 }
 
-.auth-footer button {
+.heritage-input-wrap input {
+  border: none;
+  background: transparent;
+  padding: 14px 0;
+  flex: 1;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.heritage-login-btn {
+  margin-top: 24px;
+  padding: 16px !important;
+  border-radius: 50px !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px;
+  box-shadow: 0 8px 24px rgba(79, 99, 61, 0.3) !important;
+}
+
+.auth-error-heritage {
+  color: var(--color-error);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.heritage-demo-footer {
+  margin-top: 48px;
+  text-align: center;
+}
+
+.demo-label {
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}
+
+.demo-grid {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.demo-grid span {
+  color: var(--color-primary);
+  margin-right: 6px;
+}
+
+.signup-text-link {
   background: none;
   border: none;
-  color: var(--color-primary);
-  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
   cursor: pointer;
+}
+
+.signup-text-link span {
+  color: var(--color-primary);
+  font-weight: 800;
   text-decoration: underline;
 }
 
-@media (max-width: 800px) {
-  .login-container {
+@media (max-width: 900px) {
+  .login-heritage-card {
     grid-template-columns: 1fr;
-    text-align: center;
+    border-radius: 24px;
   }
-  .login-visual {
-    align-items: center;
+  .heritage-visual-side {
+    display: none;
   }
-  .login-logo {
-    justify-content: center;
-  }
-  .trust-stats {
-    justify-content: center;
-    flex-wrap: wrap;
+  .heritage-form-side {
+    padding: 40px;
   }
 }

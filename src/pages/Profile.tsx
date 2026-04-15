@@ -5,7 +5,9 @@ import { Input } from '../components/ui/Input';
 import { 
   User, ShieldCheck, MapPin, Camera, 
   Award, TrendingUp, History, Star,
-  Info, LogIn, UserPlus, LogOut
+  Info, LogIn, UserPlus, LogOut,
+  Building2, Phone, Mail, Globe,
+  Activity, Heart, Users
 } from 'lucide-react';
 import './Profile.css';
 
@@ -20,8 +22,8 @@ export const Profile: React.FC = () => {
   const [isVerifying, setIsVerifying] = useState(false);
 
   const userAaharaId = localStorage.getItem('aaharaId') || 'AS-7742';
-  const userType = localStorage.getItem('userType');
-  const userName = userType === 'donor' ? 'Haldiram\'s' : 'Akshaya Patra';
+  const userType = localStorage.getItem('userType') || 'donor';
+  const userName = userType === 'donor' ? 'Haldiram\'s Sweets' : 'Akshaya Patra Foundation';
 
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,20 +35,18 @@ export const Profile: React.FC = () => {
         localStorage.setItem('userType', id === '1' ? 'donor' : 'receiver');
         localStorage.setItem('aaharaId', `AS-${id === '1' ? '7742' : '8891'}`);
         setIsAuthenticated(true);
-        window.location.reload(); // Refresh to update navbar/context
+        window.location.reload(); 
       } else {
-        setError('Invalid ID or Password. Try ID: 1, Pass: 1');
+        setError('Verification failed. Please check your credentials.');
       }
     } else {
-      alert('Signup successful! Please login with ID: 1, Pass: 1');
+      alert('Account requested! We will verify your business details.');
       setIsLoginView(true);
     }
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('userType');
-    localStorage.removeItem('aaharaId');
+    localStorage.clear();
     setIsAuthenticated(false);
     window.location.reload();
   };
@@ -54,190 +54,244 @@ export const Profile: React.FC = () => {
   const handleVerification = () => {
     setIsVerifying(true);
     setTimeout(() => {
-      alert('Proof submitted! AI analysis in progress...');
+      alert('Evidence received! Our AI engine is validating the consistency...');
       setIsVerifying(false);
-      setTrustScore(prev => Math.min(prev + 2, 100));
-    }, 2000);
+      setTrustScore(prev => Math.min(prev + 3, 100));
+    }, 2500);
   };
 
   if (!isAuthenticated) {
     return (
-      <div className="login-container" style={{ paddingTop: '40px' }}>
-        <div className="login-visual">
-          <div className="login-logo">
-            <img src="/logo.png" alt="Aahara Setu" width={80} />
-            <h1>Aahara Setu</h1>
-          </div>
-          <p>Connecting surplus food to social impact through trust and transparency.</p>
-          <div className="trust-stats">
-            <div className="tstat">
-              <ShieldCheck size={20} />
-              <span>Verified IDs</span>
-            </div>
-            <div className="tstat">
-              <LogIn size={20} />
-              <span>Secure Access</span>
+      <div className="login-heritage-container">
+        <div className="login-heritage-card glass">
+          <div className="heritage-visual-side" style={{ backgroundImage: `url('/Users/bharathkumara/.gemini/antigravity/brain/5821f22d-14a0-420f-bb58-41d2313237ec/food_rescue_premium_bg_1776251883071.png')` }}>
+            <div className="heritage-overlay">
+              <div className="heritage-content">
+                <span className="heritage-tagline">BEYOND THE KITCHEN</span>
+                <h2 className="heritage-title">Zero Waste<br />Explorer</h2>
+                <p className="heritage-desc">Redirecting surplus, nourishing communities, and creating a sustainable heritage for the future.</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="login-form-side">
-          <Card className="auth-card glass">
-            <div className="auth-header">
-              <h2>{isLoginView ? 'Welcome Back' : 'Join the Network'}</h2>
-              <p>{isLoginView ? 'Sign in to access your Profile' : 'Create your verified profile'}</p>
+          <div className="heritage-form-side">
+            <div className="heritage-form-header">
+              <h1>Aahara <span>Setu</span></h1>
+              <h2>Welcome Back</h2>
+              <p>ACCESS THE IMPACT CORE</p>
             </div>
 
-            <form onSubmit={handleAuth} className="auth-form">
-              <Input 
-                label="AaharaSetu ID" 
-                placeholder="Enter your ID (Try '1' for Demo)" 
-                value={id}
-                onChange={(e) => setId(e.target.value)}
-                required 
-              />
-              <Input 
-                label="Password" 
-                type="password" 
-                placeholder="Enter password (Try '1' for Demo)" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required 
-              />
+            <form onSubmit={handleAuth} className="heritage-auth-form">
+              <div className="heritage-input-wrap">
+                <div className="h-input-icon"><Mail size={18} /></div>
+                <input 
+                  placeholder="AaharaSetu ID" 
+                  value={id}
+                  onChange={(e) => setId(e.target.value)}
+                  required 
+                />
+              </div>
               
-              {error && <div className="auth-error">{error}</div>}
+              <div className="heritage-input-wrap">
+                <div className="h-input-icon"><ShieldCheck size={18} /></div>
+                <input 
+                  type="password" 
+                  placeholder="Password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required 
+                />
+              </div>
 
-              <Button type="submit" fullWidth size="lg">
-                {isLoginView ? <><LogIn size={18} /> Sign In</> : <><UserPlus size={18} /> Create Account</>}
+              {error && <div className="auth-error-heritage">{error}</div>}
+
+              <Button type="submit" fullWidth className="heritage-login-btn">
+                ENTER THE NETWORK
               </Button>
             </form>
 
-            <div className="auth-footer">
-              {isLoginView ? (
-                <p>Don't have an account? <button onClick={() => setIsLoginView(false)}>Sign Up</button></p>
-              ) : (
-                <p>Already have an account? <button onClick={() => setIsLoginView(true)}>Log In</button></p>
-              )}
+            <div className="heritage-demo-footer">
+              <p className="demo-label">DEMO CREDENTIALS (ID - PASS)</p>
+              <div className="demo-grid">
+                <div className="demo-item"><span>DONOR</span> 1 - 1</div>
+                <div className="demo-item"><span>NGO</span> 2 - 2</div>
+              </div>
+              <button className="signup-text-link" onClick={() => setIsLoginView(!isLoginView)}>
+                Don't have an account? <span>Apply Now</span>
+              </button>
             </div>
-          </Card>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="profile-container">
-      <div className="profile-grid">
-        {/* Left Column: User Overview */}
-        <div className="profile-main">
-          <Card className="user-hero-card">
-            <div className="user-avatar-wrap">
-              <div className="user-avatar"><User size={40} /></div>
-              <div className="user-status-badge">Verified Partner</div>
+    <div className="profile-wrapper">
+      <div className="profile-header-strip glass">
+        <div className="header-left">
+          <div className="user-avatar-large">
+            <User size={32} />
+            <div className="status-indicator online"></div>
+          </div>
+          <div className="user-title-wrap">
+            <h1>{userName} <span className="verified-check">✓</span></h1>
+            <div className="badges-row">
+              <span className="badge gold">Platinum {userType === 'donor' ? 'Donor' : 'Partner'}</span>
+              <span className="badge id">ID: {userAaharaId}</span>
             </div>
-            <div className="user-info">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <h1>{userName}</h1>
-                <Button variant="ghost" size="sm" onClick={handleLogout} style={{ color: 'var(--color-error)' }}>
-                  <LogOut size={16} /> Logout
-                </Button>
+          </div>
+        </div>
+        <div className="header-right">
+          <Button variant="outline" className="signout-btn" onClick={handleLogout}>
+            <LogOut size={16} /> Sign Out
+          </Button>
+        </div>
+      </div>
+
+      <div className="profile-content-grid">
+        <div className="profile-column-left">
+          
+          <Card className="trust-vision-card">
+            <div className="vision-header">
+              <div className="text-side">
+                <h3>Trust Ecosystem</h3>
+                <p>Real-time AI Trust Score & Reliability Metric</p>
               </div>
-              <div className="user-id-badge">
-                <ShieldCheck size={16} />
-                <span>ID: {userAaharaId}</span>
+              <div className="score-side">
+                <div className="score-circle">
+                  <div className="score-inner">{trustScore}%</div>
+                </div>
               </div>
-              <p>Registered as a Platinum {userType === 'donor' ? 'Donor' : 'Receiver'} since April 2025</p>
+            </div>
+            <div className="trust-meter">
+              <div className="meter-bar"><div className="fill" style={{ width: `${trustScore}%` }}></div></div>
+              <div className="meter-labels">
+                <span>Novice</span>
+                <span>Verified</span>
+                <span>Elite Community Member</span>
+              </div>
             </div>
           </Card>
 
-          <Card className="trust-score-card">
-            <div className="trust-header">
-              <div className="trust-title-wrap">
-                <h3>AI Trust Score</h3>
-                <p>Based on successful donations & verification history</p>
+          <Card className="business-details-card">
+            <div className="section-title-wrap">
+              <Building2 size={20} />
+              <h4>Partner Profile</h4>
+            </div>
+            <div className="details-grid">
+              <div className="detail-item">
+                <MapPin size={16} />
+                <div className="dt-val">12/A, Brigade Road, Bengaluru</div>
               </div>
-              <div className="trust-percentage">{trustScore}%</div>
+              <div className="detail-item">
+                <Phone size={16} />
+                <div className="dt-val">+91 94432 00112</div>
+              </div>
+              <div className="detail-item">
+                <Mail size={16} />
+                <div className="dt-val">contact@haldirams.in</div>
+              </div>
+              <div className="detail-item">
+                <Globe size={16} />
+                <div className="dt-val">www.haldirams.in</div>
+              </div>
             </div>
-            <div className="trust-progress-bg">
-              <div className="trust-progress-fill" style={{ width: `${trustScore}%` }}></div>
-            </div>
-            <div className="trust-levels">
-              <span>Rookie</span>
-              <span>Trusted</span>
-              <span>Champion</span>
+            <div className="bio-area">
+              <p>We are committed to a zero-waste policy. Since 2025, we have redirected over 5 tons of edible surplus to local shelters and community kitchens.</p>
             </div>
           </Card>
 
-          <Card className="verification-card">
-            <h3><Camera size={20} /> Verify New Contribution</h3>
-            <p>Upload a photo of the food and current location to boost your trust score immediately.</p>
-            <div className="verification-upload-zone">
-              <div className="upload-btn-wrap">
-                <Button variant="outline" className="vbtn">
-                  <Camera size={18} /> Take Photo
-                </Button>
-                <Button variant="outline" className="vbtn">
-                  <MapPin size={18} /> Live Location
-                </Button>
+          <Card className="impact-matrix-card">
+            <div className="section-title-wrap">
+              <Activity size={20} />
+              <h4>Sustainability Impact</h4>
+            </div>
+            <div className="matrix-grid">
+              <div className="matrix-cell">
+                <TrendingUp size={20} className="icon green" />
+                <div className="v">4,280</div>
+                <div className="l">CO2 Offset (kg)</div>
+              </div>
+              <div className="matrix-cell">
+                <Heart size={20} className="icon red" />
+                <div className="v">124</div>
+                <div className="l">Shelters Supported</div>
+              </div>
+              <div className="matrix-cell">
+                <Award size={20} className="icon yellow" />
+                <div className="v">12k</div>
+                <div className="l">Kindness Reward Pts</div>
+              </div>
+              <div className="matrix-cell">
+                <Users size={20} className="icon blue" />
+                <div className="v">15,400</div>
+                <div className="l">Mouths Fed</div>
               </div>
             </div>
-            <Button fullWidth onClick={handleVerification} disabled={isVerifying}>
-              {isVerifying ? 'Analyzing Proof...' : 'Submit Evidence for AI Audit'}
-            </Button>
           </Card>
         </div>
 
-        {/* Right Column: Stats & History */}
-        <div className="profile-sidebar">
-          <Card className="impact-summary-card">
-            <h3>Impact Summary</h3>
-            <div className="impact-grid">
-              <div className="impact-item">
-                <Award size={24} className="impact-icon blue" />
-                <div className="impact-val">124</div>
-                <div className="impact-label">{userType === 'donor' ? 'Meals Provided' : 'Meals Claimed'}</div>
-              </div>
-              <div className="impact-item">
-                <TrendingUp size={24} className="impact-icon green" />
-                <div className="impact-val">4.2t</div>
-                <div className="impact-label">CO2 Saved</div>
-              </div>
-              <div className="impact-item">
-                <Star size={24} className="impact-icon yellow" />
-                <div className="impact-val">12k</div>
-                <div className="impact-label">Kindness Pts</div>
-              </div>
+        <div className="profile-column-right">
+          
+          <Card className="action-hub-card">
+            <h4>Quick Verification</h4>
+            <p>Have surplus? Record and verify before dispatch.</p>
+            <div className="action-btns">
+              <Button variant="outline" onClick={handleVerification} disabled={isVerifying}>
+                <Camera size={18} /> {isVerifying ? 'Scanning...' : 'Upload Proof'}
+              </Button>
             </div>
           </Card>
 
-          <Card className="history-card">
-            <h3><History size={20} /> Recent Timeline</h3>
-            <div className="timeline">
-              <div className="timeline-item">
-                <div className="timeline-dot success"></div>
-                <div className="timeline-content">
-                  <p><strong>15th Apr:</strong> {userType === 'donor' ? 'Rescued 5kg rice.' : 'Claimed 5kg rice.'} <span className="verified-link">Proof Verified ✓</span></p>
+          <Card className="timeline-v2-card">
+            <div className="timeline-header">
+              <History size={18} />
+              <h4>Activity Journal</h4>
+            </div>
+            <div className="journal-items">
+              <div className="journal-entry">
+                <div className="entry-dot verified"></div>
+                <div className="entry-text">
+                  <strong>10:30 AM Today</strong>
+                  <p>Donated 15 boxes of Snacks to Hope NGO</p>
                 </div>
               </div>
-              <div className="timeline-item">
-                <div className="timeline-dot success"></div>
-                <div className="timeline-content">
-                  <p><strong>12th Apr:</strong> {userType === 'donor' ? 'Fed 20 people in Bengaluru.' : 'Received 20 meals for shelter.'}</p>
+              <div className="journal-entry">
+                <div className="entry-dot verified"></div>
+                <div className="entry-text">
+                  <strong>Yesterday</strong>
+                  <p>Trust Score boosted by 2% for on-time delivery</p>
                 </div>
               </div>
-              <div className="timeline-item active">
-                <div className="timeline-dot"></div>
-                <div className="timeline-content">
-                  <p><strong>Pending:</strong> 10 Meals for Verification.</p>
+              <div className="journal-entry">
+                <div className="entry-dot"></div>
+                <div className="entry-text">
+                  <strong>12 April</strong>
+                  <p>Joined Aahara Setu Network</p>
                 </div>
               </div>
             </div>
           </Card>
 
-          <Card className="trust-info-card">
-            <Info size={20} className="info-icon" />
-            <p>Your Trust Score is visible to all partners. Higher scores ensure your activity is processed 3x faster by our AI prioritization system.</p>
+          <Card className="network-card">
+            <h4>Linked Partners</h4>
+            <div className="partners-list">
+              <div className="partner-tiny">
+                <img src="/logo.png" alt="NGO" />
+                <span>Robin Hood Army</span>
+              </div>
+              <div className="partner-tiny">
+                <img src="/logo.png" alt="Hospital" />
+                <span>Grace Hospital</span>
+              </div>
+            </div>
           </Card>
+
+          <div className="trust-disclaimer glass">
+            <Info size={16} />
+            <p>Your platinum status enables 0-charge pickups within 10km radius.</p>
+          </div>
         </div>
       </div>
     </div>

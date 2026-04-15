@@ -14,12 +14,13 @@ const FSSAI_STORAGE_KEY = 'aahara_setu_fssai_id';
 
 export const Profile: React.FC = () => {
   const { lang, setLang, t } = useTranslation();
-  const { logout } = useAuth();
+  const { logout, role } = useAuth();
   const navigate = useNavigate();
   const [showToast, setShowToast] = useState(false);
   const [fssaiInput, setFssaiInput] = useState(localStorage.getItem(FSSAI_STORAGE_KEY) || '');
   const [isEditingFssai, setIsEditingFssai] = useState(false);
   const trustScore = 88;
+  const isReceiver = role === 'receiver';
 
   const handleEditProfile = () => {
     setShowToast(true);
@@ -47,23 +48,27 @@ export const Profile: React.FC = () => {
           <Card className="profile-premium-card glass">
             <div className="premium-header-top">
               <div className="premium-identity">
-                <h1 className="main-org-name">McDonald's - VVCE</h1>
+                <h1 className="main-org-name">{isReceiver ? 'Hope Foundation' : "McDonald's - VVCE"}</h1>
                 <div className="premium-badges-row">
-                  <span className="premium-role-badge">{t('platinum_donor')}</span>
-                  <span className="premium-id-badge">ID: AS-7742</span>
+                  <span className="premium-role-badge">
+                    {isReceiver ? t('ngo_partner') : t('platinum_donor')}
+                  </span>
+                  <span className="premium-id-badge">ID: {isReceiver ? 'NGO-2201' : 'AS-7742'}</span>
                 </div>
               </div>
               <div className="premium-avatar-box">
-                <div className="mcd-logo-placeholder">M</div>
+                <div className={isReceiver ? "ngo-logo-placeholder" : "mcd-logo-placeholder"}>
+                  {isReceiver ? 'H' : 'M'}
+                </div>
               </div>
             </div>
             <div className="premium-header-bottom">
               <div className="premium-meta-info">
                 <div className="meta-info-item">
-                  <ShieldCheck size={16} /> {t('verified_partner')}
+                  <ShieldCheck size={16} /> {isReceiver ? t('audit_passed') : t('verified_partner')}
                 </div>
                 <div className="meta-info-item">
-                  <Clock size={16} /> {t('joined_date')}
+                  <Clock size={16} /> {isReceiver ? t('ngo_joined_date') : t('joined_date')}
                 </div>
               </div>
               <Button variant="outline" size="sm" className="premium-edit-btn" onClick={handleEditProfile}>{t('edit_profile')}</Button>
@@ -75,18 +80,18 @@ export const Profile: React.FC = () => {
             <div className="trust-score-header">
               <div className="trust-title-group">
                 <h3>{t('ai_trust_score')}</h3>
-                <p>{t('ai_trust_desc')}</p>
+                <p>{isReceiver ? t('ngo_trust_desc') : t('ai_trust_desc')}</p>
               </div>
-              <div className="trust-percentage">{trustScore}%</div>
+              <div className="trust-percentage">{isReceiver ? 94 : trustScore}%</div>
             </div>
             <div className="trust-progress-container">
               <div className="trust-progress-bar">
-                <div className="trust-progress-fill" style={{ width: `${trustScore}%` }}></div>
+                <div className="trust-progress-fill" style={{ width: `${isReceiver ? 94 : trustScore}%` }}></div>
               </div>
               <div className="trust-progress-labels">
                 <span>{t('rookie')}</span>
                 <span>{t('trusted')}</span>
-                <span>{t('champion')}</span>
+                <span>{isReceiver ? t('rescue_hero') : t('champion')}</span>
               </div>
             </div>
           </Card>
@@ -98,25 +103,39 @@ export const Profile: React.FC = () => {
               <h3>{t('recent_activity')}</h3>
             </div>
             <div className="timeline-items">
-              <div className="timeline-item">
-                <div className="timeline-dot active"></div>
-                <div className="timeline-content">
-                  <div className="timeline-date">15th Apr: <span className="timeline-desc">Rescued 5kg fresh vegetables for Hope NGO.</span></div>
-                  <div className="timeline-status success">Proof Verified by AI Audit ✓</div>
-                </div>
-              </div>
-              <div className="timeline-item">
-                <div className="timeline-dot active"></div>
-                <div className="timeline-content">
-                  <div className="timeline-date">12th Apr: <span className="timeline-desc">Distributed 20 hot meal packs in central hub.</span></div>
-                </div>
-              </div>
-              <div className="timeline-item">
-                <div className="timeline-dot pending"></div>
-                <div className="timeline-content">
-                  <div className="timeline-date">Pending: <span className="timeline-desc">10 Meals of North Indian Thali for Verification.</span></div>
-                </div>
-              </div>
+              {isReceiver ? (
+                <>
+                  <div className="timeline-item">
+                    <div className="timeline-dot active"></div>
+                    <div className="timeline-content">
+                      <div className="timeline-date">Today: <span className="timeline-desc">Claimed 20 meal packs from Gaurav Sweets.</span></div>
+                      <div className="timeline-status success">{t('impact_verified')}</div>
+                    </div>
+                  </div>
+                  <div className="timeline-item">
+                    <div className="timeline-dot active"></div>
+                    <div className="timeline-content">
+                      <div className="timeline-date">Yesterday: <span className="timeline-desc">Rescued 5kg vegetables from Skyline Hotels.</span></div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="timeline-item">
+                    <div className="timeline-dot active"></div>
+                    <div className="timeline-content">
+                      <div className="timeline-date">15th Apr: <span className="timeline-desc">Rescued 5kg fresh vegetables for Hope NGO.</span></div>
+                      <div className="timeline-status success">{t('impact_verified')}</div>
+                    </div>
+                  </div>
+                  <div className="timeline-item">
+                    <div className="timeline-dot active"></div>
+                    <div className="timeline-content">
+                      <div className="timeline-date">12th Apr: <span className="timeline-desc">Distributed 20 hot meal packs in central hub.</span></div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </Card>
 
@@ -126,18 +145,18 @@ export const Profile: React.FC = () => {
             <div className="meta-grid">
               <div className="meta-item">
                 <span className="meta-lbl">{t('org_type')}</span>
-                <span className="meta-val">Platinum Partner (NGO)</span>
+                <span className="meta-val">{isReceiver ? 'Registered NGO (80G)' : 'Platinum Partner (Donor)'}</span>
               </div>
               <div className="meta-item">
                 <span className="meta-lbl">{t('contact')}</span>
-                <span className="meta-val">+91 98765 43210</span>
+                <span className="meta-val">{isReceiver ? '+91 88776 65544' : '+91 98765 43210'}</span>
               </div>
               <div className="meta-item">
                 <span className="meta-lbl">{t('location')}</span>
-                <span className="meta-val">Indiranagar, Bengaluru</span>
+                <span className="meta-val">{isReceiver ? 'Koramangala, Bengaluru' : 'Indiranagar, Bengaluru'}</span>
               </div>
               <div className="meta-item">
-                <span className="meta-lbl">{t('fssai_license')}</span>
+                <span className="meta-lbl">{isReceiver ? t('ngo_reg_id') : t('fssai_license')}</span>
                 {isEditingFssai ? (
                   <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
                     <input 
@@ -145,14 +164,14 @@ export const Profile: React.FC = () => {
                       className="mini-input"
                       value={fssaiInput}
                       onChange={(e) => setFssaiInput(e.target.value)}
-                      placeholder="Enter FSSAI ID"
+                      placeholder={isReceiver ? "NGO Reg Number" : "Enter FSSAI ID"}
                       style={{ flex: 1, padding: '4px 8px', borderRadius: '4px', border: '1px solid #ccc' }}
                     />
                     <Button size="sm" onClick={handleSaveFssai}>Save</Button>
                   </div>
                 ) : (
                   <span className="meta-val" onClick={() => setIsEditingFssai(true)} style={{ cursor: 'pointer', color: fssaiInput ? 'inherit' : 'var(--color-error)' }}>
-                    {fssaiInput || '⚠️ Click to enter FSSAI ID'}
+                    {fssaiInput || `⚠️ Click to enter ${isReceiver ? 'Reg ID' : 'FSSAI ID'}`}
                   </span>
                 )}
               </div>
@@ -170,22 +189,22 @@ export const Profile: React.FC = () => {
               <div className="summary-item">
                 <div className="summary-icon meals"><Zap size={20} /></div>
                 <div className="summary-details">
-                  <span className="summary-val">124</span>
-                  <span className="summary-lbl">{t('meals_provided')}</span>
+                  <span className="summary-val">{isReceiver ? '1.2k' : '124'}</span>
+                  <span className="summary-lbl">{isReceiver ? t('meals_claimed') : t('meals_provided')}</span>
                 </div>
               </div>
               <div className="summary-item">
                 <div className="summary-icon co2"><Activity size={20} /></div>
                 <div className="summary-details">
-                  <span className="summary-val">4.2t</span>
-                  <span className="summary-lbl">{t('co2_reduced')}</span>
+                  <span className="summary-val">{isReceiver ? '15.4t' : '4.2t'}</span>
+                  <span className="summary-lbl">{isReceiver ? t('food_saved_label') : t('co2_reduced')}</span>
                 </div>
               </div>
               <div className="summary-item">
                 <div className="summary-icon kindness"><Award size={20} /></div>
                 <div className="summary-details">
-                  <span className="summary-val">12k</span>
-                  <span className="summary-lbl">{t('kindness_pts')}</span>
+                  <span className="summary-val">{isReceiver ? '8.5k' : '12k'}</span>
+                  <span className="summary-lbl">{isReceiver ? t('people_fed') : t('kindness_pts')}</span>
                 </div>
               </div>
             </div>
@@ -194,19 +213,19 @@ export const Profile: React.FC = () => {
 
           {/* Trust Info Box */}
           <div className="trust-info-box">
-            <Info size={18} />
-            <p>{t('trust_visible_msg')}</p>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <Info size={18} style={{ flexShrink: 0, marginTop: '2px' }} />
+              <p>{isReceiver ? t('ngo_trust_visible') : t('trust_visible_msg')}</p>
+            </div>
           </div>
-
-          {/* Organization Details was moved to main-content */}
 
           <div className="profile-badges-section">
             <h4 className="meta-title">{t('achievements')}</h4>
             <div className="badges-flex">
-              <div className="mini-badge" title="Fast Responder">⚡</div>
+              <div className="mini-badge" title={isReceiver ? "Rapid Response" : "Fast Responder"}>{isReceiver ? '🚁' : '⚡'}</div>
               <div className="mini-badge" title="Eco Warrior">🌱</div>
               <div className="mini-badge" title="Verified Safety">🛡️</div>
-              <div className="mini-badge" title="Top 1% Donor">🏆</div>
+              <div className="mini-badge" title={isReceiver ? "Top NGO" : "Top 1% Donor"}>🏆</div>
             </div>
           </div>
 

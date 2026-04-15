@@ -9,6 +9,8 @@ import { Notifications } from './donor/pages/Notifications/Notifications';
 import { Profile } from './donor/pages/Profile/Profile';
 import { Disasters } from './donor/pages/Disasters/Disasters';
 import { Traceability } from './donor/pages/Traceability/Traceability';
+import { Disasters as ReceiverDisasters } from './receiver/pages/Disasters/Disasters';
+import { Traceability as ReceiverTraceability } from './receiver/pages/Traceability/Traceability';
 import { Receiver } from './receiver/pages/Receiver/Receiver';
 import { Explore as ReceiverExplore } from './receiver/pages/Explore';
 import { Notifications as ReceiverNotifications } from './receiver/pages/Notifications';
@@ -91,8 +93,8 @@ function AppContent() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/disasters" element={<Disasters />} />
-          <Route path="/traceability" element={<Traceability />} />
+          <Route path="/disasters" element={role === 'receiver' ? <ReceiverDisasters /> : <Disasters />} />
+          <Route path="/traceability" element={role === 'receiver' ? <ReceiverTraceability /> : <Traceability />} />
           <Route path="/notifications" element={<Notifications />} />
           
           {/* Receiver Routes */}

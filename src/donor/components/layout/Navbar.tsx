@@ -27,7 +27,7 @@ export const Navbar: React.FC = () => {
     { name: 'Explore Food', path: '/receiver/explore', icon: <Globe size={18} /> },
     { name: t('nav_traceability'), path: '/traceability', icon: <Radio size={18} /> },
     { name: t('nav_disasters'), path: '/disasters', icon: <Flame size={18} /> },
-    { name: 'Notifications', path: '/receiver/notifications', icon: <Bell size={18} /> },
+    { name: t('nav_alerts'), path: '/receiver/notifications', icon: <Bell size={18} /> },
     { name: 'Profile', path: '/profile', icon: <Star size={18} /> },
   ];
 

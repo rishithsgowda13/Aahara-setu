@@ -92,41 +92,57 @@ export const Explore: React.FC = () => {
           <Card className="glass" style={{ maxWidth: '450px', width: '90%', padding: '24px', position: 'relative' }}>
             <h2 style={{ marginBottom: '16px', fontSize: '1.4rem', borderBottom: '1px solid rgba(139, 161, 148, 0.3)', paddingBottom: '12px' }}>Claim Donation</h2>
             
-            <div style={{ marginBottom: '16px', fontSize: '0.95rem', color: 'var(--color-text-muted)', background: 'rgba(0,0,0,0.05)', padding: '16px', borderRadius: '8px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div style={{ marginBottom: '16px', fontSize: '0.9rem', color: 'var(--color-text-muted)', background: 'rgba(0,0,0,0.05)', padding: '16px', borderRadius: '8px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
               
               {/* Left Column: Donor Info */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderRight: '1px dashed rgba(139, 161, 148, 0.2)', paddingRight: '16px' }}>
-                <h4 style={{ margin: 0, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-primary)' }}>Donor Details</h4>
-                <p><strong>Donor:</strong> {selectedFood.donor}</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderRight: '1px dashed rgba(139, 161, 148, 0.2)', paddingRight: '16px' }}>
+                <h4 style={{ margin: 0, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-primary)', fontWeight: 800 }}>Donor Details</h4>
+                <p><strong>Name:</strong> {selectedFood.donor}</p>
                 <p><strong>Item:</strong> {selectedFood.name}</p>
-                <p><strong>Type:</strong> {selectedFood.type}</p>
-                <p><strong>Available:</strong> <strong style={{ color: 'var(--color-primary)' }}>{selectedFood.quantity}</strong></p>
+                <p><strong>Available:</strong> <span style={{ color: 'var(--color-primary)', fontWeight: 800 }}>{selectedFood.quantity}</span></p>
+                <p style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontSize: '0.85rem' }}>📞 <strong>+91 98765 43210</strong></p>
               </div>
 
               {/* Right Column: Receiver Info */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <h4 style={{ margin: 0, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-primary)' }}>Receiver Context</h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <h4 style={{ margin: 0, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-primary)', fontWeight: 800 }}>Logistics Info</h4>
                 <p><strong>Distance:</strong> {selectedFood.distance}</p>
                 <p><strong>Expires In:</strong> <span style={{ color: selectedFood.urgencyLevel === 'high' ? 'var(--color-error)' : 'inherit', fontWeight: 'bold' }}>{selectedFood.expiry}</span></p>
                 <p><strong>Demand:</strong> {selectedFood.demand}</p>
+                <p style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontSize: '0.85rem' }}>📞 <strong>+91 98221 00334</strong></p>
               </div>
 
             </div>
             
             <div style={{ marginBottom: '24px' }}>
               <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '8px', fontWeight: 600, color: 'var(--color-text)' }}>How much quantity do you need?</label>
-              <input 
-                type="text" 
-                value={claimQuantity} 
-                onChange={(e) => setClaimQuantity(e.target.value)} 
-                placeholder="e.g., 5 portions, or 'all'" 
-                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--color-secondary-light)', background: 'var(--color-bg)', color: 'var(--color-text)', fontSize: '1rem' }}
-                autoFocus
-              />
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <input 
+                  type="number" 
+                  min="1"
+                  max={parseInt(selectedFood.quantity, 10) || 20}
+                  value={claimQuantity || 1} 
+                  onChange={(e) => setClaimQuantity(e.target.value)} 
+                  style={{ width: '70px', padding: '10px', borderRadius: '8px', border: '2px solid rgba(139, 161, 148, 0.4)', background: 'var(--color-bg)', color: 'var(--color-primary)', fontSize: '1.1rem', textAlign: 'center', fontWeight: 'bold', outline: 'none' }}
+                />
+                <input 
+                  type="range"
+                  min="1"
+                  max={parseInt(selectedFood.quantity, 10) || 20}
+                  value={claimQuantity || 1} 
+                  onChange={(e) => setClaimQuantity(e.target.value)} 
+                  style={{ flex: 1, accentColor: 'var(--color-primary)', cursor: 'pointer', height: '6px' }}
+                />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '8px', marginLeft: '86px' }}>
+                <span>1</span>
+                <span>Max: {selectedFood.quantity}</span>
+              </div>
             </div>
             
             <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
-              <Button onClick={() => setSelectedFoodId(null)} variant="outline" style={{ flex: 1 }}>Cancel</Button>
+              <Button onClick={() => setSelectedFoodId(null)} style={{ flex: 1, background: 'rgba(0,0,0,0.1)', color: 'var(--color-text)', boxShadow: 'none' }}>Close</Button>
               <Button onClick={handleConfirmClaim} style={{ flex: 1 }}>Confirm Claim</Button>
             </div>
 

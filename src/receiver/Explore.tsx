@@ -205,7 +205,12 @@ export const Explore: React.FC = () => {
                 </div>
               </div>
 
-              <Button fullWidth onClick={() => navigate(`/claim/${item.id}`)}>
+              <Button 
+                fullWidth 
+                onClick={() => {
+                  window.location.href = `/claim/${item.id}`;
+                }}
+              >
                 Claim Now
               </Button>
             </Card>

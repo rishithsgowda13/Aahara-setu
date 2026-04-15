@@ -7,7 +7,7 @@
   --color-primary-glow: rgba(79, 99, 61, 0.25);
   --color-secondary: #8BA194;
   --color-secondary-light: #a8bdb6;
-  --color-bg: #FFF7E2;
+  --color-bg: #ffffff;
 
   --color-text: #2a3520;
   --color-text-muted: #5a6b50;
@@ -33,7 +33,7 @@
   --radius-full: 9999px;
 
   /* Glass */
-  --glass-bg: rgba(255, 247, 226, 0.75);
+  --glass-bg: rgba(255, 255, 255, 0.75);
   --glass-border: 1px solid rgba(139, 161, 148, 0.3);
 
   /* Urgency Colors */

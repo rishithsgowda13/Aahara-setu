@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { MapPin, Phone, X, ShieldCheck } from 'lucide-react';
+import { MapPin, Phone, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { LeafletMap } from '../components/ui/LeafletMap';
-import './Explore.css'; // Reusing styles for consistency
+import './Explore.css';
 
 interface FoodItem {
   id: string;
@@ -23,15 +23,11 @@ interface FoodItem {
 }
 
 const MOCK_FOOD_ITEMS: FoodItem[] = [
-  { id: '7', name: 'Steamed Basmati Rice', type: 'Main Course', quantity: '40 portions', distance: '0.5 km', expiry: '2 hours', donor: 'Royal Biryani House', urgencyScore: 88, urgencyLevel: 'high', urgencyLabel: '⚡ High - 2 hr', verified: true, demand: 'High', phone: '+91 98765 43210' },
-  { id: '8', name: 'Mixed Vegetable Sambar', type: 'Side Dish', quantity: '2 large containers', distance: '1.1 km', expiry: '3 hours', donor: 'Udupi Point', urgencyScore: 75, urgencyLevel: 'medium', urgencyLabel: '⏰ Medium - 3 hr', verified: true, demand: 'Medium', phone: '+91 99887 76655' },
   { id: '1', name: 'KFC Fried Chicken Bucket', type: 'Fast Food', quantity: '15 pieces', distance: '0.8 km', expiry: '30 mins', donor: 'KFC', urgencyScore: 95, urgencyLevel: 'high', urgencyLabel: '⚡ High Priority - 30 min', verified: true, demand: 'Very High', phone: '+91 88776 65544' },
   { id: '2', name: 'Haldiram\'s Paneer Butter Masala', type: 'Main Course', quantity: '20 portions', distance: '0.4 km', expiry: '45 mins', donor: 'Haldiram\'s', urgencyScore: 90, urgencyLevel: 'high', urgencyLabel: '⚡ High - 45 min', verified: true, demand: 'Very High', phone: '+91 91234 56789' },
-  { id: '9', name: 'Veg Dum Biryani', type: 'Main Course', quantity: '10 portions', distance: '1.2 km', expiry: '4 hours', donor: 'Taj Hotel', urgencyScore: 60, urgencyLevel: 'medium', urgencyLabel: '⏰ Medium - 4 hr', verified: true, demand: 'High', phone: '+91 98888 77777' },
-  { id: '3', name: 'Masala Dosa & Sambar', type: 'South Indian', quantity: '5 portions', distance: '2.5 km', expiry: '1 hour', donor: 'MTR (Mavalli Tiffin Room)', urgencyScore: 85, urgencyLevel: 'high', urgencyLabel: '⚡ High Priority - 1 hr', verified: false, demand: 'Medium', phone: '+91 97777 66666' },
-  { id: '4', name: 'McDonald\'s Happy Meals', type: 'Fast Food', quantity: '3 meals', distance: '3.1 km', expiry: '5 hours', donor: 'McDonald\'s', urgencyScore: 30, urgencyLevel: 'low', urgencyLabel: '✅ Low Priority - 5 hr', verified: true, demand: 'Low', phone: '+91 96666 55555' },
-  { id: '5', name: 'Paneer Butter Masala', type: 'North Indian', quantity: '20 portions', distance: '0.4 km', expiry: '45 mins', donor: 'Haldiram\'s', urgencyScore: 92, urgencyLevel: 'high', urgencyLabel: '⚡ High Priority - 45 min', verified: true, demand: 'Very High', phone: '+91 95555 44444' },
-  { id: '6', name: 'Chole Bhature', type: 'North Indian', quantity: '8 portions', distance: '1.8 km', expiry: '8 hours', donor: 'Bikanerwala', urgencyScore: 20, urgencyLevel: 'low', urgencyLabel: '✅ Low Priority - 8 hr', verified: true, demand: 'Moderate', phone: '+91 94444 33333' },
+  { id: '5', name: 'Haldiram\'s Special Thali', type: 'North Indian', quantity: '20 portions', distance: '0.4 km', expiry: '45 mins', donor: 'Haldiram\'s', urgencyScore: 92, urgencyLevel: 'high', urgencyLabel: '⚡ High Priority - 45 min', verified: true, demand: 'Very High', phone: '+91 95555 44444' },
+  { id: '7', name: 'Steamed Basmati Rice', type: 'Main Course', quantity: '40 portions', distance: '0.5 km', expiry: '2 hours', donor: 'Royal Biryani House', urgencyScore: 88, urgencyLevel: 'high', urgencyLabel: '⚡ High - 2 hr', verified: true, demand: 'High', phone: '+91 98765 43210' },
+  { id: '8', name: 'Mixed Vegetable Sambar', type: 'Side Dish', quantity: '2 large containers', distance: '1.1 km', expiry: '3 hours', donor: 'Udupi Point', urgencyScore: 75, urgencyLevel: 'medium', urgencyLabel: '⏰ Medium - 3 hr', verified: true, demand: 'Medium', phone: '+91 99887 76655' },
 ];
 
 export const ClaimView: React.FC = () => {
@@ -39,115 +35,159 @@ export const ClaimView: React.FC = () => {
   const navigate = useNavigate();
   const [item, setItem] = useState<FoodItem | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [step, setStep] = useState<'details' | 'logistics' | 'success'>('details');
+  const [step, setStep] = useState<'details' | 'logistics'>('details');
 
   useEffect(() => {
     const found = MOCK_FOOD_ITEMS.find(i => i.id === id);
     if (found) setItem(found);
   }, [id]);
 
-  if (!item) return <div className="p-8 text-center">Loading contribution details...</div>;
-
-  const handleConfirmDetails = () => setStep('logistics');
-  const handleFinalConfirm = () => {
-    alert(`Success! Your claim for ${quantity} portions has been registered.`);
-    navigate('/explore');
-  };
+  if (!item) return <div className="p-12 text-center" style={{ background: '#f8fafc', height: '100vh' }}>Loading contribution details...</div>;
 
   return (
-    <div className="claim-page-wrapper">
-      <Card className="full-claim-card glass">
-        {step === 'details' ? (
-          <>
-            <div className="claim-header-row">
-              <h1 className="claim-title-main">Claim Donation</h1>
-              <button className="close-page-btn" onClick={() => navigate('/explore')}><X size={24} /></button>
-            </div>
+    <div className="claim-page-wrapper" style={{ background: '#ffffff', minHeight: '100vh', padding: '40px 20px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        
+        {/* TOP NAVBAR AREA */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '40px' }}>
+          <button 
+            onClick={() => navigate('/explore')} 
+            style={{ 
+              background: 'white', 
+              border: 'none', 
+              padding: '12px', 
+              borderRadius: '12px', 
+              cursor: 'pointer', 
+              boxShadow: '0 4px 12px rgba(0,0,0,0.05)', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              marginRight: '24px'
+            }}
+          >
+            <ArrowLeft size={20} color="#333" />
+          </button>
+          <h1 style={{ fontSize: '2.4rem', fontWeight: 800, margin: 0, color: '#1a1a1a' }}>
+            Claim <span style={{ color: '#4f633d' }}>Food</span>
+          </h1>
+        </div>
 
-            <div className="claim-info-beige-box">
-              <div className="beige-col">
-                <h3 className="beige-label">DONOR DETAILS</h3>
-                <p><strong>Name:</strong> {item.donor}</p>
-                <p><strong>Item:</strong> {item.name}</p>
-                <p><strong>Available:</strong> <span className="portions-bold">{item.quantity}</span></p>
-                <a href={`tel:${item.phone}`} className="beige-phone"><Phone size={14} /> {item.phone}</a>
+        {/* TWO COLUMN GRID */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.1fr', gap: '32px', alignItems: 'start' }}>
+          
+          {/* LEFT SIDE: DETAILS */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <Card style={{ background: 'white', borderRadius: '24px', padding: '32px', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
+              <h3 style={{ fontSize: '0.8rem', fontWeight: 800, color: '#4f633d', letterSpacing: '1px', marginBottom: '24px' }}>DONOR DETAILS</h3>
+              <h2 style={{ fontSize: '1.9rem', fontWeight: 800, margin: '0 0 24px', color: '#1a1a1a' }}>{item.donor}</h2>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                <div>
+                  <p style={{ margin: '0 0 6px', fontSize: '0.75rem', fontWeight: 700, color: '#666' }}>FOOD ITEM</p>
+                  <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#333' }}>{item.name}</p>
+                </div>
+                <div>
+                  <p style={{ margin: '0 0 6px', fontSize: '0.75rem', fontWeight: 700, color: '#666' }}>AVAILABLE</p>
+                  <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#4f633d' }}>{item.quantity}</p>
+                </div>
+                <div>
+                  <p style={{ margin: '0 0 6px', fontSize: '0.75rem', fontWeight: 700, color: '#666' }}>DISTANCE</p>
+                  <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#333' }}>{item.distance}</p>
+                </div>
+                <div>
+                  <p style={{ margin: '0 0 6px', fontSize: '0.75rem', fontWeight: 700, color: '#666' }}>EXPIRY</p>
+                  <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: '#ef4444' }}>{item.expiry}</p>
+                </div>
               </div>
-              <div className="beige-divider"></div>
-              <div className="beige-col">
-                <h3 className="beige-label">LOGISTICS INFO</h3>
-                <p><strong>Distance:</strong> {item.distance}</p>
-                <p><strong>Expires In:</strong> <span className="expiry-red">{item.expiry}</span></p>
-                <p><strong>Demand:</strong> {item.demand}</p>
-                <a href="tel:+919822100334" className="beige-phone"><Phone size={14} /> +91 98221 00334</a>
+
+              <div style={{ marginTop: '32px', padding: '16px', background: '#f8fafc', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 700, color: '#333' }}>
+                <Phone size={18} color="#4f633d" /> {item.phone}
               </div>
-            </div>
+            </Card>
 
-            <div className="claim-map-wrapper">
-              <LeafletMap location={item.donor} />
-            </div>
-
-            <div className="claim-quantity-section">
-              <h4 className="quantity-question">How much quantity do you need?</h4>
-              <div className="quantity-picker-row">
-                <div className="quantity-val-box">{quantity}</div>
-                <input 
-                  type="range" 
-                  min="1" 
-                  max={parseInt(item.quantity) || 20} 
-                  value={quantity} 
-                  onChange={(e) => setQuantity(parseInt(e.target.value))}
-                  className="pretty-slider"
-                />
+            <Card style={{ background: 'white', borderRadius: '24px', padding: '32px', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
+              <h3 style={{ fontSize: '0.8rem', fontWeight: 800, color: '#666', letterSpacing: '1px', marginBottom: '20px' }}>RECEIVER (NGO)</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ width: '56px', height: '56px', background: '#4f633d', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 800, fontSize: '1.2rem' }}>R</div>
+                <div>
+                  <p style={{ margin: '0 0 4px', fontSize: '1.1rem', fontWeight: 800, color: '#1a1a1a' }}>Robin NGO</p>
+                  <p style={{ margin: 0, fontSize: '0.85rem', color: '#4f633d', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <ShieldCheck size={16} /> Verified Partner
+                  </p>
+                </div>
               </div>
-              <div className="quantity-limits">
-                <span>1</span>
-                <span>Max: {item.quantity}</span>
-              </div>
-            </div>
-
-            <div className="claim-actions-row">
-              <Button variant="outline" className="btn-cancel" onClick={() => navigate('/explore')}>Close</Button>
-              <Button className="btn-confirm" onClick={handleConfirmDetails}>Confirm Claim</Button>
-            </div>
-
-            <Button 
-              fullWidth 
-              variant="outline" 
-              className="btn-google-maps"
-              onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.donor)}`, '_blank')}
-            >
-              <MapPin size={18} /> Open in Google Maps
-            </Button>
-          </>
-        ) : (
-          <div className="logistics-step-view">
-             <h1 className="claim-title-main">Logistics Support</h1>
-             <p className="logistics-text">Choose your preferred pickup method from <strong>{item.donor}</strong></p>
-             
-             <div className="logistics-options">
-               <Button variant="glass" className="logistics-btn self" onClick={handleFinalConfirm}>
-                 <span className="emoji-big">🏠</span>
-                 <div className="btn-txt">
-                   <strong>Self Pickup</strong>
-                   <span>I have my own transport</span>
-                 </div>
-               </Button>
-               
-               <div className="or-divider">OR BOOK THROUGH PARTNERS</div>
-               
-               <div className="partner-grid">
-                 <Button variant="outline" onClick={() => window.open('https://ola.com')}>🚕 Ola</Button>
-                 <Button variant="outline" onClick={() => window.open('https://rapido.com')}>🏍️ Rapido</Button>
-                 <Button variant="outline" onClick={() => window.open('https://uber.com')}>🚙 Uber</Button>
-               </div>
-             </div>
-
-             <Button fullWidth className="btn-confirm" style={{ marginTop: '24px' }} onClick={handleFinalConfirm}>
-               Done / Skip
-             </Button>
+            </Card>
           </div>
-        )}
-      </Card>
+
+          {/* RIGHT SIDE: INTERACTIVE */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <Card style={{ background: 'white', borderRadius: '24px', padding: 0, overflow: 'hidden', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
+              <div style={{ height: '360px', position: 'relative' }}>
+                <LeafletMap location={item.donor} />
+                <div style={{ position: 'absolute', bottom: '24px', right: '24px', zIndex: 1000 }}>
+                   <Button 
+                    onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.donor)}`)}
+                    style={{ background: 'white', color: '#333', border: '1px solid #ddd', padding: '12px 20px', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)', fontWeight: 700 }}
+                   >
+                     <MapPin size={16} style={{ marginRight: '8px' }} /> Open in Google Maps
+                   </Button>
+                </div>
+              </div>
+            </Card>
+
+            {step === 'details' ? (
+              <Card className="animate-fade-in" style={{ background: 'white', borderRadius: '24px', padding: '32px', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
+                <h3 style={{ fontSize: '0.8rem', fontWeight: 800, color: '#666', letterSpacing: '1px', marginBottom: '24px' }}>CONFIRM QUANTITY</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '32px' }}>
+                  <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#1a1a1a', minWidth: '70px' }}>{quantity}</div>
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max={parseInt(item.quantity) || 20} 
+                    value={quantity} 
+                    onChange={(e) => setQuantity(parseInt(e.target.value))} 
+                    style={{ flex: 1, accentColor: '#4f633d', cursor: 'pointer' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <Button variant="outline" fullWidth style={{ borderRadius: '14px', height: '54px', fontWeight: 700 }} onClick={() => navigate('/explore')}>Go Back</Button>
+                  <Button fullWidth style={{ borderRadius: '14px', height: '54px', fontWeight: 700 }} onClick={() => setStep('logistics')}>Confirm Claim</Button>
+                </div>
+              </Card>
+            ) : (
+              <Card className="animate-fade-in" style={{ background: 'white', borderRadius: '24px', padding: '32px', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
+                <h3 style={{ fontSize: '0.8rem', fontWeight: 800, color: '#666', letterSpacing: '1px', marginBottom: '24px' }}>LOGISTICS SUPPORT</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <Button 
+                    variant="glass" 
+                    style={{ height: 'auto', padding: '20px', justifyContent: 'flex-start', border: '2px solid #4f633d', background: 'rgba(79,99,61,0.03)', borderRadius: '16px' }}
+                    onClick={() => alert(`Successfully claimed ${quantity} portions for Self-Pickup!`)}
+                  >
+                    <div style={{ fontSize: '1.6rem', marginRight: '20px' }}>🏠</div>
+                    <div style={{ textAlign: 'left' }}>
+                      <p style={{ fontWeight: 800, margin: '0 0 2px', color: '#1a1a1a' }}>Self Pickup</p>
+                      <p style={{ fontSize: '0.8rem', opacity: 0.7, margin: 0, fontWeight: 600 }}>I'll handle transportation</p>
+                    </div>
+                  </Button>
+
+                  <div style={{ textAlign: 'center', margin: '8px 0', fontSize: '0.75rem', fontWeight: 800, color: '#999', letterSpacing: '1px' }}>OR BOOK PARTNER</div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                    <Button variant="outline" style={{ borderRadius: '12px', height: '50px', fontWeight: 700 }} onClick={() => window.open('https://ola.com')}>🚕 Ola</Button>
+                    <Button variant="outline" style={{ borderRadius: '12px', height: '50px', fontWeight: 700 }} onClick={() => window.open('https://rapido.com')}>🏍️ Rapido</Button>
+                    <Button variant="outline" style={{ borderRadius: '12px', height: '50px', fontWeight: 700 }} onClick={() => window.open('https://uber.com')}>🚙 Uber</Button>
+                  </div>
+                  
+                  <Button variant="ghost" fullWidth style={{ marginTop: '16px', color: '#666', fontWeight: 700 }} onClick={() => setStep('details')}>
+                    ← Change Quantity
+                  </Button>
+                </div>
+              </Card>
+            )}
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 };

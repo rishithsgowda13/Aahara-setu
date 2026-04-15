@@ -64,7 +64,7 @@ function App() {
 
   return (
     <>
-      {showLoader && <Loader onComplete={() => setShowLoader(false)} />}
+      {showLoader && !window.location.pathname.startsWith('/claim') && <Loader onComplete={() => setShowLoader(false)} />}
       <Router>
         {isAuthenticated && <Navbar />}
         <main style={{ padding: isAuthenticated ? '84px 24px 0' : '0', maxWidth: '1200px', margin: '0 auto', minHeight: '100vh' }}>

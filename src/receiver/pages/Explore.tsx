@@ -21,68 +21,7 @@ interface FoodItem {
   isDisaster?: boolean;
 }
 
-const MOCK_FOOD_ITEMS: FoodItem[] = [
-  {
-    id: 'f1',
-    name: 'KFC Fried Chicken Bucket',
-    donor: 'KFC Indiranagar',
-    category: 'Fast Food',
-    quantity: '15 pieces',
-    expiresIn: '30 mins',
-    distance: '0.8 km',
-    demand: 'Very High',
-    urgencyScore: 95,
-    urgencyLevel: 'high'
-  },
-  {
-    id: 'f2',
-    name: 'Orange Juice Bottles',
-    donor: "FreshPress Juices",
-    category: 'Beverages',
-    quantity: '12 bottles',
-    expiresIn: '4 hours',
-    distance: '1.5 km',
-    demand: 'High',
-    urgencyScore: 70,
-    urgencyLevel: 'medium'
-  },
-  {
-    id: 'f3',
-    name: "Haliram's Paneer Butter Masala",
-    donor: "Haliram's",
-    category: 'Main Course',
-    quantity: '20 portions',
-    expiresIn: '45 mins',
-    distance: '0.4 km',
-    demand: 'Very High',
-    urgencyScore: 90,
-    urgencyLevel: 'high'
-  },
-  {
-    id: 'f4',
-    name: 'Marie Gold Biscuits',
-    donor: 'More Retail Store',
-    category: 'Packaged Snacks',
-    quantity: '25 packets',
-    expiresIn: '6 months',
-    distance: '2.1 km',
-    demand: 'Medium',
-    urgencyScore: 20,
-    urgencyLevel: 'low'
-  },
-  {
-    id: 'f5',
-    name: 'Fruit Salad Bowls',
-    donor: 'Fruit Shop On Greams Road',
-    category: 'Healthy',
-    quantity: '8 bowls',
-    expiresIn: '4 hours',
-    distance: '2.5 km',
-    demand: 'Low',
-    urgencyScore: 30,
-    urgencyLevel: 'low'
-  }
-];
+const MOCK_FOOD_ITEMS: FoodItem[] = []; // Empty mock array
 
 export const Explore: React.FC = () => {
   const { t } = useTranslation();
@@ -457,9 +396,6 @@ export const Explore: React.FC = () => {
           .modal-right-donor { display: none; }
         }
       `}</style>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

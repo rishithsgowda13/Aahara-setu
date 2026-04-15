@@ -4,30 +4,48 @@ import { Button } from '../../../donor/components/ui/Button/Button';
 import { Card } from '../../../donor/components/ui/Card/Card';
 import { Flame, AlertTriangle, MapPin, Users, Heart, ArrowRight, Zap, Shield } from 'lucide-react';
 import './Disasters.css';
+import { supabase } from '../../../lib/supabase';
+
+interface DisasterAlert {
+  id: string;
+  type: string;
+  location: string;
+  urgency: string;
+  peopleInNeed: number;
+  suppliesNeeded: string;
+  impact: string;
+  timeRemaining: string;
+}
 
 export const Disasters: React.FC = () => {
-  const activeDisasters = [
-    {
-      id: 1,
-      type: 'Flood Relief',
-      location: 'Assam High-Waste Zone B',
-      urgency: 'CRITICAL',
-      peopleInNeed: 1200,
-      suppliesNeeded: 'Ready-to-eat meals, Water, Biscuits',
-      impact: 'Severely affected by monsoon',
-      timeRemaining: 'ASAP'
-    },
-    {
-      id: 2,
-      type: 'Earthquake Support',
-      location: 'North-East Sector 4',
-      urgency: 'HIGH',
-      peopleInNeed: 850,
-      suppliesNeeded: 'Protein bars, Canned food, Milk powder',
-      impact: 'Structural damage in residential areas',
-      timeRemaining: 'Within 4 hours'
-    }
-  ];
+  const [activeDisasters, setActiveDisasters] = React.useState<DisasterAlert[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchAlerts = async () => {
+      const { data } = await supabase
+        .from('disaster_alerts')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (data) {
+        const formatted = data.map((d: any) => ({
+          id: d.id,
+          type: d.title,
+          location: d.location_name,
+          urgency: d.severity?.toUpperCase() || 'HIGH',
+          peopleInNeed: d.people_in_need || 500,
+          suppliesNeeded: d.needs?.join(', ') || 'Various food items',
+          impact: d.impact_desc || 'Urgent support required',
+          timeRemaining: 'ASAP'
+        }));
+        setActiveDisasters(formatted);
+      }
+      setLoading(false);
+    };
+
+    fetchAlerts();
+  }, []);
   
   const [toast, setToast] = React.useState<string | null>(null);
   const showToast = (msg: string) => {

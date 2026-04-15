@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
 import { 
@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import './Dashboard.css';
-import '../KindnessHub/KindnessHub.css'; // Reuse Kindness Hub styles
+import '../KindnessHub/KindnessHub.css';
+import { supabase } from '../../lib/supabase';
 
 const WEEKLY_DATA = [
   { day: 'Mon', meals: 45, kg: 22 },
@@ -30,10 +31,21 @@ const HEATMAP_ZONES = [
   { name: 'Hebbal', waste: 8, demand: 96, type: 'demand' },
 ];
 
+interface Leader {
+  rank: number;
+  name: string;
+  impact: string;
+  pts: number;
+  avatar: string;
+  color: string;
+  badge?: string;
+}
+
 export const Dashboard: React.FC = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'analytics' | 'leaderboard' | 'certificates'>('analytics');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [leaders, setLeaders] = useState<Leader[]>([]);
 
   const stats = [
     { label: t('food_saved'), value: '452 kg', icon: <Package size={22} />, color: '#4F633D', trend: '+12%' },
@@ -59,13 +71,32 @@ export const Dashboard: React.FC = () => {
     { icon: '🚚', text: 'Volunteer pickup confirmed for Biryani', time: '2 hrs ago', type: 'success' },
   ];
 
-  const leaders = [
-    { rank: 1, name: "McDonald's - VVCE", impact: "12,450 meals", pts: 8500, avatar: "M", color: "#FFD700", badge: 'Golden Plate' },
-    { rank: 2, name: "Taj Hotel - City Center", impact: "8,300 meals", pts: 6200, avatar: "T", color: "#C0C0C0", badge: 'Elite Circle' },
-    { rank: 3, name: "KFC - Mall Road", impact: "5,120 meals", pts: 4100, avatar: "K", color: "#CD7F32", badge: 'Rising Star' },
-    { rank: 4, name: "Akshaya Patra", impact: "4,200 meals", pts: 3800, avatar: "A", color: "#E2E8F0" },
-    { rank: 5, name: "Doner King", impact: "3,100 meals", pts: 2900, avatar: "D", color: "#E2E8F0" },
-  ];
+  useEffect(() => {
+    const fetchLeaders = async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('organization_name, kindness_score')
+        .order('kindness_score', { ascending: false })
+        .limit(5);
+
+      if (data) {
+        const colors = ["#FFD700", "#C0C0C0", "#CD7F32", "#E2E8F0", "#E2E8F0"];
+        const badges = ["Golden Plate", "Elite Circle", "Rising Star"];
+        const formatted = data.map((p, i) => ({
+          rank: i + 1,
+          name: p.organization_name || 'Anonymous Partner',
+          impact: `${Math.floor(p.kindness_score * 1.5)} meals`,
+          pts: p.kindness_score,
+          avatar: (p.organization_name || 'A')[0],
+          color: colors[i] || "#E2E8F0",
+          badge: badges[i]
+        }));
+        setLeaders(formatted);
+      }
+    };
+
+    fetchLeaders();
+  }, []);
 
   const certificatesList = [
     { id: 'AS-2025-01', type: 'Platinum Sustainability', date: 'April 2025', desc: 'Offsets 3,200kg of CO₂' },

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Upload, MapPin, LayoutDashboard, Star, Bell } from 'lucide-react';
+import { Home, Upload, MapPin, LayoutDashboard, Star, Bell, Target } from 'lucide-react';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
@@ -9,6 +9,7 @@ export const Navbar: React.FC = () => {
   const navLinks = [
     { name: 'Home', path: '/', icon: <Home size={18} /> },
     { name: 'Explore', path: '/explore', icon: <MapPin size={18} /> },
+    { name: 'Receivers', path: '/receiver', icon: <Target size={18} /> },
     { name: 'Donate', path: '/upload', icon: <Upload size={18} /> },
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
     { name: 'Alerts', path: '/notifications', icon: <Bell size={18} /> },

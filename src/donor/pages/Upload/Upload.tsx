@@ -46,6 +46,45 @@ export const Upload: React.FC = () => {
     setCheckedItems(prev => prev.map((v, idx) => idx === i ? !v : v));
   };
 
+  const [address, setAddress] = useState('');
+  const [isDetecting, setIsDetecting] = useState(false);
+
+  const handleFetchLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Geolocation is not supported by your browser');
+      return;
+    }
+
+    setIsDetecting(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const coordsStr = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+        
+        try {
+          // Reverse geocoding using OpenStreetMap (Nominatim)
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          );
+          const data = await response.json();
+          const locationName = data.display_name.split(',')[0] || data.address.suburb || data.address.city || 'Unknown Area';
+          
+          setAddress(`${coordsStr} — ${locationName} (Detected)`);
+        } catch (error) {
+          console.error('Reverse geocoding error:', error);
+          setAddress(`${coordsStr} (Detected Location)`);
+        } finally {
+          setIsDetecting(false);
+        }
+      },
+      (error) => {
+        console.error('Error fetching location:', error);
+        alert('Unable to retrieve your location');
+        setIsDetecting(false);
+      }
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!allChecked) return;
@@ -151,9 +190,20 @@ export const Upload: React.FC = () => {
               </div>
 
               <div className="form-group">
-                <Input label="Precise Pickup Address" placeholder="Street, Building, landmark..." required />
-                <button type="button" className="fetch-location-btn">
-                  <MapPin size={16} /> Auto-detect Location
+                <Input 
+                  label="Precise Pickup Address" 
+                  placeholder="Street, Building, landmark..." 
+                  required 
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+                <button 
+                  type="button" 
+                  className={`fetch-location-btn ${isDetecting ? 'loading' : ''}`} 
+                  onClick={handleFetchLocation}
+                  disabled={isDetecting}
+                >
+                  <MapPin size={16} /> {isDetecting ? 'Detecting...' : 'Auto-detect Location'}
                 </button>
               </div>
 
@@ -207,7 +257,7 @@ export const Upload: React.FC = () => {
           <Card className="volunteer-card">
             <h4>🚚 SMART LOGISTICS</h4>
             <p>Our AI automatically matches your listing with the nearest verified transport volunteers.</p>
-            <Button variant="outline" size="sm" fullWidth>VIEW LOGISTICS PARTNERS</Button>
+            <Button variant="outline" size="sm" fullWidth onClick={() => alert('Feature coming soon: Live matching with 12 available logistics partners in your zone.')}>VIEW LOGISTICS PARTNERS</Button>
           </Card>
         </div>
       </div>

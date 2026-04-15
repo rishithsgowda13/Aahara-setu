@@ -153,7 +153,7 @@
 .nav-link.donate-pill {
   background: transparent;
   color: #4F633D;
-  border: 1.5px solid rgba(79, 99, 61, 0.2);
+  border: none;
   padding: 8px 20px !important;
   font-weight: 800 !important;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) ;
@@ -162,13 +162,11 @@
 .nav-link.donate-pill.active {
   background: #4F633D !important;
   color: white !important;
-  border-color: #4F633D !important;
   box-shadow: 0 10px 20px rgba(79, 99, 61, 0.2) !important;
 }
 
 .nav-link.donate-pill:hover:not(.active) {
   background: rgba(79, 99, 61, 0.05);
-  border-color: rgba(79, 99, 61, 0.4);
   transform: translateY(-2px);
 }
 
@@ -185,36 +183,6 @@
   .navbar { width: 98%; padding: 0 16px; }
 }
 
-/* Language Switcher */
-.lang-switcher-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(59, 130, 246, 0.05);
-  padding: 4px 8px;
-  border-radius: 100px;
-  margin-left: 8px;
-  border: 1px solid rgba(59, 130, 246, 0.1);
-}
-
-.lang-icon { color: #3B82F6; opacity: 0.8; }
-
-.lang-btns {
-  display: flex;
-  gap: 2px;
-}
-
-.lang-toggle-btn {
-  background: none;
-  border: none;
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 6px 10px;
-  border-radius: 100px;
-  cursor: pointer;
-  color: #64748B;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
 
 .lang-toggle-btn:hover {
   background: rgba(0,0,0,0.05);

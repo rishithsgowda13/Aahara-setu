@@ -37,7 +37,6 @@ export const Navbar: React.FC = () => {
               <span>{link.name}</span>
             </Link>
           ))}
-
         </div>
       </div>
     </nav>

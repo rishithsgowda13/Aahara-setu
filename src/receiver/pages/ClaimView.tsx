@@ -45,7 +45,7 @@ export const ClaimView: React.FC = () => {
   if (!item) return <div className="p-12 text-center" style={{ background: '#f8fafc', height: '100vh' }}>Loading contribution details...</div>;
 
   return (
-    <div className="claim-page-wrapper" style={{ background: '#ffffff', minHeight: '100vh', padding: '40px 20px' }}>
+    <div className="claim-page-wrapper" style={{ minHeight: '100vh', padding: '40px 20px' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         
         {/* TOP NAVBAR AREA */}

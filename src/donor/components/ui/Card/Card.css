@@ -13,7 +13,7 @@
 }
 
 .card-solid {
-  background: rgba(255, 247, 226, 0.9);
+  background: var(--color-bg);
   border: 1px solid rgba(139, 161, 148, 0.2);
   box-shadow: var(--shadow-card);
 }

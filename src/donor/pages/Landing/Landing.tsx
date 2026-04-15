@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/Button/Button';
 import { Card } from '../../components/ui/Card/Card';
 import {
   Heart, Users, Utensils, Leaf, Zap, ShieldCheck,
-  MapPin, Star, Truck, Wifi, RefreshCw, Upload, Tag, Link, CheckCircle2
+  MapPin, Star, Truck, Wifi, RefreshCw, Upload, Tag, Link as LinkIcon, CheckCircle2
 } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import './Landing.css';
@@ -145,7 +145,7 @@ export const Landing: React.FC = () => {
 
             <div className="work-step">
               <div className="step-card">
-                 <div className="step-icon-box purple"><Link size={20} /></div>
+                 <div className="step-icon-box purple"><LinkIcon size={20} /></div>
                  <h4 className="step-title">Match</h4>
                  <p className="step-desc">Nearest NGO matched</p>
               </div>

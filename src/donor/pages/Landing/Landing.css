@@ -182,7 +182,7 @@
 }
 
 .stat-card-replica {
-  background: #FEFBF6;
+  background: var(--color-bg-alt);
   border-radius: 32px;
   padding: 50px 24px;
   display: flex;
@@ -322,7 +322,7 @@
 }
 
 .banner-how {
-  background: #F1F3EE;
+  background: var(--color-bg-alt);
   padding: 16px 30px;
   border-radius: 100px;
   display: flex;
@@ -330,7 +330,7 @@
   align-items: center;
   margin: 20px auto 0;
   width: fit-content;
-  border: 1px solid #E1E5DC;
+  border: 1px solid var(--color-primary-glow);
 }
 
 .banner-content {
@@ -372,7 +372,7 @@
   text-align: center;
   gap: 8px;
   padding: 24px 20px;
-  background: #fdfdfb;
+  background: var(--color-bg);
   border: 1px solid rgba(139, 161, 148, 0.15);
   border-radius: 20px;
   min-width: 160px;
@@ -432,7 +432,7 @@
   flex-direction: column;
   gap: 12px;
   padding: 24px 24px;
-  background: #FEFBF6 !important;
+  background: var(--color-bg-alt) !important;
   border: 1px solid rgba(0,0,0,0.03) !important;
   border-radius: 32px !important;
   box-shadow: 0 10px 30px rgba(0,0,0,0.02) !important;

@@ -71,8 +71,8 @@ function App() {
           {/* Public Route */}
           <Route path="/login" element={!isAuthenticated ? <Login /> : (userRole === 'donor' ? <Navigate to="/upload" /> : <Navigate to="/explore" />)} />
 
-          {/* Root Gatekeeper */}
-          <Route path="/" element={!isAuthenticated ? <Navigate to="/login" /> : (userRole === 'donor' ? <Navigate to="/upload" /> : <Navigate to="/explore" />)} />
+          {/* Root Home Route (Landing Page) */}
+          <Route path="/" element={<Landing />} />
 
           {/* Protected Routes */}
           <Route path="/explore" element={isAuthenticated ? <Explore /> : <Navigate to="/login" />} />

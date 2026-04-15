@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button } from '../../components/ui/Button/Button';
 import { Card } from '../../components/ui/Card/Card';
 import {
-  Heart, Search, Users, Utensils, Leaf, Zap, ShieldCheck,
-  ArrowRight, MapPin, Star, Truck, Wifi, RefreshCw
+  Heart, Users, Utensils, Leaf, Zap, ShieldCheck,
+  MapPin, Star, Truck, Wifi, RefreshCw
 } from 'lucide-react';
 import './Landing.css';
 

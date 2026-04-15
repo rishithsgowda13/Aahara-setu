@@ -4,7 +4,7 @@ import { Card } from '../../donor/components/ui/Card/Card';
 import { Button } from '../../donor/components/ui/Button/Button';
 import { MapPin, Phone, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { LeafletMap } from '../../donor/components/ui/LeafletMap/LeafletMap';
-import './Explore.css';
+import '../styles/Explore.css';
 
 interface FoodItem {
   id: string;

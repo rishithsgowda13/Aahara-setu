@@ -3,7 +3,7 @@ import { Card } from '../../donor/components/ui/Card/Card';
 import { Button } from '../../donor/components/ui/Button/Button';
 import { Search, Map as MapIcon, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import './Explore.css';
+import '../styles/Explore.css';
 
 interface FoodItem {
   id: string;

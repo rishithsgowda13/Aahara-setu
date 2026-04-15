@@ -77,11 +77,11 @@ export const Auth: React.FC = () => {
             </div>
           )}
 
-          <form className="auth-form-premium" onSubmit={handleSubmit}>
+          <form className="auth-form-premium" onSubmit={handleSubmit} autoComplete="off">
             {activeTab === 'signup' && (
               <div className="input-field-wrap">
                 <User size={18} className="input-icon" />
-                <input type="text" placeholder="Organization Name" required />
+                <input type="text" placeholder="Organization Name" required autoComplete="off" />
               </div>
             )}
             
@@ -105,7 +105,7 @@ export const Auth: React.FC = () => {
                 placeholder="Password" 
                 required 
                 value={password}
-                autoComplete="new-password"
+                autoComplete="off"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>

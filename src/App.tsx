@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { Navbar } from './components/layout/Navbar';
-import { Footer } from './components/layout/Footer';
-import { Landing } from './pages/Landing/Landing';
-import { Explore } from './pages/Explore/Explore';
-import { Upload } from './pages/Upload/Upload';
-import { Dashboard } from './pages/Dashboard/Dashboard';
-import { Notifications } from './pages/Notifications/Notifications';
-import { Profile } from './pages/Profile/Profile';
-import { Toast } from './components/ui/Toast/Toast';
-import type { ToastMessage } from './components/ui/Toast/Toast';
-import './styles/App.css';
+import { Navbar } from './donor/components/layout/Navbar';
+import { Footer } from './donor/components/layout/Footer';
+import { Landing } from './donor/pages/Landing/Landing';
+import { Upload } from './donor/pages/Upload/Upload';
+import { Dashboard } from './donor/pages/Dashboard/Dashboard';
+import { Notifications } from './donor/pages/Notifications/Notifications';
+import { Profile } from './donor/pages/Profile/Profile';
+import { Toast } from './donor/components/ui/Toast/Toast';
+import type { ToastMessage } from './donor/components/ui/Toast/Toast';
+import './donor/styles/App.css';
 
 function AppContent() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -44,7 +43,6 @@ function AppContent() {
       <main style={{ padding: '120px 24px 0', maxWidth: '1200px', margin: '0 auto', minHeight: '80vh' }}>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/explore" element={<Explore />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/dashboard" element={<Dashboard />} />

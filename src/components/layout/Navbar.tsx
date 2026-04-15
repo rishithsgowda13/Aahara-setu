@@ -8,14 +8,14 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { name: 'Home', path: '/', icon: <Home size={18} /> },
+    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
     { name: 'Explore', path: '/explore', icon: <MapPin size={18} /> },
     { name: 'Donate', path: '/upload', icon: <Upload size={18} /> },
-    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
     { name: 'Alerts', path: '/notifications', icon: <Bell size={18} /> },
     { name: 'Profile', path: '/profile', icon: <Star size={18} /> },
   ];
 
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  const userRole = localStorage.getItem('userRole') || 'donor'; // Defaulting to donor for this demo
 
   return (
     <nav className="navbar">
@@ -24,17 +24,28 @@ export const Navbar: React.FC = () => {
           <img src="/logo.png" alt="Aahara Setu" className="navbar-logo-img" />
           <span className="logo-text">Aahara Setu</span>
         </Link>
+        
         <div className="navbar-links">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
-            >
-              {link.icon}
-              <span>{link.name}</span>
-            </Link>
-          ))}
+          {navLinks
+            .filter(l => l.name !== 'Profile')
+            .filter(l => !(userRole === 'donor' && l.name === 'Explore'))
+            .map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
+              >
+                {link.icon}
+                <span>{link.name}</span>
+              </Link>
+            ))}
+        </div>
+
+        <div className="navbar-actions">
+          <Link to="/profile" className={`nav-link profile-btn ${location.pathname === '/profile' ? 'active' : ''}`}>
+            <Star size={18} />
+            <span>Profile</span>
+          </Link>
         </div>
       </div>
     </nav>

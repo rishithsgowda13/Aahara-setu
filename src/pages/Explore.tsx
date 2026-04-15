@@ -89,13 +89,28 @@ export const Explore: React.FC = () => {
       {/* Dynamic Pop-up Modal for Claiming */}
       {selectedFood && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
-          <Card className="glass" style={{ maxWidth: '400px', width: '90%', padding: '24px', position: 'relative' }}>
-            <h2 style={{ marginBottom: '16px', fontSize: '1.4rem' }}>Claim Donation</h2>
+          <Card className="glass" style={{ maxWidth: '450px', width: '90%', padding: '24px', position: 'relative' }}>
+            <h2 style={{ marginBottom: '16px', fontSize: '1.4rem', borderBottom: '1px solid rgba(139, 161, 148, 0.3)', paddingBottom: '12px' }}>Claim Donation</h2>
             
-            <div style={{ marginBottom: '16px', fontSize: '0.95rem', color: 'var(--color-text-muted)', background: 'rgba(0,0,0,0.05)', padding: '12px', borderRadius: '8px' }}>
-              <p style={{ marginBottom: '4px' }}><strong>Donor:</strong> {selectedFood.donor}</p>
-              <p style={{ marginBottom: '4px' }}><strong>Item:</strong> {selectedFood.name}</p>
-              <p><strong>Available:</strong> {selectedFood.quantity}</p>
+            <div style={{ marginBottom: '16px', fontSize: '0.95rem', color: 'var(--color-text-muted)', background: 'rgba(0,0,0,0.05)', padding: '16px', borderRadius: '8px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              
+              {/* Left Column: Donor Info */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', borderRight: '1px dashed rgba(139, 161, 148, 0.2)', paddingRight: '16px' }}>
+                <h4 style={{ margin: 0, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-primary)' }}>Donor Details</h4>
+                <p><strong>Donor:</strong> {selectedFood.donor}</p>
+                <p><strong>Item:</strong> {selectedFood.name}</p>
+                <p><strong>Type:</strong> {selectedFood.type}</p>
+                <p><strong>Available:</strong> <strong style={{ color: 'var(--color-primary)' }}>{selectedFood.quantity}</strong></p>
+              </div>
+
+              {/* Right Column: Receiver Info */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <h4 style={{ margin: 0, fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-primary)' }}>Receiver Context</h4>
+                <p><strong>Distance:</strong> {selectedFood.distance}</p>
+                <p><strong>Expires In:</strong> <span style={{ color: selectedFood.urgencyLevel === 'high' ? 'var(--color-error)' : 'inherit', fontWeight: 'bold' }}>{selectedFood.expiry}</span></p>
+                <p><strong>Demand:</strong> {selectedFood.demand}</p>
+              </div>
+
             </div>
             
             <div style={{ marginBottom: '24px' }}>
@@ -110,10 +125,17 @@ export const Explore: React.FC = () => {
               />
             </div>
             
-            <div style={{ display: 'flex', gap: '12px' }}>
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
               <Button onClick={() => setSelectedFoodId(null)} variant="outline" style={{ flex: 1 }}>Cancel</Button>
               <Button onClick={handleConfirmClaim} style={{ flex: 1 }}>Confirm Claim</Button>
             </div>
+
+            <Button 
+              onClick={() => window.open(`https://www.openstreetmap.org/search?query=${encodeURIComponent(selectedFood.donor)}`, '_blank')}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--color-secondary)', borderColor: 'var(--color-secondary)' }}
+            >
+              <MapPin size={16} /> View Location on Map
+            </Button>
           </Card>
         </div>
       )}

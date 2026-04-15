@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Search, MapPin, Clock, Filter, AlertCircle, Zap, ShieldCheck, Users } from 'lucide-react';
+import { Search, MapPin, Clock, AlertCircle, Zap, ShieldCheck, Users } from 'lucide-react';
 import './Explore.css';
 
 interface FoodItem {

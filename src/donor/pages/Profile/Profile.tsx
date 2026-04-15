@@ -7,13 +7,23 @@ import {
 } from 'lucide-react';
 import './Profile.css';
 
+const FSSAI_STORAGE_KEY = 'aahara_setu_fssai_id';
+
 export const Profile: React.FC = () => {
   const [showToast, setShowToast] = useState(false);
+  const [fssaiInput, setFssaiInput] = useState(localStorage.getItem(FSSAI_STORAGE_KEY) || '');
+  const [isEditingFssai, setIsEditingFssai] = useState(false);
   const trustScore = 88;
 
   const handleEditProfile = () => {
     setShowToast(true);
     setTimeout(() => setShowToast(false), 3000);
+  };
+
+  const handleSaveFssai = () => {
+    localStorage.setItem(FSSAI_STORAGE_KEY, fssaiInput);
+    setIsEditingFssai(false);
+    setShowToast(true);
   };
 
   return (
@@ -122,7 +132,23 @@ export const Profile: React.FC = () => {
               </div>
               <div className="meta-item">
                 <span className="meta-lbl">FSSAI License</span>
-                <span className="meta-val">#22224050000123</span>
+                {isEditingFssai ? (
+                  <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+                    <input 
+                      type="text" 
+                      className="mini-input"
+                      value={fssaiInput}
+                      onChange={(e) => setFssaiInput(e.target.value)}
+                      placeholder="Enter FSSAI ID"
+                      style={{ flex: 1, padding: '4px 8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                    />
+                    <Button size="sm" onClick={handleSaveFssai}>Save</Button>
+                  </div>
+                ) : (
+                  <span className="meta-val" onClick={() => setIsEditingFssai(true)} style={{ cursor: 'pointer', color: fssaiInput ? 'inherit' : 'var(--color-error)' }}>
+                    {fssaiInput || '⚠️ Click to enter FSSAI ID'}
+                  </span>
+                )}
               </div>
             </div>
           </div>

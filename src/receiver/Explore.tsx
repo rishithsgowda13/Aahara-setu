@@ -123,9 +123,8 @@ export const Explore: React.FC = () => {
   return (
     <div className="explore-container">
       {/* Dynamic Pop-up Modal for Claiming */}
-      {/* Dynamic Pop-up Modal for Claiming */}
       {selectedItem && (
-        <div className="modal-overlay" onClick={() => { setSelectedItem(null); setClaimStep('details'); }}>
+        <div className="modal-overlay" style={{ zIndex: 9999 }} onClick={() => { setSelectedItem(null); setClaimStep('details'); }}>
           <Card className="claim-modal glass" onClick={e => e.stopPropagation()}>
             {claimStep === 'details' ? (
               <>

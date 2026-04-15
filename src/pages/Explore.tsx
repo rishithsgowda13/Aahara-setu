@@ -132,7 +132,7 @@ export const Explore: React.FC = () => {
 
             <Button 
               onClick={() => window.open(`https://www.openstreetmap.org/search?query=${encodeURIComponent(selectedFood.donor)}`, '_blank')}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', background: 'var(--color-secondary)', borderColor: 'var(--color-secondary)' }}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
             >
               <MapPin size={16} /> View Location on Map
             </Button>

@@ -78,7 +78,6 @@ export const Receiver: React.FC = () => {
     items.history;
 
   const requiresProof = items.proofs.some(i => i.status === 'proof_required');
-  const awaitingAdmin = items.proofs.some(i => i.status === 'proof_submitted');
 
   const unverifiedCount = items.proofs.length;
   const accountLocked = unverifiedCount >= 2;

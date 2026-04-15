@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '../components/ui/Card/Card';
 import { Button } from '../components/ui/Button/Button';
-import { Search, Map as MapIcon, Zap, Clock, MapPin, Filter, ChevronRight } from 'lucide-react';
+import { Search, Map as MapIcon, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './Explore.css';
 

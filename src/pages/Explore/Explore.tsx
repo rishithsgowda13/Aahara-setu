@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
-import { Search, MapPin, Clock, AlertCircle, Zap, ShieldCheck, Users } from 'lucide-react';
+import { Search, MapPin, AlertCircle, Zap, ShieldCheck } from 'lucide-react';
 import { LeafletMap } from '../../components/ui/LeafletMap/LeafletMap';
 import './Explore.css';
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../components/ui/Button';
 import { Card } from '../components/ui/Card';
 import { Input } from '../components/ui/Input';
+import { Select } from '../components/ui/Select';
 import { Upload as UploadIcon, MapPin, CheckSquare, Square, ShieldCheck, AlertCircle } from 'lucide-react';
 import './Upload.css';
 
@@ -38,7 +39,6 @@ export const Upload: React.FC = () => {
   const [checkedItems, setCheckedItems] = useState<boolean[]>(new Array(SAFETY_CHECKLIST.length).fill(false));
   const [category, setCategory] = useState('');
   const [dietary, setDietary] = useState('None');
-  const [unit, setUnit] = useState('portions');
   const allChecked = checkedItems.every(Boolean);
 
   const toggleCheck = (i: number) => {
@@ -107,27 +107,12 @@ export const Upload: React.FC = () => {
                     options={FOOD_CATEGORIES} 
                     value={category} 
                     onChange={setCategory} 
+                    placeholder="Select category"
                     required 
                   />
                 </div>
                 <div className="form-group">
-                  <label className="input-label">Quantity</label>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                    <input type="number" className="input-field" placeholder="e.g., 20" min="1" required style={{ width: '100px' }} />
-                    <div style={{ flex: 1 }}>
-                      <Select 
-                        options={[
-                          { value: 'portions', label: 'portions' },
-                          { value: 'kg', label: 'kg' },
-                          { value: 'liters', label: 'liters' },
-                          { value: 'pieces', label: 'pieces' },
-                          { value: 'boxes', label: 'boxes' },
-                        ]} 
-                        value={unit} 
-                        onChange={setUnit} 
-                      />
-                    </div>
-                  </div>
+                  <Input label="Quantity (approx.)" placeholder="e.g., 20 kg, 50 portions" required />
                 </div>
               </div>
 
@@ -206,7 +191,7 @@ export const Upload: React.FC = () => {
               <li>Directly feed people in your community</li>
               <li>Earn Kindness Score points & recognition</li>
               <li>Improve your organization's social impact</li>
-              <li>Join 450+ verified donors on Aahara Setu</li>
+              <li>Join 450+ verified donors on Aahar Setu</li>
             </ul>
           </Card>
 

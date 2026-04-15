@@ -5,6 +5,242 @@
   padding-bottom: 60px;
 }
 
+.explore-container {
+  padding-bottom: 40px;
+}
+
+/* AI Pairing Notification Banner */
+.pairing-notification-banner {
+  background: linear-gradient(135deg, #1a1a1a 0%, #333 100%);
+  color: white;
+  padding: 16px 24px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  border-left: 4px solid var(--color-warning);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Modal Layout Updates */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.modal-content-wide {
+  background: #fff;
+  width: 100%;
+  max-width: 900px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-2xl);
+}
+
+.modal-header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.modal-body-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  padding: 32px;
+  gap: 32px;
+}
+
+.modal-left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.food-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.detail-box label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.detail-box p {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.map-placeholder-mini {
+  height: 180px;
+  background: #f0f0f0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.portion-selector {
+  background: rgba(139, 161, 148, 0.05);
+  padding: 20px;
+  border-radius: var(--radius-md);
+}
+
+.portion-selector input[type="range"] {
+  width: 100%;
+  accent-color: var(--color-primary);
+  margin: 12px 0;
+}
+
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.current-val {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+/* AI Sidebar */
+.ai-pairing-sidebar {
+  background: rgba(79, 99, 61, 0.03);
+  padding: 24px;
+  border-radius: var(--radius-md);
+  border: 1px dashed rgba(79, 99, 61, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ai-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.ai-hint {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 12px;
+}
+
+.pairing-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pair-card-mini {
+  background: #fff;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.pair-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.pair-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.pair-donor {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.ai-footer {
+  margin-top: auto;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-primary);
+  opacity: 0.7;
+}
+
+.ai-empty-pairing {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--color-text-muted);
+  gap: 12px;
+}
+
+.ai-status {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.modal-actions-main {
+  padding: 24px 32px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
 .explore-header {
   display: flex;
   flex-direction: column;

@@ -2,19 +2,27 @@ import React, { useState } from 'react';
 import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
 import { 
-  User, ShieldCheck, MapPin, Camera, 
-  Award, TrendingUp, History, 
-  Info, LogOut, Activity, Heart, Users,
-  CheckCircle2, Clock, Zap
+  ShieldCheck, Award, Info, LogOut, Activity,
+  Clock, Zap
 } from 'lucide-react';
 import './Profile.css';
 
 export const Profile: React.FC = () => {
-  const [isVerifying, setIsVerifying] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const trustScore = 88;
+
+  const handleEditProfile = () => {
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
 
   return (
     <div className="profile-page-container">
+      {showToast && (
+        <div className="custom-toast">
+          ✨ Settings mode enabled. You can now modify your organization details.
+        </div>
+      )}
       <div className="profile-layout">
         {/* Main Content Area */}
         <div className="profile-main-content">
@@ -42,7 +50,7 @@ export const Profile: React.FC = () => {
                   <Clock size={16} /> Joined April 2025
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="premium-edit-btn">Edit Profile</Button>
+              <Button variant="outline" size="sm" className="premium-edit-btn" onClick={handleEditProfile}>Edit Profile</Button>
             </div>
           </Card>
 

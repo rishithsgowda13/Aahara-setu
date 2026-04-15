@@ -11,6 +11,30 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+.custom-toast {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #D6DBCF;
+  box-shadow: 0 12px 32px rgba(79, 99, 61, 0.15);
+  color: #4F633D;
+  padding: 16px 32px;
+  border-radius: 100px;
+  font-weight: 700;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideDownToast 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+}
+
+@keyframes slideDownToast {
+  from { opacity: 0; transform: translate(-50%, -20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
 .profile-layout {
   display: grid;
   grid-template-columns: 1.8fr 1fr;

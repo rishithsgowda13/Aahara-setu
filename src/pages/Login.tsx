@@ -24,6 +24,22 @@ export const Login: React.FC = () => {
 
     try {
       if (isLogin) {
+        // Mock Credentials Check
+        if (email === '1' && password === '1') {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userType', 'receiver');
+          navigate('/explore');
+          setIsLoading(false);
+          return;
+        }
+        if (email === '2' && password === '2') {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userType', 'donor');
+          navigate('/upload');
+          setIsLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,

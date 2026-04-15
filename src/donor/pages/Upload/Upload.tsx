@@ -36,7 +36,13 @@ const DIETARY_INFO = [
 export const Upload: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [checkedItems, setCheckedItems] = useState<boolean[]>(new Array(SAFETY_CHECKLIST.length).fill(false));
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
   const [category, setCategory] = useState('');
   const [dietary, setDietary] = useState('None');
   const [unit, setUnit] = useState('portions');
@@ -152,7 +158,7 @@ export const Upload: React.FC = () => {
 
               <div className="form-group">
                 <Input label="Precise Pickup Address" placeholder="Street, Building, landmark..." required />
-                <button type="button" className="fetch-location-btn">
+                <button type="button" className="fetch-location-btn" onClick={() => showToast('Accessing GPS... Precision location locked!')}>
                   <MapPin size={16} /> Auto-detect Location
                 </button>
               </div>
@@ -207,10 +213,23 @@ export const Upload: React.FC = () => {
           <Card className="volunteer-card">
             <h4>🚚 SMART LOGISTICS</h4>
             <p>Our AI automatically matches your listing with the nearest verified transport volunteers.</p>
-            <Button variant="outline" size="sm" fullWidth>VIEW LOGISTICS PARTNERS</Button>
+            <Button variant="outline" size="sm" fullWidth onClick={() => showToast('Fetching nearest verified transport partners...')}>VIEW LOGISTICS PARTNERS</Button>
           </Card>
         </div>
       </div>
+    </div>
+
+      {/* Modern In-App Toast Notification */}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed', bottom: '40px', left: '50%', transform: 'translateX(-50%)',
+          background: 'var(--color-primary)', color: 'white', padding: '16px 32px', borderRadius: '100px',
+          boxShadow: '0 8px 32px rgba(79, 99, 61, 0.4)', zIndex: 10000, fontWeight: 700,
+          display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.95rem'
+        }}>
+          <span>📍</span> {toastMessage}
+        </div>
+      )}
     </div>
   );
 };

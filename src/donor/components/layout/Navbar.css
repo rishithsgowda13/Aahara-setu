@@ -149,20 +149,29 @@
 
 /* Donate Pill Specifics */
 .nav-link.donate-pill {
-  background: #4F633D !important;
-  color: white !important;
+  background: rgba(79, 99, 61, 0.1);
+  color: #4F633D;
   padding: 12px 28px !important;
-  box-shadow: 0 10px 20px rgba(79, 99, 61, 0.2) !important;
   font-weight: 800 !important;
-  transform: scale(1.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) ;
 }
 
-.nav-link.donate-pill:hover {
-  background: #3D4D2F !important;
-  transform: scale(1.1);
+.nav-link.donate-pill.active {
+  background: #4F633D !important;
+  color: white !important;
+  box-shadow: 0 10px 20px rgba(79, 99, 61, 0.2) !important;
+}
+
+.nav-link.donate-pill:hover:not(.active) {
+  background: rgba(79, 99, 61, 0.2);
+  transform: translateY(-2px);
 }
 
 .nav-link.donate-pill svg {
+  color: #4F633D;
+}
+
+.nav-link.donate-pill.active svg {
   color: #C1D0B4;
 }
 

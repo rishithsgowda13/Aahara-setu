@@ -5,7 +5,7 @@ import { useTranslation } from '../../context/LanguageContext';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
-  const { t } = useTranslation();
+  const { lang, setLang, t } = useTranslation();
   const location = useLocation();
 
   const navLinks = [
@@ -38,6 +38,21 @@ export const Navbar: React.FC = () => {
             </Link>
           ))}
           
+          {/* Language Switcher MAGIC TOGGLE */}
+          <div className="lang-switcher-wrap">
+            <Globe size={16} className="lang-icon" />
+            <div className="lang-btns">
+              {(['EN', 'HI', 'KA'] as const).map(l => (
+                <button 
+                  key={l}
+                  className={`lang-toggle-btn ${lang === l ? 'active' : ''}`}
+                  onClick={() => setLang(l)}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </nav>

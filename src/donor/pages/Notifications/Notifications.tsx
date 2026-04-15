@@ -63,6 +63,12 @@ const TYPE_STYLES: Record<string, { label: string; bg: string; color: string }> 
 export const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   const unreadCount = notifications.filter(n => !n.read).length;
   const filtered = filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
@@ -138,7 +144,7 @@ export const Notifications: React.FC = () => {
                   
                   <div className="notif-action-row">
                     {n.type === 'urgent' && (
-                      <Button size="sm" onClick={(e) => { e.stopPropagation(); }}>
+                      <Button size="sm" onClick={(e) => { e.stopPropagation(); showToast('Urgency signal broadcasted to nearest partners! ⚡'); }}>
                         FAST TRACK ACTION
                       </Button>
                     )}
@@ -156,6 +162,19 @@ export const Notifications: React.FC = () => {
             <p>Your redistribution feed is fully optimized. No pending alerts at this moment.</p>
             <Button variant="glass" onClick={() => setNotifications(MOCK_NOTIFICATIONS)}>RESET FEED</Button>
           </Card>
+        </div>
+      )}
+    </div>
+
+      {/* Modern In-App Toast Notification */}
+      {toastMessage && (
+        <div style={{
+          position: 'fixed', bottom: '40px', left: '50%', transform: 'translateX(-50%)',
+          background: 'var(--color-primary)', color: 'white', padding: '16px 32px', borderRadius: '100px',
+          boxShadow: '0 8px 32px rgba(79, 99, 61, 0.4)', zIndex: 10000, fontWeight: 700,
+          display: 'flex', alignItems: 'center', gap: '12px', fontSize: '0.95rem'
+        }}>
+          <span>⚡</span> {toastMessage}
         </div>
       )}
     </div>

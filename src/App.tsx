@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Navbar } from './components/layout/Navbar';
 import { Landing } from './pages/Landing';
 import { Explore } from './receiver/Explore';
-import { Upload } from './donor/Upload';
-import { Dashboard } from './donor/Dashboard';
+import { Upload } from './pages/Upload';
+import { Dashboard } from './pages/Dashboard';
 import { Feedback } from './pages/Feedback';
 import { Notifications } from './receiver/Notifications';
 import { Receiver } from './receiver/Receiver';

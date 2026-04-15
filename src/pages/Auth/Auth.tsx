@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth, UserRole } from '../../context/AuthContext';
+import { useAuth, type UserRole } from '../../context/AuthContext';
 import { Button } from '../../donor/components/ui/Button/Button';
 import { Card } from '../../donor/components/ui/Card/Card';
 import { Heart, ShieldCheck, Mail, Lock, User, Building } from 'lucide-react';

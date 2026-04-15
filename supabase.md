@@ -1,10 +1,10 @@
 # 🚀 Aahara Setu: Unified Supabase & Data Architecture
 
-This document tracks the complete SQL schema and data architecture for **Aahara Setu**. It combines the core setup guides for database initialization, real-time sync, and security policies.
+This document tracks the complete SQL schema and data architecture for **Aahara Setu**. Use these scripts in the Supabase SQL Editor to initialize or update your database. All queries use `IF NOT EXISTS` to ensure safety.
 
 ---
 
-## 1. Core Extensions & Initialization
+## 1. Core Extensions
 We use `postgis` for location-based matching (finding donors within 2km) and `uuid-ossp` for primary keys.
 
 ```sql
@@ -17,15 +17,13 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 ---
 
-## 2. Global Database Schema (Updated)
-Execute this block to create the primary tables. Includes `is_disaster` support for emergency relief.
+## 2. Global Database Schema
+
+### Profiles Table
+Stores unified user data for Donors, Receivers, and Admins.
 
 ```sql
-/**
- * 👤 PROFILES TABLE
- * Links directly to Supabase Auth users.
- */
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   full_name TEXT NOT NULL,
   email TEXT UNIQUE,
@@ -35,16 +33,18 @@ CREATE TABLE public.profiles (
   phone_number TEXT,
   avatar_url TEXT,
   coords geography(POINT, 4326), 
-  kindness_score INT DEFAULT 0,
+  kindness_score INT DEFAULT 0, -- Gamification
   trust_score INT DEFAULT 50 CHECK (trust_score BETWEEN 0 AND 100),
   is_verified BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+```
 
-/**
- * 🍱 DONATIONS TABLE (Core)
- */
-CREATE TABLE public.donations (
+### Donations Table
+Tracks all surplus food listings. Includes SOS/Disaster relief support.
+
+```sql
+CREATE TABLE IF NOT EXISTS public.donations (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   donor_id UUID REFERENCES public.profiles(id) NOT NULL,
   food_name TEXT NOT NULL,
@@ -54,7 +54,6 @@ CREATE TABLE public.donations (
   quantity_value NUMERIC NOT NULL,
   quantity_unit TEXT NOT NULL,
   expiry_time TIMESTAMPTZ NOT NULL,
-  pickup_address TEXT NOT NULL,
   pickup_location geography(POINT, 4326) NOT NULL,
   urgency_score INT DEFAULT 0,
   is_audit_approved BOOLEAN DEFAULT FALSE,
@@ -62,11 +61,13 @@ CREATE TABLE public.donations (
   image_url TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+```
 
-/**
- * 🤝 CLAIMS TABLE
- */
-CREATE TABLE public.claims (
+### Claims Table
+Triggered when a Receiver initiates a rescue.
+
+```sql
+CREATE TABLE IF NOT EXISTS public.claims (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   donation_id UUID REFERENCES public.donations(id) NOT NULL,
   receiver_id UUID REFERENCES public.profiles(id) NOT NULL,
@@ -76,13 +77,29 @@ CREATE TABLE public.claims (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   fulfilled_at TIMESTAMPTZ
 );
+```
 
-/**
- * ⚠️ DISASTER ALERTS TABLE
- */
-CREATE TABLE public.disaster_alerts (
+### Receiver Demands Table (Wishlist/Priority)
+Power the "Aahara AI Match" system by allowing NGOs to set needs.
+
+```sql
+CREATE TABLE IF NOT EXISTS public.receiver_demands (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  location_name TEXT NOT NULL,
+  receiver_id UUID REFERENCES public.profiles(id) NOT NULL,
+  food_item TEXT NOT NULL,
+  priority TEXT CHECK (priority IN ('low', 'medium', 'high', 'critical')) DEFAULT 'high',
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### Disaster Alerts Table
+Drives the emergency response portal.
+
+```sql
+CREATE TABLE IF NOT EXISTS public.disaster_alerts (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  title TEXT NOT NULL,
   location_point geography(POINT, 4326) NOT NULL,
   severity TEXT CHECK (severity IN ('low', 'medium', 'high', 'critical')),
   needs TEXT[], -- e.g., ['Water', 'Cooked Meals']
@@ -93,90 +110,120 @@ CREATE TABLE public.disaster_alerts (
 
 ---
 
-## 3. Advanced Views & Analytics
-Run this to enable the Global Impact Leaderboard.
+## 3. Advanced Geospatial Logic (RPC)
+
+Run this function to enable the "Nearby Food" discovery engine.
 
 ```sql
-CREATE OR REPLACE VIEW public.impact_summary AS
-SELECT 
-  p.id,
-  p.organization_name,
-  p.role,
-  p.kindness_score,
-  COUNT(d.id) as total_contributions,
-  SUM(CASE WHEN c.status = 'delivered' THEN 1 ELSE 0 END) as successful_impact_events
-FROM public.profiles p
-LEFT JOIN public.donations d ON p.id = d.donor_id
-LEFT JOIN public.claims c ON p.id = c.receiver_id
-GROUP BY p.id, p.organization_name, p.role, p.kindness_score;
-```
-
----
-
-## 4. PostGIS & Automation Functions
-These power the "Urgency-Based Matching" and automatic score updates.
-
-```sql
--- Search nearby food (PostGIS)
-CREATE OR REPLACE FUNCTION get_nearby_food(user_lon FLOAT, user_lat FLOAT, radius INT DEFAULT 5000)
-RETURNS TABLE (id UUID, food_name TEXT, distance_meters FLOAT, urgency_score INT) LANGUAGE plpgsql AS $$
+CREATE OR REPLACE FUNCTION get_nearby_food(
+  user_lon FLOAT, 
+  user_lat FLOAT, 
+  radius_meters INT DEFAULT 5000
+)
+RETURNS TABLE (
+  id UUID, 
+  food_name TEXT, 
+  donor_name TEXT,
+  distance_meters FLOAT, 
+  urgency_score INT,
+  is_disaster BOOLEAN
+) LANGUAGE plpgsql AS $$
 BEGIN
   RETURN QUERY
-  SELECT d.id, d.food_name, 
+  SELECT 
+    d.id, 
+    d.food_name, 
+    p.organization_name,
     ST_Distance(d.pickup_location, ST_SetSRID(ST_MakePoint(user_lon, user_lat), 4326)::geography) AS distance,
-    d.urgency_score
+    d.urgency_score,
+    d.is_disaster
   FROM public.donations d
+  JOIN public.profiles p ON d.donor_id = p.id
   WHERE d.status = 'available'
-    AND ST_DWithin(d.pickup_location, ST_SetSRID(ST_MakePoint(user_lon, user_lat), 4326)::geography, radius)
-  ORDER BY d.urgency_score DESC, distance ASC;
+    AND ST_DWithin(d.pickup_location, ST_SetSRID(ST_MakePoint(user_lon, user_lat), 4326)::geography, radius_meters)
+  ORDER BY d.is_disaster DESC, d.urgency_score DESC, distance ASC;
 END;
 $$;
-
--- Automatic Impact Scoring (Trigger)
-CREATE OR REPLACE FUNCTION update_impact_scores()
-RETURNS TRIGGER AS $$
-BEGIN
-  IF NEW.status = 'delivered' AND OLD.status != 'delivered' THEN
-    UPDATE public.profiles SET kindness_score = kindness_score + 100 WHERE id = (SELECT donor_id FROM public.donations WHERE id = NEW.donation_id);
-    UPDATE public.profiles SET kindness_score = kindness_score + 25 WHERE id = NEW.receiver_id;
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER on_impact_event AFTER UPDATE ON public.claims FOR EACH ROW EXECUTE FUNCTION update_impact_scores();
 ```
 
 ---
 
-## 5. Security (RLS) & Real-Time Sync
+## 4. Automation & AI Trust Functions
 
-```sql
--- Step 1: Enable RLS
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.donations ENABLE ROW LEVEL SECURITY;
-
--- Step 2: Policy (Example: Only verified receivers see food)
-CREATE POLICY "Public filtered access" ON public.donations FOR SELECT USING (status = 'available');
-
--- Step 3: Enable Real-Time (Crucial for Dashboard matching)
-CREATE PUBLICATION aahara_setu_realtime FOR TABLE public.donations, public.claims;
-```
-
----
-
-## 6. Auth Integration (Role-Based Sync)
-Ensures every Supabase Auth user gets a profile with the correct role.
+### Automatic Profile Creation
+Ensures Auth users always have a database profile.
 
 ```sql
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, role)
-  VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'role');
+  INSERT INTO public.profiles (id, full_name, email, role)
+  VALUES (
+    NEW.id, 
+    COALESCE(NEW.raw_user_meta_data->>'full_name', 'Unnamed User'), 
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'role', 'donor')
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE TRIGGER on_auth_user_created 
+  AFTER INSERT ON auth.users 
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+```
+
+### Impact & Kindness Scoring
+Updates scores automatically upon successful food delivery.
+
+```sql
+CREATE OR REPLACE FUNCTION update_impact_scores()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF (NEW.status = 'delivered' AND OLD.status != 'delivered') THEN
+    -- Reward Donor
+    UPDATE public.profiles 
+    SET kindness_score = kindness_score + 100, 
+        trust_score = LEAST(trust_score + 2, 100) 
+    WHERE id = (SELECT donor_id FROM public.donations WHERE id = NEW.donation_id);
+    
+    -- Reward Receiver
+    UPDATE public.profiles SET kindness_score = kindness_score + 50 WHERE id = NEW.receiver_id;
+  END IF;
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+CREATE OR REPLACE TRIGGER on_impact_event 
+  AFTER UPDATE ON public.claims 
+  FOR EACH ROW EXECUTE FUNCTION update_impact_scores();
+```
+
+---
+
+## 5. Security & Real-Time Sync
+
+```sql
+-- Step 1: Enable RLS on core tables
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.donations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.claims ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.receiver_demands ENABLE ROW LEVEL SECURITY;
+
+-- Step 2: Global Read Policy (Simplified for hackathon)
+CREATE POLICY "Public profiles are viewable by all" ON public.profiles FOR SELECT USING (true);
+CREATE POLICY "Available donations are viewable by all" ON public.donations FOR SELECT USING (status = 'available');
+
+-- Step 3: Role-Based Creation Policies
+CREATE POLICY "Donors can list food" ON public.donations FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'donor')
+);
+
+-- Step 4: Real-Time Sync Activation
+-- Run this to enable the Live Dashboard features
+DROP PUBLICATION IF EXISTS aahara_setu_realtime;
+CREATE PUBLICATION aahara_setu_realtime FOR TABLE 
+  public.donations, 
+  public.claims,
+  public.disaster_alerts;
 ```

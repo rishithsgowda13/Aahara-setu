@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '../../../donor/components/ui/Button/Button';
 import { Card } from '../../../donor/components/ui/Card/Card';
 import { Flame, AlertTriangle, MapPin, Users, Heart, ArrowRight, Zap, Shield } from 'lucide-react';
-import '../../../donor/pages/Disasters/Disasters.css';
+import './Disasters.css';
 
 export const Disasters: React.FC = () => {
   const activeDisasters = [
@@ -43,8 +43,8 @@ export const Disasters: React.FC = () => {
         </div>
         <h1 className="disasters-title">Disaster <span className="relief-text">Relief</span> Portal</h1>
         <p className="disasters-subtitle">
-            NGO Response Hub: Coordinate high-priority food distributions directly to affected zones. 
-            Real-time rescue matching for emergency situations.
+          Whenever natural calamities strike, every second counts. Coordinate high-priority food donations 
+          directly to verified NGOs operating in affected zones.
         </p>
       </header>
 
@@ -85,7 +85,7 @@ export const Disasters: React.FC = () => {
               <div className="disaster-footer">
                 <Link to="/receiver/explore" style={{ textDecoration: 'none' }}>
                   <Button variant="primary" className="emergency-btn">
-                    Claim Relief <Heart size={16} fill="white" />
+                    View Relief Food <Heart size={16} fill="white" />
                   </Button>
                 </Link>
                 <div className="eta-tag">
@@ -99,32 +99,32 @@ export const Disasters: React.FC = () => {
 
       <section className="disaster-process">
         <div className="process-header">
-          <h2>Receiver Response Protocol</h2>
+          <h2>How Emergency Donation Works</h2>
           <p>Bypassing standard logistics for immediate distribution.</p>
         </div>
         <div className="process-grid">
           <div className="process-item">
             <div className="p-icon"><Shield /></div>
-            <h4>Pre-Verified NGOs</h4>
-            <p>Relief food is prioritized for NGOs with disaster clearance status.</p>
+            <h4>Vetted NGOs</h4>
+            <p>Donations routed only to on-ground NGOs with disaster clearance.</p>
           </div>
           <div className="process-item">
             <div className="p-icon"><Flame /></div>
-            <h4>Critical Lane</h4>
-            <p>Claims for disaster food are processed via express volunteer channels.</p>
+            <h4>Priority Lane</h4>
+            <p>Disaster donations are moved via high-priority micro-logistics.</p>
           </div>
           <div className="process-item">
             <div className="p-icon"><Zap /></div>
-            <h4>SOS Matching</h4>
-            <p>Our Aahara AI gives 5x higher visibility to disaster relief requests.</p>
+            <h4>Real-time Tracking</h4>
+            <p>Track your food from pickup to the hands of those in need.</p>
           </div>
         </div>
       </section>
 
       <div className="cta-disaster">
-         <h3>Need Specific Supplies?</h3>
-         <p>Contact our emergency desk for bulk requirements and targeted distributions.</p>
-         <Button variant="outline" onClick={() => showToast('Connecting to Relief Coordinator...')}>Notify Emergency Desk <ArrowRight size={16} /></Button>
+        <h3>Institutional Donor?</h3>
+        <p>Large-scale corporate or hotel donations are handled via our express hotline.</p>
+        <Button variant="outline" onClick={() => showToast('Connecting to Institutional Hotline...')}>Contact Response Team <ArrowRight size={16} /></Button>
       </div>
 
       {toast && (
@@ -133,7 +133,7 @@ export const Disasters: React.FC = () => {
           background: 'var(--color-primary)', color: 'white', padding: '16px 32px', borderRadius: '100px',
           boxShadow: '0 8px 32px rgba(0,0,0,0.2)', zIndex: 10000, fontWeight: 700
         }}>
-          🚨 {toast}
+          🚀 {toast}
         </div>
       )}
     </div>

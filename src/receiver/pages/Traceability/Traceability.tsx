@@ -6,7 +6,7 @@ import {
   CheckCircle2, AlertOctagon, Share2, Search,
   History, Navigation
 } from 'lucide-react';
-import '../../../donor/pages/Traceability/Traceability.css';
+import './Traceability.css';
 
 export const Traceability: React.FC = () => {
   const [activeBatch, setActiveBatch] = useState<number | null>(1);
@@ -21,7 +21,7 @@ export const Traceability: React.FC = () => {
       status: 'Delivered',
       time: '14:20 PM',
       chain: [
-        { role: 'Donor', name: "McDonald's - VVCE", time: '12:05 PM', status: 'verified', location: '12.332, 76.612' },
+        { role: 'Donor', name: 'McDonald\'s - VVCE', time: '12:05 PM', status: 'verified', location: '12.332, 76.612' },
         { role: 'Logistics', name: 'Volunteer #AS-09 (Rahul K.)', time: '12:45 PM', status: 'verified', location: '12.340, 76.620' },
         { role: 'Receiver', name: 'Hope Orphanage', time: '13:15 PM', status: 'verified', location: '12.355, 76.645' }
       ]
@@ -155,16 +155,14 @@ export const Traceability: React.FC = () => {
                   <AlertOctagon size={32} />
                   <div>
                     <h4>Report "Bad Batch"?</h4>
-                    <p>If you find any quality issues with this batch, report it immediately to trigger a safety recall.</p>
+                    <p>If safety issues are reported, trigger an immediate recall to notify all recipients in this chain.</p>
                   </div>
                 </div>
                 <Button 
                   className="trigger-recall-btn"
-                   variant="outline"
                   onClick={handleTriggerRecall}
-                  style={{ color: '#ef4444', borderColor: '#ef4444' }}
                 >
-                  <Radio size={18} /> REPORT SAFETY ISSUE
+                  <Radio size={18} /> TRIGGER EMERGENCY RECALL
                 </Button>
               </Card>
             </div>

@@ -1,0 +1,246 @@
+.disasters-container {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  padding-bottom: 80px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Header */
+.disasters-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.emergency-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFEEEB;
+  color: #D32F2F;
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(211, 47, 47, 0.2);
+}
+
+.disasters-title {
+  font-size: 3.5rem;
+  font-weight: 950;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  letter-spacing: -1.5px;
+}
+
+.relief-text {
+  color: #D32F2F;
+}
+
+.disasters-subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Active Alerts Section */
+.active-alerts {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.alert-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.alert-icon-pulse {
+  color: #D32F2F;
+  animation: alertPulse 1.5s infinite;
+}
+
+@keyframes alertPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.live-badge {
+  background: #000;
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.alerts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.disaster-alert-card {
+  border: 2px solid #FFEEEB !important;
+  background: #fff !important;
+  border-radius: 24px !important;
+  padding: 32px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: all 0.3s ease;
+}
+
+.disaster-alert-card:hover {
+  border-color: #D32F2F !important;
+  box-shadow: 0 12px 30px rgba(211, 47, 47, 0.1) !important;
+}
+
+.disaster-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.disaster-type {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.disaster-loc {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.urgency-pill {
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.urgency-pill.critical { background: #D32F2F; color: #fff; }
+.urgency-pill.high { background: #FF9800; color: #fff; }
+
+.disaster-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  background: #F9F9F9;
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.dstat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.disaster-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.emergency-btn {
+  background: #D32F2F !important;
+  border-color: #D32F2F !important;
+  gap: 10px !important;
+}
+
+.eta-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #D32F2F;
+}
+
+/* Process Section */
+.disaster-process {
+  background: #FEFBF6;
+  border-radius: 40px;
+  padding: 60px 40px;
+}
+
+.process-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.process-header h2 { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; }
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.process-item {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.p-icon {
+  width: 56px; height: 56px;
+  background: #fff;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #D32F2F;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.process-item h4 { font-size: 1.1rem; font-weight: 800; }
+.process-item p { font-size: 0.9rem; color: #666; line-height: 1.6; }
+
+/* CTA Area */
+.cta-disaster {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 60px;
+  border-radius: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.cta-disaster h3 { font-size: 2rem; font-weight: 800; }
+.cta-disaster p { color: #aaa; max-width: 600px; }
+
+@media (max-width: 768px) {
+  .disasters-title { font-size: 2.5rem; }
+  .alerts-grid { grid-template-columns: 1fr; }
+  .process-grid { grid-template-columns: 1fr; }
+  .disaster-alert-card { padding: 24px !important; }
+}

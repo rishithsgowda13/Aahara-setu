@@ -8,6 +8,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Feedback } from './pages/Feedback';
 import { Notifications } from './receiver/Notifications';
 import { Receiver } from './receiver/Receiver';
+import { ClaimView } from './receiver/ClaimView';
 import { Login } from './pages/Login';
 import { Profile } from './pages/Profile';
 import { Toast } from './components/ui/Toast';
@@ -80,6 +81,7 @@ function App() {
           <Route path="/upload" element={isAuthenticated ? <Upload /> : <Navigate to="/login" />} />
           <Route path="/dashboard" element={isAuthenticated ? (userRole === 'donor' ? <Dashboard /> : <Navigate to="/receiver" />) : <Navigate to="/login" />} />
           <Route path="/receiver" element={isAuthenticated ? <Receiver /> : <Navigate to="/login" />} />
+          <Route path="/claim/:id" element={isAuthenticated ? <ClaimView /> : <Navigate to="/login" />} />
           <Route path="/feedback" element={isAuthenticated ? <Feedback /> : <Navigate to="/login" />} />
           <Route path="/notifications" element={isAuthenticated ? <Notifications /> : <Navigate to="/login" />} />
           

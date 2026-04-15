@@ -259,6 +259,208 @@
   .search-filter-bar { flex-direction: column; align-items: stretch; }
 }
 
+/* Claim Page Styles (Matching User Screenshot) */
+.claim-page-wrapper {
+  padding: 20px;
+  background: #fdfcf7; /* Slight warm background */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.full-claim-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 24px;
+  background: #fdfcf7 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.claim-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.claim-title-main {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #333;
+}
+
+.claim-info-beige-box {
+  background: #e7e5d8;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.beige-col {
+  flex: 1;
+}
+
+.beige-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #5c634d;
+  margin-bottom: 12px;
+}
+
+.beige-col p {
+  margin: 4px 0;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.portions-bold {
+  font-weight: 800;
+  color: #4f633d;
+}
+
+.expiry-red {
+  color: #c94c4c;
+  font-weight: 800;
+}
+
+.beige-phone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  font-weight: 700;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.beige-divider {
+  width: 1px;
+  background: rgba(0,0,0,0.1);
+  margin: 10px 0;
+}
+
+.claim-map-wrapper {
+  height: 250px;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.claim-quantity-section {
+  margin-bottom: 32px;
+}
+
+.quantity-question {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.quantity-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.quantity-val-box {
+  background: #fdfcf7;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  min-width: 50px;
+  text-align: center;
+}
+
+.quantity-limits {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 8px;
+}
+
+.claim-actions-row {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.btn-cancel {
+  background: #e7e5d8 !important;
+  color: #333 !important;
+  border: none !important;
+  font-weight: 700;
+}
+
+.btn-confirm {
+  background: #4f633d !important;
+  color: white !important;
+  font-weight: 700;
+}
+
+.btn-google-maps {
+  background: #4f633d !important;
+  color: white !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.logistics-step-view {
+  text-align: center;
+}
+
+.logistics-text {
+  margin-bottom: 30px;
+  color: #666;
+}
+
+.logistics-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.logistics-btn.self {
+  height: auto;
+  padding: 20px;
+  justify-content: flex-start;
+  gap: 16px;
+  background: rgba(79, 99, 61, 0.05) !important;
+}
+
+.emoji-big {
+  font-size: 2rem;
+}
+
+.btn-txt {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.or-divider {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #999;
+  margin: 10px 0;
+}
+
+.partner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
 /* Modal Overlay & Card */
 .modal-overlay {
   position: fixed;

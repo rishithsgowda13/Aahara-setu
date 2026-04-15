@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Search, MapPin, Clock, AlertCircle, Zap, ShieldCheck, Users, X, Phone, Navigation } from 'lucide-react';
@@ -92,6 +93,7 @@ const MOCK_FOOD_ITEMS: FoodItem[] = [
 ];
 
 export const Explore: React.FC = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
   const [items, setItems] = useState<FoodItem[]>(MOCK_FOOD_ITEMS);
@@ -361,11 +363,7 @@ export const Explore: React.FC = () => {
                 </div>
               </div>
 
-              <Button fullWidth onClick={() => { 
-                console.log("Claiming item:", item.name);
-                setSelectedItem(item); 
-                setClaimQuantity(''); 
-              }}>
+              <Button fullWidth onClick={() => navigate(`/claim/${item.id}`)}>
                 Claim Now
               </Button>
             </Card>

@@ -1,7 +1,10 @@
 import React from 'react';
 import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
-import { BarChart3, TrendingDown, Package, CheckCircle2, Leaf, Zap, Trophy, MapPin, RefreshCw } from 'lucide-react';
+import { 
+  BarChart3, TrendingDown, Package, CheckCircle2, 
+  Leaf, Zap, Trophy, MapPin, RefreshCw 
+} from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import './Dashboard.css';
 
@@ -14,6 +17,7 @@ const WEEKLY_DATA = [
   { day: 'Sat', meals: 110, kg: 55 },
   { day: 'Sun', meals: 67, kg: 33 },
 ];
+
 const MAX_MEALS = Math.max(...WEEKLY_DATA.map(d => d.meals));
 
 const HEATMAP_ZONES = [
@@ -27,6 +31,7 @@ const HEATMAP_ZONES = [
 
 export const Dashboard: React.FC = () => {
   const { t } = useTranslation();
+
   const stats = [
     { label: t('food_saved'), value: '452 kg', icon: <Package size={22} />, color: '#4F633D', trend: '+12%' },
     { label: t('meals_dist'), value: '1,280', icon: <BarChart3 size={22} />, color: '#8BA194', trend: '+8%' },

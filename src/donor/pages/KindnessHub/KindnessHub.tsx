@@ -21,6 +21,11 @@ export const KindnessHub: React.FC = () => {
     { rank: 5, name: "Doner King", impact: "3,100 meals", pts: 2900, avatar: "D", color: "#E2E8F0" },
   ];
 
+  const certificatesList = [
+    { id: 'AS-2025-01', type: 'Platinum Sustainability', date: 'April 2025', desc: 'Offsets 3,200kg of CO₂' },
+    { id: 'AS-2025-02', type: 'Community Hero', date: 'March 2025', desc: 'Fed 1,200 children' },
+  ];
+
   const handleGenerateReport = () => {
     setIsGenerating(true);
     setTimeout(() => {
@@ -118,7 +123,7 @@ export const KindnessHub: React.FC = () => {
           <div className="cert-grid">
             {/* ... certificates mapping already in file ... */}
 
-            {certificates.map(cert => (
+            {certificatesList.map(cert => (
               <Card key={cert.id} className="cert-card">
                 <div className="cert-visual">
                   <div className="cert-logo">Aahara Setu</div>

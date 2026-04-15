@@ -1,19 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Upload, MapPin, LayoutDashboard, Star, Bell, LogIn } from 'lucide-react';
+import { Home, Upload, MapPin, LayoutDashboard, Star, Bell, LogIn, LogOut } from 'lucide-react';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
+  const [role, setRole] = useState<string | null>(localStorage.getItem('userRole'));
+
+  useEffect(() => {
+    const handleAuthChange = () => setRole(localStorage.getItem('userRole'));
+    window.addEventListener('authChange', handleAuthChange);
+    return () => window.removeEventListener('authChange', handleAuthChange);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('userRole');
+    setRole(null);
+    window.dispatchEvent(new Event('authChange'));
+  };
 
   const navLinks = [
-    { name: 'Home', path: '/', icon: <Home size={18} /> },
-    { name: 'Explore', path: '/explore', icon: <MapPin size={18} /> },
-    { name: 'Donate', path: '/upload', icon: <Upload size={18} /> },
-    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
-    { name: 'Alerts', path: '/notifications', icon: <Bell size={18} /> },
-    { name: 'Feedback', path: '/feedback', icon: <Star size={18} /> },
-  ];
+    { name: 'Home', path: '/', icon: <Home size={18} />, show: true },
+    { name: 'Explore', path: '/explore', icon: <MapPin size={18} />, show: role !== 'donor' },
+    { name: 'Donate', path: '/upload', icon: <Upload size={18} />, show: role !== 'receiver' },
+    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} />, show: true },
+    { name: 'Alerts', path: '/notifications', icon: <Bell size={18} />, show: true },
+    { name: 'Feedback', path: '/feedback', icon: <Star size={18} />, show: true },
+  ].filter(link => link.show);
 
   const isLoginPage = location.pathname === '/login';
 
@@ -35,10 +48,18 @@ export const Navbar: React.FC = () => {
               <span>{link.name}</span>
             </Link>
           ))}
-          <Link to="/login" className={`nav-link nav-login-btn ${location.pathname === '/login' ? 'active' : ''}`}>
-            <LogIn size={18} />
-            <span>Login</span>
-          </Link>
+          {!isLoginPage && !role && (
+            <Link to="/login" className="nav-link nav-login-btn">
+              <LogIn size={18} />
+              <span>Login</span>
+            </Link>
+          )}
+          {!isLoginPage && role && (
+            <button onClick={handleLogout} className="nav-link nav-login-btn">
+              <LogOut size={18} />
+              <span>Logout</span>
+            </button>
+          )}
         </div>
       </div>
     </nav>

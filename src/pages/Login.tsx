@@ -29,6 +29,11 @@ export const Login: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    
+    // Save role and notify app
+    localStorage.setItem('userRole', role);
+    window.dispatchEvent(new Event('authChange'));
+
     setTimeout(() => {
       setIsLoading(false);
       navigate('/');

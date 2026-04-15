@@ -57,6 +57,10 @@
   color: #fff !important;
   margin-left: 8px;
   font-weight: 700;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
 }
 .nav-login-btn:hover { background: var(--color-primary-light) !important; opacity: 1; }
 

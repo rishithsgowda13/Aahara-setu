@@ -10,11 +10,13 @@ import { Notifications } from './pages/Notifications';
 import { Login } from './pages/Login';
 import { Profile } from './pages/Profile';
 import { Toast } from './components/ui/Toast';
+import { Loader } from './components/ui/Loader';
 import type { ToastMessage } from './components/ui/Toast';
 import './App.css';
 
 function App() {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [showLoader, setShowLoader] = useState(true);
 
   useEffect(() => {
     const t1 = setTimeout(() => {
@@ -37,9 +39,11 @@ function App() {
   };
 
   return (
-    <Router>
-      <Navbar />
-      <main style={{ padding: '84px 24px 0', maxWidth: '1200px', margin: '0 auto', minHeight: '100vh' }}>
+    <>
+      {showLoader && <Loader onComplete={() => setShowLoader(false)} />}
+      <Router>
+        <Navbar />
+        <main style={{ padding: '84px 24px 0', maxWidth: '1200px', margin: '0 auto', minHeight: '100vh' }}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/explore" element={<Explore />} />
@@ -53,6 +57,7 @@ function App() {
       </main>
       <Toast messages={toasts} onRemove={removeToast} />
     </Router>
+    </>
   );
 }
 

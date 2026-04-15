@@ -87,14 +87,42 @@
   color: var(--color-text-muted);
 }
 
-.auth-footer button {
-  background: none;
-  border: none;
-  color: var(--color-primary);
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: underline;
+.role-toggle-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
 }
+
+.role-toggle-group {
+  display: flex;
+  background: rgba(139, 161, 148, 0.1);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  gap: 4px;
+}
+
+.role-toggle-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-main);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.role-toggle-btn.active {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(79, 99, 61, 0.3);
+}
+
+.auth-footer button {
 
 @media (max-width: 900px) {
   .login-container {

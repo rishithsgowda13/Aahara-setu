@@ -5,15 +5,15 @@ export const Loader: React.FC<{ onComplete: () => void }> = ({ onComplete }) => 
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
-    // Start the exit fade-out animation after 2.4 seconds
+    // Start the exit fade-out animation after 400ms
     const fadeTimer = setTimeout(() => {
       setIsFading(true);
-    }, 2400);
+    }, 400);
 
-    // Physically unmount component after the CSS transition finishes
+    // Physically unmount component after 800ms
     const removeTimer = setTimeout(() => {
       onComplete();
-    }, 3200);
+    }, 800);
 
     return () => {
       clearTimeout(fadeTimer);

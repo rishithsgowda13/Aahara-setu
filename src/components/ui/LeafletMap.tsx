@@ -19,29 +19,32 @@ export const LeafletMap: React.FC<LeafletMapProps> = ({ location, lat = 12.9716,
   useEffect(() => {
     if (!window.L || !mapRef.current) return;
 
-    if (mapInstance.current) {
-      mapInstance.current.remove();
+    // Use a unique ID for each map container to prevent reuse errors
+    if (!mapInstance.current) {
+      mapInstance.current = window.L.map(mapRef.current).setView([lat, lng], 14);
+      
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      }).addTo(mapInstance.current);
+    } else {
+      mapInstance.current.setView([lat, lng], 14);
     }
 
-    // Initialize map
-    mapInstance.current = window.L.map(mapRef.current).setView([lat, lng], 14);
+    // Always clear existing markers before adding a new one
+    mapInstance.current.eachLayer((layer: any) => {
+      if (layer instanceof window.L.Marker) {
+        mapInstance.current.removeLayer(layer);
+      }
+    });
 
-    // Google Maps Style Tile Layer (Leaflet compatible)
-    window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-    }).addTo(mapInstance.current);
-
-    // Add Marker
     window.L.marker([lat, lng])
       .addTo(mapInstance.current)
       .bindPopup(`<b>${location}</b><br>Pickup Point`)
       .openPopup();
 
     return () => {
-      if (mapInstance.current) {
-        mapInstance.current.remove();
-      }
+      // We keep the instance for faster switching, but we could destroy it if needed
     };
   }, [lat, lng, location]);
 

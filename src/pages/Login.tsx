@@ -24,6 +24,22 @@ export const Login: React.FC = () => {
 
     try {
       if (isLogin) {
+        // Mock Credentials Check
+        if (email === '1' && password === '1') {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userType', 'receiver');
+          navigate('/explore');
+          setIsLoading(false);
+          return;
+        }
+        if (email === '2' && password === '2') {
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('userType', 'donor');
+          navigate('/upload');
+          setIsLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -113,23 +129,30 @@ export const Login: React.FC = () => {
                   required 
                 />
                 
-                <div className="form-group" style={{ marginBottom: '16px' }}>
-                  <label className="input-label" style={{ display: 'block', marginBottom: '6px', fontSize: '0.9rem', color: 'var(--color-text)' }}>Account Type</label>
-                  <select 
-                    style={{ width: '100%', padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1.5px solid rgba(139, 161, 148, 0.4)', background: 'var(--glass-bg)', color: 'var(--color-text)', fontFamily: 'var(--font-main)' }}
-                    value={role} 
-                    onChange={(e) => setRole(e.target.value)}
-                  >
-                    <option value="donor">Food Donor</option>
-                    <option value="ngo">NGO / Receiver</option>
-                    <option value="volunteer">Volunteer / Driver</option>
-                  </select>
+                <div className="role-toggle-container">
+                  <label className="input-label">I am a...</label>
+                  <div className="role-toggle-group">
+                    <button 
+                      type="button"
+                      className={`role-toggle-btn ${role === 'donor' ? 'active' : ''}`}
+                      onClick={() => setRole('donor')}
+                    >
+                      Food Donor
+                    </button>
+                    <button 
+                      type="button"
+                      className={`role-toggle-btn ${role === 'receiver' ? 'active' : ''}`}
+                      onClick={() => setRole('receiver')}
+                    >
+                      Receiver / NGO
+                    </button>
+                  </div>
                 </div>
               </>
             )}
 
             <Input 
-              type="email"
+              type="text"
               label="Email Address" 
               placeholder="Enter your email" 
               value={email}
@@ -143,7 +166,7 @@ export const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required 
-              minLength={6}
+              minLength={isLogin ? 1 : 6}
             />
             
             {error && <div className="auth-error" style={{ color: 'var(--color-danger)', fontSize: '0.85rem', background: 'rgba(239, 68, 68, 0.1)', padding: '10px', borderRadius: '6px' }}>{error}</div>}

@@ -66,11 +66,6 @@ export const Landing: React.FC = () => {
             individuals in need — powered by smart urgency matching and community kindness.
           </p>
           <div className="hero-actions">
-            <Link to="/upload" style={{ textDecoration: 'none' }}>
-              <Button size="lg" className="hero-btn">
-                <Heart size={20} /> Donate Food
-              </Button>
-            </Link>
             <Link to="/explore" style={{ textDecoration: 'none' }}>
               <Button variant="glass" size="lg" className="hero-btn">
                 <Search size={20} /> Find Food Nearby
@@ -178,7 +173,6 @@ export const Landing: React.FC = () => {
           <h2>Start Making a Difference <span style={{ color: '#FFF7E2' }}>Today</span></h2>
           <p>Join 450+ donors and 120+ NGOs transforming food waste into community impact.</p>
           <div className="cta-actions">
-            <Link to="/upload"><Button size="lg"><Heart size={18} /> Donate Food</Button></Link>
             <Link to="/explore"><Button variant="glass" size="lg"><Search size={18} /> Find Food</Button></Link>
           </div>
         </div>

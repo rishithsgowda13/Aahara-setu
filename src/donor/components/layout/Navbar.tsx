@@ -46,7 +46,7 @@ export const Navbar: React.FC = () => {
             <Link
               key={link.path}
               to={link.path}
-              className={`nav-link ${location.pathname === link.path && link.path !== '/upload' ? 'active' : ''} ${link.path === '/upload' ? 'donate-pill' : ''}`}
+              className={`nav-link ${location.pathname === link.path ? 'active' : ''} ${link.path === '/upload' ? 'donate-pill' : ''}`}
             >
               {link.icon}
               <span>{link.name}</span>

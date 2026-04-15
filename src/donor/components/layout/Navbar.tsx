@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio, Globe } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import { useAuth } from '../../../context/AuthContext';

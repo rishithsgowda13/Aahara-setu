@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../../donor/components/ui/Card/Card';
 import { Button } from '../../donor/components/ui/Button/Button';
 import { Search, Map as MapIcon, Zap, AlertTriangle } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import { useTranslation } from '../../donor/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
 import '../styles/Explore.css';
-
-import { useEffect } from 'react';
 
 interface FoodItem {
   id: string;
@@ -124,7 +121,7 @@ export const Explore: React.FC = () => {
           distance: '0.4 km', // Default for demo
           demand: 'High',
           urgencyScore: d.urgency_score,
-          urgencyLevel: d.urgency_score > 90 ? 'high' : d.urgency_score > 60 ? 'medium' : 'low',
+          urgencyLevel: (d.urgency_score > 90 ? 'high' : d.urgency_score > 60 ? 'medium' : 'low') as 'high' | 'medium' | 'low' | 'critical',
           isDisaster: d.is_disaster
         }));
         setFoodItems([...formatted, ...MOCK_FOOD_ITEMS]);
@@ -148,7 +145,7 @@ export const Explore: React.FC = () => {
           distance: '0.4 km',
           demand: 'High',
           urgencyScore: newItem.urgency_score,
-          urgencyLevel: newItem.urgency_score > 90 ? 'high' : newItem.urgency_score > 60 ? 'medium' : 'low',
+          urgencyLevel: (newItem.urgency_score > 90 ? 'high' : newItem.urgency_score > 60 ? 'medium' : 'low') as 'high' | 'medium' | 'low' | 'critical',
           isDisaster: newItem.is_disaster
         };
         setFoodItems(prev => [formatted, ...prev]);
@@ -460,9 +457,9 @@ export const Explore: React.FC = () => {
           .modal-right-donor { display: none; }
         }
       `}</style>
-          </Card>
-        ))}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

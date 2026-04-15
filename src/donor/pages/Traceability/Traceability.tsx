@@ -4,7 +4,7 @@ import { Button } from '../../components/ui/Button/Button';
 import { 
   ShieldAlert, Radio, MapPin, Truck, 
   CheckCircle2, AlertOctagon, Share2, Search,
-  History, Clock, Navigation
+  History, Navigation
 } from 'lucide-react';
 import './Traceability.css';
 

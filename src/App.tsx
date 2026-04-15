@@ -9,7 +9,6 @@ import { Notifications } from './donor/pages/Notifications/Notifications';
 import { Profile } from './donor/pages/Profile/Profile';
 import { Disasters } from './donor/pages/Disasters/Disasters';
 import { Traceability } from './donor/pages/Traceability/Traceability';
-import { KindnessHub } from './donor/pages/KindnessHub/KindnessHub';
 import { Toast } from './donor/components/ui/Toast/Toast';
 import { LanguageProvider } from './donor/context/LanguageContext';
 import type { ToastMessage } from './donor/components/ui/Toast/Toast';

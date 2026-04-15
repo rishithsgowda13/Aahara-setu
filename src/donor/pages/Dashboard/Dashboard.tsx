@@ -3,8 +3,7 @@ import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
 import { 
   BarChart3, TrendingDown, Package, CheckCircle2, 
-  Leaf, Zap, Trophy, MapPin, RefreshCw, Award,
-  Medal, Star, Heart, ExternalLink, Download
+  Leaf, Zap, Trophy, Award
 } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import './Dashboard.css';
@@ -198,21 +197,21 @@ export const Dashboard: React.FC = () => {
           </div>
 
 
-          <Card className="heatmap-card">
-            <div className="chart-header">
-              <h3><MapPin size={18} /> Hunger vs Surplus Heatmap</h3>
-              <span className="tag-badge">Live Zones</span>
             </div>
-            <div className="heatmap-zones">
-              {HEATMAP_ZONES.map((zone, i) => (
-                <div key={i} className={`heatmap-zone zone-${zone.type}`}>
-                  <div className="zone-name">{zone.name}</div>
-                  <div className="zone-bars">
-                    <div className="zone-bar-row">
-                      <span className="zone-bar-lbl">Surplus</span>
-                      <div className="zone-bar"><div className="zone-bar-fill surplus-fill" style={{ width: `${zone.waste}%` }} /></div>
-                      <span className="zone-bar-val">{zone.waste}%</span>
-                    </div>
+          </Card>
+
+          <Card className="activity-card" style={{ marginTop: '24px' }}>
+            <div className="chart-header">
+              <h3>Recent Activity</h3>
+              <span className="tag-badge">Live Updates</span>
+            </div>
+            <div className="activity-list">
+              {recentActivity.map((act, i) => (
+                <div key={i} className={`activity-item activity-${act.type}`}>
+                  <div className="activity-icon">{act.icon}</div>
+                  <div className="activity-body">
+                    <p className="activity-text">{act.text}</p>
+                    <span className="activity-time">{act.time}</span>
                   </div>
                 </div>
               ))}

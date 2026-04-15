@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio, Trophy } from 'lucide-react';
+import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import './Navbar.css';
 

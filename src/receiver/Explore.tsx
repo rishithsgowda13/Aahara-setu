@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Search, MapPin, Clock, AlertCircle, Zap, ShieldCheck, Users, X } from 'lucide-react';
+import { Search, MapPin, Clock, AlertCircle, Zap, ShieldCheck, Users, X, Phone, Navigation } from 'lucide-react';
 import { LeafletMap } from '../components/ui/LeafletMap';
 import './Explore.css';
 
@@ -122,7 +122,7 @@ export const Explore: React.FC = () => {
       {/* Dynamic Pop-up Modal for Claiming */}
       {selectedFood && (
         <div className="modal-overlay" onClick={() => setSelectedFoodId(null)}>
-          <Card className="claim-item-modal glass" onClick={e => e.stopPropagation()}>
+          <Card className="claim-modal glass" onClick={e => e.stopPropagation()}>
             <div className="claim-modal-header">
               <h2 className="modal-title">Claim Donation</h2>
               <button className="close-x" onClick={() => setSelectedFoodId(null)}><X size={20} /></button>
@@ -139,7 +139,7 @@ export const Explore: React.FC = () => {
                   <span className="text-primary-bold"> {selectedFood.quantity}</span>
                 </div>
                 <a href={`tel:${selectedFood.phone || '+919876543210'}`} className="contact-link">
-                  📞 {selectedFood.phone || '+91 98765 43210'}
+                  <Phone size={14} /> {selectedFood.phone || '+91 98765 43210'}
                 </a>
               </div>
 
@@ -155,7 +155,7 @@ export const Explore: React.FC = () => {
                 </div>
                 <div className="info-row"><strong>Demand:</strong> {selectedFood.demand}</div>
                 <div className="contact-link">
-                   📞 +91 98221 00334 <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)' }}>(Receiver Logistics)</span>
+                   <Phone size={14} /> +91 98221 00334 <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)' }}>(Receiver Logistics)</span>
                 </div>
               </div>
             </div>

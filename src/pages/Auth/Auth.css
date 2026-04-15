@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fdfcf7; /* Warm cream background from screenshot */
+  background: #f8fafc; /* Clean background for the greenish card to pop */
   padding: 40px;
   position: relative;
   overflow: hidden;
@@ -15,23 +15,23 @@
   max-width: 1000px;
   min-height: 600px;
   background: white;
-  border-radius: 60px; /* Ultra rounded corners like screenshot */
+  border-radius: 60px; /* Ultra rounded corners */
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
-  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 40px 100px rgba(79, 99, 61, 0.12); /* Subtle green-tinted shadow */
   overflow: hidden;
   position: relative;
   z-index: 10;
 }
 
-/* Left Panel: Visual */
+/* Left Panel: Visual Branding (Dark Greenish Theme) */
 .auth-visual-panel {
-  background: linear-gradient(135deg, #e3e3d8 0%, #a8a896 100%); /* Premium grey-beige gradient */
+  background: linear-gradient(135deg, #4f633d 0%, #2d3a24 100%); /* Deep Aahara Green Gradient */
   padding: 80px 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: #1a1a1a;
+  color: #fff; /* White text for high contrast on green */
   position: relative;
 }
 
@@ -40,7 +40,7 @@
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 4px;
-  color: #bfa55d; /* Gold accent */
+  color: #c7d9b7; /* Soft light green accent */
   margin-bottom: 30px;
   text-transform: uppercase;
 }
@@ -53,16 +53,16 @@
 }
 
 .title-serif {
-  font-family: serif; /* "Heritage" feel */
+  font-family: serif;
   font-style: italic;
   font-weight: 400;
-  color: rgba(0,0,0,0.6);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .visual-desc {
   font-size: 1.1rem;
   line-height: 1.6;
-  color: rgba(0,0,0,0.6);
+  color: rgba(255, 255, 255, 0.7);
   max-width: 320px;
 }
 
@@ -72,15 +72,15 @@
   gap: 12px;
   font-size: 0.85rem;
   font-weight: 700;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
-/* Right Panel: Form */
+/* Right Panel: Form Logic */
 .auth-form-panel {
   padding: 80px 60px;
   display: flex;
   flex-direction: column;
-  background: #fdfcf7;
+  background: #ffffff;
 }
 
 .auth-form-header {
@@ -99,33 +99,37 @@
   font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 3px;
-  color: #999;
+  color: #4f633d; /* Using brand green for the accent line */
   text-transform: uppercase;
+  opacity: 0.6;
 }
 
 .role-selector-premium {
   display: flex;
   gap: 10px;
   margin-bottom: 40px;
+  background: #f1f5f1; /* Very light green tinted background for toggle */
+  padding: 6px;
+  border-radius: 100px;
 }
 
 .role-pill {
   flex: 1;
   padding: 12px;
   border-radius: 100px;
-  border: 1px solid #eee;
-  background: white;
+  border: none;
+  background: transparent;
   font-size: 0.8rem;
   font-weight: 800;
-  color: #999;
+  color: #666;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .role-pill.active {
-  background: #1a1a1a;
+  background: #4f633d; /* Brand Green */
   color: white;
-  border-color: #1a1a1a;
+  box-shadow: 0 4px 12px rgba(79, 99, 61, 0.3);
 }
 
 .auth-form-premium {
@@ -143,15 +147,16 @@
 .input-icon {
   position: absolute;
   left: 20px;
-  color: #999;
+  color: #4f633d;
+  opacity: 0.5;
 }
 
 .input-field-wrap input {
   width: 100%;
   padding: 22px 20px 22px 55px;
-  background: #f8f9fb;
-  border: 1px solid transparent;
-  border-radius: 100px; /* Fully rounded inputs */
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  border-radius: 100px;
   font-size: 1rem;
   font-weight: 600;
   transition: all 0.2s;
@@ -159,12 +164,12 @@
 
 .input-field-wrap input:focus {
   background: white;
-  border-color: #ddd;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+  border-color: #4f633d;
+  box-shadow: 0 10px 30px rgba(79, 99, 61, 0.08);
 }
 
 .auth-main-btn {
-  background: #000 !important;
+  background: #4f633d !important; /* Unified Brand Green Button */
   color: #fff !important;
   height: 64px !important;
   border-radius: 100px !important;
@@ -173,11 +178,13 @@
   letter-spacing: 2px !important;
   margin-top: 20px !important;
   transition: all 0.3s ease !important;
+  border: none !important;
 }
 
 .auth-main-btn:hover {
+  background: #3e4e30 !important;
   transform: translateY(-2px);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 15px 40px rgba(79, 99, 61, 0.25);
 }
 
 .auth-extra-links {
@@ -214,9 +221,10 @@
   text-align: center;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #666;
+  color: #4f633d;
   cursor: pointer;
   text-decoration: underline;
+  opacity: 0.8;
 }
 
 /* Background Blobs */
@@ -226,15 +234,15 @@
   z-index: 1;
 }
 
-.orb.o1 {
+.o1 {
   width: 600px; height: 600px;
-  background: rgba(79, 99, 61, 0.08);
+  background: rgba(79, 99, 61, 0.1);
   top: -200px; left: -200px;
 }
 
-.orb.o2 {
+.o2 {
   width: 500px; height: 500px;
-  background: rgba(191, 165, 93, 0.05);
+  background: rgba(199, 217, 183, 0.08);
   bottom: -150px; right: -150px;
 }
 

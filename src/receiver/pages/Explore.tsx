@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Card } from '../../donor/components/ui/Card/Card';
 import { Button } from '../../donor/components/ui/Button/Button';
-import { Search, Map as MapIcon, Zap } from 'lucide-react';
+import { Search, Map as MapIcon, Zap, AlertTriangle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
+import { useTranslation } from '../../donor/context/LanguageContext';
 import '../styles/Explore.css';
 
 import { useEffect } from 'react';
@@ -18,7 +19,8 @@ interface FoodItem {
   demand: string;
   category: string;
   urgencyScore: number;
-  urgencyLevel: 'high' | 'medium' | 'low';
+  urgencyLevel: 'high' | 'medium' | 'low' | 'critical';
+  isDisaster?: boolean;
 }
 
 const MOCK_FOOD_ITEMS: FoodItem[] = [
@@ -108,7 +110,8 @@ export const Explore: React.FC = () => {
           distance: d.distance,
           demand: d.demand,
           urgencyScore: d.urgency_score,
-          urgencyLevel: d.urgency_level
+          urgencyLevel: d.urgency_level,
+          isDisaster: d.is_disaster
         }));
         setFoodItems([...formatted, ...MOCK_FOOD_ITEMS]);
       }
@@ -131,7 +134,8 @@ export const Explore: React.FC = () => {
           distance: newItem.distance,
           demand: newItem.demand,
           urgencyScore: newItem.urgency_score,
-          urgencyLevel: newItem.urgency_level
+          urgencyLevel: newItem.urgency_level,
+          isDisaster: newItem.is_disaster
         };
         setFoodItems(prev => [formatted, ...prev]);
       })
@@ -154,8 +158,8 @@ export const Explore: React.FC = () => {
   return (
     <div className="explore-container">
       <div className="explore-header">
-        <h1 className="page-title">Find Food <span className="gradient-text">Nearby</span></h1>
-        <p className="page-subtitle">Real-time surplus food available, sorted by urgency. Claim before it expires!</p>
+        <h1 className="page-title">{t('explore_title')}</h1>
+        <p className="page-subtitle">{t('explore_sub')}</p>
       </div>
 
       <div className="search-filter-bar glass">
@@ -163,7 +167,7 @@ export const Explore: React.FC = () => {
           <Search size={20} className="search-icon" />
           <input 
             type="text" 
-            placeholder="Search food name or category..." 
+            placeholder={t('search_placeholder')}
             className="search-inner-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -181,19 +185,19 @@ export const Explore: React.FC = () => {
             className={`filter-chip ${activeFilter === 'high' ? 'active' : ''}`}
             onClick={() => setActiveFilter('high')}
           >
-            ⚡ High
+            ⚡ {t('urgency_high')}
           </button>
           <button 
             className={`filter-chip ${activeFilter === 'medium' ? 'active' : ''}`}
             onClick={() => setActiveFilter('medium')}
           >
-            ⏰ Medium
+            ⏰ {t('urgency_med')}
           </button>
           <button 
             className={`filter-chip ${activeFilter === 'low' ? 'active' : ''}`}
             onClick={() => setActiveFilter('low')}
           >
-            ✅ Low
+            ✅ {t('urgency_low')}
           </button>
           <Button variant="outline" size="sm" className="filter-chip map-btn">
             <MapIcon size={16} /> Map View
@@ -210,12 +214,19 @@ export const Explore: React.FC = () => {
 
       <div className="food-grid">
         {filteredItems.map(item => (
-          <Card key={item.id} className="food-card hover-lift">
+          <Card key={item.id} className={`food-card hover-lift ${item.isDisaster ? 'disaster-card' : ''}`}>
+            {item.isDisaster && (
+              <div className="disaster-ribbon">
+                <AlertTriangle size={14} /> DISASTER RELIEF ONLY
+              </div>
+            )}
+            
             <div className="food-card-top">
               <span className={`urgency-badge ${item.urgencyLevel}`}>
-                {item.urgencyLevel === 'high' ? '⚡ High Priority' : 
-                 item.urgencyLevel === 'medium' ? '⏰ Medium Priority' : '✅ Low Priority'} 
-                {item.urgencyLevel === 'high' && ` - ${item.expiresIn}`}
+                {item.urgencyLevel === 'critical' ? '🆘 CRITICAL' : 
+                 item.urgencyLevel === 'high' ? t('urgency_high') : 
+                 item.urgencyLevel === 'medium' ? t('urgency_med') : t('urgency_low')} 
+                {(item.urgencyLevel === 'high' || item.urgencyLevel === 'critical') && ` - ${item.expiresIn}`}
               </span>
             </div>
             
@@ -224,8 +235,10 @@ export const Explore: React.FC = () => {
               <h3 className="food-name">{item.name}</h3>
               <p className="donor-name">from {item.donor}</p>
             </div>
-
+            
+            {/* Metadata ... */}
             <div className="food-meta-grid">
+              {/* ... same as before but checking if disaster to change colors ... */}
               <div className="meta-item">
                 <span className="meta-label">Quantity</span>
                 <span className="meta-value">{item.quantity}</span>
@@ -246,10 +259,15 @@ export const Explore: React.FC = () => {
 
             <div className="card-footer-ai">
                 <div className="urgency-score-wrap">
-                    <Zap size={14} /> Urgency Score {item.urgencyScore}/100
+                    <Zap size={14} /> {item.isDisaster ? 'Priority Score' : 'Urgency Score'} {item.urgencyScore}/100
                 </div>
                 <Link to={`/receiver/claim/${item.id}`} style={{ textDecoration: 'none' }}>
-                    <Button fullWidth className="claim-now-btn">Claim Now</Button>
+                    <Button 
+                      fullWidth 
+                      className={`claim-now-btn ${item.isDisaster ? 'disaster-btn' : ''}`}
+                    >
+                      {item.isDisaster ? 'Verify & Claim Relief' : t('claim_now')}
+                    </Button>
                 </Link>
             </div>
           </Card>

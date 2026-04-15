@@ -6,11 +6,11 @@ interface LanguageContextType {
   lang: Language;
   setLang: (lang: Language) => void;
   t: (key: string) => string;
+  autoT: (text: string) => Promise<string>;
 }
 
 const translations: Record<Language, Record<string, string>> = {
   EN: {
-    // Navbar
     nav_home: 'Home',
     nav_dashboard: 'Dashboard',
     nav_kindness: 'Kindness Hub',
@@ -19,12 +19,14 @@ const translations: Record<Language, Record<string, string>> = {
     nav_disasters: 'Disasters',
     nav_alerts: 'Alerts',
     nav_profile: 'Profile',
-    // Landing
     hero_title: 'Reduce Waste. Feed Lives.',
     hero_subtitle: 'A real-time, location-based platform connecting restaurants & hotels with NGOs — powered by smart urgency matching.',
     donate_btn: 'Donate',
-    // Dashboard
+    find_food: 'Find Food Nearby',
     impact_dash: 'Impact Dashboard',
+    impact_dash_subtitle: 'Real-time metrics & community recognition.',
+    global_leaderboard: 'Global Leaderboard',
+    impact_certs: 'Impact Certificates',
     food_saved: 'Food Saved',
     meals_dist: 'Meals Distributed',
     co2_reduced: 'CO₂ Reduced',
@@ -32,7 +34,6 @@ const translations: Record<Language, Record<string, string>> = {
     meals_provided: 'Meals Provided',
     kindness_pts: 'Kindness Pts',
     recent_activity: 'Recent Activity',
-    // Upload Page
     upload_title: 'Initiate Food Rescue',
     upload_sub: 'List your surplus in under 60 seconds.',
     item_info: 'Item Information',
@@ -49,7 +50,6 @@ const translations: Record<Language, Record<string, string>> = {
     people_fed: 'PEOPLE FED',
     carbon_offset: 'CARBON OFFSET',
     network_xp: 'NETWORK XP',
-    // Explore / Receiver
     explore_title: 'Find Food Nearby',
     explore_sub: 'Real-time surplus food available, sorted by urgency.',
     search_placeholder: 'Search food name or category...',
@@ -58,7 +58,6 @@ const translations: Record<Language, Record<string, string>> = {
     urgency_low: 'Low Priority',
     claim_now: 'Claim Now',
     ai_match_title: 'Aahara AI Match',
-    // Profile
     org_details: 'Organization Details',
     edit_profile: 'Edit Profile',
     fssai_license: 'FSSAI License',
@@ -68,7 +67,13 @@ const translations: Record<Language, Record<string, string>> = {
     champion: 'CHAMPION',
     sign_out: 'SIGN OUT',
     settings_lang_title: 'Language Preferences',
-    // Common
+    verified_partner: 'Verified Partner',
+    joined_date: 'Joined April 2025',
+    ai_trust_score: 'AI Trust Score',
+    ai_trust_desc: 'Based on successful donations & verification history',
+    trust_visible_msg: 'Your Trust Score is visible to all NGOs. Higher scores ensure your donations are claimed 3x faster by primary partners.',
+    platinum_donor: 'PLATINUM DONOR',
+    cert_downloaded_msg: 'Your Official Impact Certificate has been downloaded! You can now share it on LinkedIn.',
     org_type: 'Organization Type',
     contact: 'Contact',
     location: 'Location',
@@ -85,7 +90,11 @@ const translations: Record<Language, Record<string, string>> = {
     hero_title: 'बर्बादी कम करें। जीवन बचाएं।',
     hero_subtitle: 'रेस्तरां और होटलों को एनजीओ से जोड़ने वाला एक वास्तविक समय, स्थान-आधारित मंच।',
     donate_btn: 'दान करें',
+    find_food: 'पास का भोजन खोजें',
     impact_dash: 'प्रभाव डैशबोर्ड',
+    impact_dash_subtitle: 'वास्तविक समय मेट्रिक्स और सामुदायिक मान्यता।',
+    global_leaderboard: 'वैश्विक लीडरबोर्ड',
+    impact_certs: 'प्रभाव प्रमाणपत्र',
     food_saved: 'बचाया गया भोजन',
     meals_dist: 'वितरित भोजन',
     co2_reduced: 'CO₂ की कमी',
@@ -126,6 +135,13 @@ const translations: Record<Language, Record<string, string>> = {
     champion: 'चैंपियन',
     sign_out: 'साइन आउट',
     settings_lang_title: 'भाषा प्राथमिकताएं',
+    verified_partner: 'सत्यापित भागीदार',
+    joined_date: 'अप्रैल 2025 से शामिल',
+    ai_trust_score: 'AI ट्रस्ट स्कोर',
+    ai_trust_desc: 'सफल दान और सत्यापन इतिहास के आधार पर',
+    trust_visible_msg: 'आपका ट्रस्ट स्कोर सभी एनजीओ को दिखाई देता है। उच्च स्कोर यह सुनिश्चित करता है कि आपके दान का प्राथमिक भागीदारों द्वारा 3 गुना तेजी से दावा किया जाए।',
+    platinum_donor: 'प्लेटिनम डोनर',
+    cert_downloaded_msg: 'आपका आधिकारिक प्रभाव प्रमाणपत्र डाउनलोड कर लिया गया है! अब आप इसे लिंक्डइन पर साझा कर सकते हैं।',
     org_type: 'संस्था का प्रकार',
     contact: 'संपर्क',
     location: 'स्थान',
@@ -142,7 +158,11 @@ const translations: Record<Language, Record<string, string>> = {
     hero_title: 'ಪೋಲು ಕಡಿಮೆ ಮಾಡಿ. ಜೀವಗಳನ್ನು ಉಳಿಸಿ.',
     hero_subtitle: 'ಹೋಟೆಲ್‌ಗಳನ್ನು ಎನ್‌ಜಿಒಗಳೊಂದಿಗೆ ಸಂಪರ್ಕಿಸುವ ಒಂದು ನೈಜ-ಸಮಯದ ವೇದಿಕೆ.',
     donate_btn: 'ದಾನ ಮಾಡಿ',
+    find_food: 'ಹತ್ತಿರದ ಆಹಾರ ಹುಡುಕಿ',
     impact_dash: 'ಪ್ರಭಾವದ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',
+    impact_dash_subtitle: 'ನೈಜ-ಸಮಯದ ಮೆಟ್ರಿಕ್ಸ್ ಮತ್ತು ಸಮುದಾಯದ ಗುರುತಿಸುವಿಕೆ.',
+    global_leaderboard: 'ಜಾಗತಿಕ ಲೀಡರ್‌ಬೋರ್ಡ್',
+    impact_certs: 'ಪ್ರಭಾವದ ಪ್ರಮಾಣಪತ್ರಗಳು',
     food_saved: 'ಉಳಿಸಿದ ಆಹಾರ',
     meals_dist: 'ವಿತರಿಸಿದ ಊಟಗಳು',
     co2_reduced: 'CO₂ ಕಡಿತ',
@@ -181,9 +201,15 @@ const translations: Record<Language, Record<string, string>> = {
     rookie: 'ರೂಕಿ',
     trusted: 'ವಿಶ್ವಾಸಾರ್ಹ',
     champion: 'ಚಾಂಪಿಯನ್',
-    recent_activity: 'ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ',
     sign_out: 'ಸೈನ್ ಔಟ್',
     settings_lang_title: 'ಭಾಷಾ ಆದ್ಯತೆಗಳು',
+    verified_partner: 'ಪರಿಶೀಲಿಸಿದ ಪಾಲುದಾರ',
+    joined_date: 'ಏಪ್ರಿಲ್ 2025 ರಂದು ಸೇರ್ಪಡೆಗೊಂಡಿದ್ದಾರೆ',
+    ai_trust_score: 'AI ವಿಶ್ವಾಸಾರ್ಹತೆ ಸ್ಕೋರ್',
+    ai_trust_desc: 'ಯಶಸ್ವಿ ದೇಣಿಗೆಗಳು ಮತ್ತು ಪರಿಶೀಲನೆಯ ಇತಿಹಾಸದ ಆಧಾರದ ಮೇಲೆ',
+    trust_visible_msg: 'ನಿಮ್ಮ ವಿಶ್ವಾಸಾರ್ಹತೆ ಸ್ಕೋರ್ ಎಲ್ಲಾ ಎನ್‌ಜಿಒಗಳಿಗೆ ಗೋಚರಿಸುತ್ತದೆ. ಹೆಚ್ಚಿನ ಸ್ಕೋರ್\u200cಗಳು ನಿಮ್ಮ ದೇಣಿಗೆಗಳನ್ನು ಪ್ರಾಥಮಿಕ ಪಾಲುದಾರರು 3 ಪಟ್ಟು ವೇಗವಾಗಿ ಪಡೆಯುವುದನ್ನು ಖಚಿತಪಡಿಸುತ್ತದೆ.',
+    platinum_donor: 'ಪ್ಲಾಟಿನಂ ದಾನಿ',
+    cert_downloaded_msg: 'ನಿಮ್ಮ ಅಧಿಕೃತ ಪ್ರಭಾವದ ಪ್ರಮಾಣಪತ್ರವನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಲಾಗಿದೆ! ಈಗ ನೀವು ಅದನ್ನು ಲಿಂಕ್ಡ್‌ಇನ್‌ನಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳಬಹುದು.',
     org_type: 'ಸಂಸ್ಥೆಯ ವಿಧ',
     contact: 'ಸಂಪರ್ಕಿಸಿ',
     location: 'ಸ್ಥಳ',
@@ -199,8 +225,21 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     return translations[lang]?.[key] || translations['EN']?.[key] || key;
   };
 
+  const autoT = async (text: string): Promise<string> => {
+    if (lang === 'EN') return text;
+    try {
+      const target = lang.toLowerCase();
+      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${target}`);
+      const data = await res.json();
+      return data.responseData.translatedText || text;
+    } catch (e) {
+      console.error('Translation API error:', e);
+      return text;
+    }
+  };
+
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, setLang, t, autoT }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -209,7 +248,6 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 export const useTranslation = () => {
   const context = useContext(LanguageContext);
   if (!context) {
-    // Return a dummy context to prevent crashes if used outside provider
     return {
       lang: 'EN' as const,
       setLang: () => {},

@@ -49,7 +49,7 @@ export const Profile: React.FC = () => {
               <div className="premium-identity">
                 <h1 className="main-org-name">McDonald's - VVCE</h1>
                 <div className="premium-badges-row">
-                  <span className="premium-role-badge">PLATINUM DONOR</span>
+                  <span className="premium-role-badge">{t('platinum_donor')}</span>
                   <span className="premium-id-badge">ID: AS-7742</span>
                 </div>
               </div>
@@ -60,10 +60,10 @@ export const Profile: React.FC = () => {
             <div className="premium-header-bottom">
               <div className="premium-meta-info">
                 <div className="meta-info-item">
-                  <ShieldCheck size={16} /> Verified Partner
+                  <ShieldCheck size={16} /> {t('verified_partner')}
                 </div>
                 <div className="meta-info-item">
-                  <Clock size={16} /> Joined April 2025
+                  <Clock size={16} /> {t('joined_date')}
                 </div>
               </div>
               <Button variant="outline" size="sm" className="premium-edit-btn" onClick={handleEditProfile}>{t('edit_profile')}</Button>
@@ -74,8 +74,8 @@ export const Profile: React.FC = () => {
           <Card className="trust-score-card glass">
             <div className="trust-score-header">
               <div className="trust-title-group">
-                <h3>AI Trust Score</h3>
-                <p>Based on successful donations & verification history</p>
+                <h3>{t('ai_trust_score')}</h3>
+                <p>{t('ai_trust_desc')}</p>
               </div>
               <div className="trust-percentage">{trustScore}%</div>
             </div>
@@ -195,7 +195,7 @@ export const Profile: React.FC = () => {
           {/* Trust Info Box */}
           <div className="trust-info-box">
             <Info size={18} />
-            <p>Your Trust Score is visible to all NGOs. Higher scores ensure your donations are claimed 3x faster by primary partners.</p>
+            <p>{t('trust_visible_msg')}</p>
           </div>
 
           {/* Organization Details was moved to main-content */}
@@ -212,7 +212,7 @@ export const Profile: React.FC = () => {
 
           <Card className="profile-settings-card glass" style={{ marginTop: '24px', padding: '24px' }}>
             <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Globe size={18} /> {t('settings_lang_title') || 'Language Preferences'}
+              <Globe size={18} /> {t('settings_lang_title')}
             </h3>
             <div className="profile-lang-switcher">
               {(['EN', 'HI', 'KA'] as const).map(l => (

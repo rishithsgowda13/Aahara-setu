@@ -83,7 +83,7 @@ export const Disasters: React.FC = () => {
               </div>
 
               <div className="disaster-footer">
-                <Link to="/upload" style={{ textDecoration: 'none' }}>
+                <Link to="/upload" state={{ isDisaster: true }} style={{ textDecoration: 'none' }}>
                   <Button variant="primary" className="emergency-btn">
                     Donate Now <Heart size={16} fill="white" />
                   </Button>

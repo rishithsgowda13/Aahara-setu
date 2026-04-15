@@ -82,49 +82,38 @@ export const Dashboard: React.FC = () => {
       link.click();
       document.body.removeChild(link);
       setIsGenerating(false);
-      alert('Your Official Impact Certificate has been downloaded! You can now share it on LinkedIn.');
+      alert(t('cert_downloaded_msg'));
     }, 1500);
   };
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <div className="header-left">
-          <h1 className="page-title">{t('impact_dash')}</h1>
-          <p className="page-subtitle">Real-time metrics & community recognition.</p>
-        </div>
+        <h1 className="page-title">{t('impact_dash')} <span className="gradient-text">Studio</span></h1>
+        <p className="page-subtitle">{t('impact_dash_subtitle')}</p>
         
-        <div className="dashboard-view-switcher glass">
-          <button className={`view-btn ${activeView === 'analytics' ? 'active' : ''}`} onClick={() => setActiveView('analytics')}>
-            <BarChart3 size={18} /> Analytics
+        <div className="dashboard-tabs-pills">
+          <button 
+            className={`tab-pill ${activeTab === 'analytics' ? 'active' : ''}`}
+            onClick={() => setActiveTab('analytics')}
+          >
+            {t('nav_dashboard')}
           </button>
-          <button className={`view-btn ${activeView === 'leaderboard' ? 'active' : ''}`} onClick={() => setActiveView('leaderboard')}>
-            <Trophy size={18} /> {t('global_leaderboard')}
+          <button 
+            className={`tab-pill ${activeTab === 'leaderboard' ? 'active' : ''}`}
+            onClick={() => setActiveTab('leaderboard')}
+          >
+            {t('global_leaderboard')}
           </button>
-          <button className={`view-btn ${activeView === 'certificates' ? 'active' : ''}`} onClick={() => setActiveView('certificates')}>
-            <Award size={18} /> {t('impact_certs')}
+          <button 
+            className={`tab-pill ${activeTab === 'certificates' ? 'active' : ''}`}
+            onClick={() => setActiveTab('certificates')}
+          >
+            {t('impact_certs')}
           </button>
         </div>
-      </div>
-
-      {activeView === 'analytics' && (
-        <>
-          <Card className="ai-insights-banner glass">
-            <div className="ai-visual">
-              <div className="ai-pulse" />
-              <Zap size={24} className="ai-icon" />
-            </div>
-            <div className="ai-text">
-              <div className="ai-badge">AI PREDICTIVE INSIGHT</div>
-              <h4>Expected Surplus: <strong>12-15 kg</strong> (Next 4 hours)</h4>
-              <p>Based on your historical patterns, we predict a surplus of Biryani & Salads. <strong>Pre-matching is active</strong> with 3 verified NGOs nearby.</p>
-            </div>
-            <div className="ai-actions">
-              <Button variant="outline" size="sm">Adjust Forecast</Button>
-              <Button variant="primary" size="sm">Auto-Notify NGOs</Button>
-            </div>
-          </Card>
-
+      {activeTab === 'analytics' && (
+        <div className="analytics-view animate-fade-in">
           <div className="kpi-grid">
             {stats.map((stat, i) => (
               <Card key={i} className="kpi-card">
@@ -151,7 +140,7 @@ export const Dashboard: React.FC = () => {
               <div className="bar-chart">
                 {WEEKLY_DATA.map((d, i) => (
                   <div key={i} className="bar-col">
-                    <div className="bar-tooltip">{d.meals} meals</div>
+                    <div className="bar-tooltip">{d.meals} {t('meals_provided')}</div>
                     <div className="chart-bar" style={{ height: `${(d.meals / MAX_MEALS) * 100}%` }} />
                     <span className="bar-label">{d.day}</span>
                   </div>

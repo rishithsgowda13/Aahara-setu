@@ -3,7 +3,9 @@ import { Button } from '../../components/ui/Button/Button';
 import { Card } from '../../components/ui/Card/Card';
 import { Input } from '../../components/ui/Input/Input';
 import { Select } from '../../components/ui/Select/Select';
-import { MapPin, CheckSquare, Square } from 'lucide-react';
+import { MapPin, CheckSquare, Square, AlertOctagon } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { useTranslation } from '../../context/LanguageContext';
 import { supabase } from '../../../lib/supabase';
 import './Upload.css';
 
@@ -38,6 +40,10 @@ const DIETARY_INFO = [
 ];
 
 export const Upload: React.FC = () => {
+  const { t } = useTranslation();
+  const location = useLocation();
+  const isDisaster = location.state?.isDisaster || false;
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [checkedItems, setCheckedItems] = useState<boolean[]>(new Array(SAFETY_CHECKLIST.length).fill(false));
@@ -110,8 +116,9 @@ export const Upload: React.FC = () => {
           expires_in: expiry,
           dietary: dietary,
           address: address,
-          urgency_level: 'high',
-          urgency_score: 95
+          urgency_level: isDisaster ? 'critical' : 'high',
+          urgency_score: isDisaster ? 100 : 95,
+          is_disaster: isDisaster
         }]);
 
       if (error) throw error;
@@ -192,18 +199,28 @@ export const Upload: React.FC = () => {
   return (
     <div className="upload-container">
       <div className="upload-header">
-        <h1 className="page-title">Initiate <span className="gradient-text">Food Rescue</span></h1>
-        <p className="page-subtitle">Premium circular redistribution. List your surplus in under 60 seconds.</p>
+        <h1 className="page-title">{t('upload_title')}</h1>
+        <p className="page-subtitle">{t('upload_sub')}</p>
       </div>
+
+      {isDisaster && (
+        <div className="disaster-relief-banner animate-pulse-border">
+          <AlertOctagon size={24} />
+          <div className="banner-text">
+            <h4>DISASTER RELIEF MODE ACTIVE</h4>
+            <p>Your listing will be prioritized and exclusively visible to Disaster Response NGOs.</p>
+          </div>
+        </div>
+      )}
 
       <div className="upload-layout">
         <div className="upload-main">
           <Card className="upload-card">
-            <h3 className="card-section-title">📦 Item Information</h3>
+            <h3 className="card-section-title">📦 {t('item_info')}</h3>
             <form onSubmit={handleSubmit} className="upload-form">
               <div className="form-group">
                 <Input 
-                  label="What are you rescued today?" 
+                  label={t('item_name_label')}
                   placeholder="e.g., 20 Meal Kits, 5kg Fresh Fruit" 
                   required 
                   value={itemName}
@@ -214,7 +231,7 @@ export const Upload: React.FC = () => {
               <div className="form-row">
                 <div className="form-group">
                   <Select 
-                    label="Food Category" 
+                    label={t('food_cat')}
                     options={FOOD_CATEGORIES} 
                     value={category} 
                     onChange={setCategory} 
@@ -222,7 +239,7 @@ export const Upload: React.FC = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="input-label">Quantity Assessment</label>
+                  <label className="input-label">{t('qty_assess')}</label>
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <input 
                       type="number" 
@@ -255,7 +272,7 @@ export const Upload: React.FC = () => {
               <div className="form-row">
                 <div className="form-group">
                   <Input 
-                    label="Calculated Expiry" 
+                    label={t('calc_expiry')}
                     type="datetime-local" 
                     required 
                     value={expiry}
@@ -264,7 +281,7 @@ export const Upload: React.FC = () => {
                 </div>
                 <div className="form-group">
                   <Select 
-                    label="Dietary Classification" 
+                    label={t('diet_class')}
                     options={DIETARY_INFO} 
                     value={dietary} 
                     onChange={setDietary} 
@@ -274,7 +291,7 @@ export const Upload: React.FC = () => {
 
               <div className="form-group">
                 <Input 
-                  label="Precise Pickup Address" 
+                  label={t('pickup_addr')}
                   placeholder="Street, Building, landmark..." 
                   required 
                   value={address}
@@ -286,13 +303,13 @@ export const Upload: React.FC = () => {
                   onClick={handleFetchLocation}
                   disabled={isDetecting}
                 >
-                  <MapPin size={16} /> {isDetecting ? 'Detecting...' : 'Auto-detect Location'}
+                  <MapPin size={16} /> {isDetecting ? 'Detecting...' : t('detect_loc')}
                 </button>
               </div>
 
               <div className="safety-checklist">
                 <div className="checklist-header">
-                  <h4>🛡️ Quality Assurance Audit</h4>
+                  <h4>🛡️ {t('qa_audit')}</h4>
                   <span className="checklist-badge">{checkedItems.filter(Boolean).length}/{SAFETY_CHECKLIST.length}</span>
                 </div>
                 <p className="checklist-sub">Check all boxes to verify food safety compliance.</p>
@@ -312,7 +329,7 @@ export const Upload: React.FC = () => {
               </div>
 
               <Button type="submit" size="lg" fullWidth disabled={isSubmitting || !allChecked} className="hover-lift">
-                {isSubmitting ? 'Verifying...' : 'PUBLISH RESCUE LISTING'}
+                {isSubmitting ? 'Verifying...' : t('publish_btn')}
               </Button>
             </form>
           </Card>
@@ -320,18 +337,18 @@ export const Upload: React.FC = () => {
 
         <div className="upload-sidebar">
           <Card className="impact-preview-card hover-lift" glass={false}>
-            <h4>📈 PREDICTED SOCIAL IMPACT</h4>
+            <h4>📈 {t('social_impact')}</h4>
             <div className="impact-metrics">
               <div className="impact-metric">
-                <span className="impact-lbl">PEOPLE FED</span>
+                <span className="impact-lbl">{t('people_fed')}</span>
                 <span className="impact-val">12</span>
               </div>
               <div className="impact-metric">
-                <span className="impact-lbl">CARBON OFFSET</span>
+                <span className="impact-lbl">{t('carbon_offset')}</span>
                 <span className="impact-val">3.4kg</span>
               </div>
               <div className="impact-metric">
-                <span className="impact-lbl">NETWORK XP</span>
+                <span className="impact-lbl">{t('network_xp')}</span>
                 <span className="impact-val">+50</span>
               </div>
             </div>

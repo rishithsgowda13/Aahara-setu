@@ -23,6 +23,7 @@ export const Navbar: React.FC = () => {
   ];
 
   const receiverLinks = [
+    { name: t('nav_home'), path: '/', icon: <Home size={18} /> },
     { name: 'Dashboard', path: '/receiver', icon: <LayoutDashboard size={18} /> },
     { name: 'Explore Food', path: '/receiver/explore', icon: <Globe size={18} /> },
     { name: t('nav_traceability'), path: '/traceability', icon: <Radio size={18} /> },

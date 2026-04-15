@@ -155,7 +155,7 @@ export const Explore: React.FC = () => {
                 </div>
                 <div className="info-row"><strong>Demand:</strong> {selectedFood.demand}</div>
                 <div className="contact-link">
-                   📞 +91 98221 00334
+                   📞 +91 98221 00334 <span style={{ fontSize: '0.65rem', color: 'var(--color-text-muted)' }}>(Receiver Logistics)</span>
                 </div>
               </div>
             </div>
@@ -173,7 +173,7 @@ export const Explore: React.FC = () => {
                 <input 
                   type="range"
                   min="1"
-                  max={parseInt(selectedFood.quantity, 10) || 20}
+                  max={parseInt(selectedFood.quantity) || 1} 
                   value={claimQuantity || 1} 
                   onChange={(e) => setClaimQuantity(e.target.value)} 
                   className="pretty-slider"

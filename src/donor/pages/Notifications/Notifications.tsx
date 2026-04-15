@@ -165,5 +165,16 @@ export const Notifications: React.FC = () => {
         </div>
       )}
     </div>
+
+    {toastMessage && (
+      <div style={{
+        position: 'fixed', bottom: '40px', left: '50%', transform: 'translateX(-50%)',
+        background: 'var(--color-primary)', color: 'white', padding: '16px 32px', borderRadius: '100px',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.2)', zIndex: 10000, fontWeight: 700
+      }}>
+        ✨ {toastMessage}
+      </div>
+    )}
+  </div>
   );
 };

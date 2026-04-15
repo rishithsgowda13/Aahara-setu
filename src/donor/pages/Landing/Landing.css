@@ -229,6 +229,123 @@
   letter-spacing: 0.8px;
 }
 
+/* ========= HOW IT WORKS ========= */
+.how-it-works-section {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.steps-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.work-step {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.step-card {
+  background: white;
+  border-radius: 24px;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  min-width: 180px;
+  border: 1px solid rgba(0,0,0,0.04);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  transition: all 0.3s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(79, 99, 61, 0.08);
+}
+
+.step-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 5px;
+}
+
+.step-icon-box.blue { background: #EBF2FF; color: #3B82F6; }
+.step-icon-box.yellow { background: #FFF9EB; color: #EAB308; }
+.step-icon-box.purple { background: #F5EBFF; color: #A855F7; }
+.step-icon-box.green { background: #EBFFEF; color: #22C55E; }
+.step-icon-box.orange { background: #FFF2EB; color: #F97316; }
+.step-icon-box.gold { background: #FFFBEB; color: #D97706; }
+
+.step-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.step-desc {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: 500;
+  margin: 0;
+}
+
+.step-arrow {
+  font-size: 1.5rem;
+  color: #DDD;
+  font-weight: 300;
+}
+
+.steps-row-center {
+  display: flex;
+  justify-content: center;
+  margin-top: -10px;
+}
+
+.banner-how {
+  background: #F1F3EE;
+  padding: 16px 30px;
+  border-radius: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto 0;
+  width: fit-content;
+  border: 1px solid #E1E5DC;
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2D3724;
+}
+
+.zap-icon {
+  color: #4F633D;
+}
+
 /* ========= FLOW ========= */
 .flow-container-outer {
   display: flex;

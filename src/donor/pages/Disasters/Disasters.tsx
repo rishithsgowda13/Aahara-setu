@@ -21,30 +21,42 @@ export const Disasters: React.FC = () => {
   const [activeDisasters, setActiveDisasters] = React.useState<DisasterAlert[]>([]);
   const [loading, setLoading] = React.useState(true);
 
-  React.useEffect(() => {
-    const fetchAlerts = async () => {
-      const { data } = await supabase
-        .from('disaster_alerts')
-        .select('*')
-        .order('created_at', { ascending: false });
-      
-      if (data) {
-        const formatted = data.map((d: any) => ({
-          id: d.id,
-          type: d.title,
-          location: d.location_name,
-          urgency: d.severity?.toUpperCase() || 'HIGH',
-          peopleInNeed: d.people_in_need || 500,
-          suppliesNeeded: d.needs?.join(', ') || 'Various food items',
-          impact: d.impact_desc || 'Urgent support required',
-          timeRemaining: 'ASAP'
-        }));
-        setActiveDisasters(formatted);
-      }
-      setLoading(false);
-    };
+  const fetchAlerts = async () => {
+    const { data } = await supabase
+      .from('disaster_alerts')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (data) {
+      const formatted = data.map((d: any) => ({
+        id: d.id,
+        type: d.title,
+        location: d.location_name,
+        urgency: d.severity?.toUpperCase() || 'HIGH',
+        peopleInNeed: d.people_in_need || 500,
+        suppliesNeeded: d.needs?.join(', ') || 'Various food items',
+        impact: d.impact_desc || 'Urgent support required',
+        timeRemaining: 'ASAP'
+      }));
+      setActiveDisasters(formatted);
+    }
+    setLoading(false);
+  };
 
+  React.useEffect(() => {
     fetchAlerts();
+
+    // Subscribe to new alerts
+    const subscription = supabase
+      .channel('disaster_alerts_donor_live')
+      .on('postgres_changes', { event: '*', table: 'disaster_alerts', schema: 'public' }, () => {
+        fetchAlerts();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
   }, []);
   
   const [toast, setToast] = React.useState<string | null>(null);

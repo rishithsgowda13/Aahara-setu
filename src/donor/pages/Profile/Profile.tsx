@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
 import { 
-  User, ShieldCheck, MapPin, Camera, 
-  Award, TrendingUp, History, 
-  Info, LogOut, Activity, Heart, Users,
-  CheckCircle2, Clock, Zap
+  ShieldCheck, 
+  Award, 
+  Info, LogOut, Activity,
+  Clock, Zap
 } from 'lucide-react';
 import './Profile.css';
 
 export const Profile: React.FC = () => {
-  const [isVerifying, setIsVerifying] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const trustScore = 88;
 
@@ -183,7 +182,7 @@ export const Profile: React.FC = () => {
         </div>
       </div>
 
-      {/* Modern In-App Toast Notification */}
+
       {toastMessage && (
         <div style={{
           position: 'fixed', bottom: '100px', left: '50%', transform: 'translateX(-50%)',

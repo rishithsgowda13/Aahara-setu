@@ -15,7 +15,7 @@ export const Navbar: React.FC = () => {
     { name: 'Profile', path: '/profile', icon: <Star size={18} /> },
   ];
 
-  const userRole = localStorage.getItem('userRole') || 'donor'; // Defaulting to donor for this demo
+  // Role-based logic can be implemented here
 
   return (
     <nav className="navbar">

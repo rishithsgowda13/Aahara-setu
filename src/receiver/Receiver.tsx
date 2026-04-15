@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card/Card';
+import { Button } from '../components/ui/Button/Button';
 import { MapPin, Clock, Truck, ChevronRight, PackageOpen, Utensils, Camera, AlertTriangle, ShieldCheck, UploadCloud, X, ImagePlus, Zap } from 'lucide-react';
 import './Receiver.css';
 

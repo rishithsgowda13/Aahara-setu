@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card/Card';
+import { Button } from '../components/ui/Button/Button';
 import { MapPin, Phone, ShieldCheck, ArrowLeft } from 'lucide-react';
-import { LeafletMap } from '../components/ui/LeafletMap';
+import { LeafletMap } from '../components/ui/LeafletMap/LeafletMap';
 import './Explore.css';
 
 interface FoodItem {

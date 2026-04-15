@@ -41,14 +41,14 @@ export const Landing: React.FC = () => {
   ];
 
   const features = [
-    { icon: <Zap size={22} />, title: 'Urgency Score System', desc: 'Real-time priority based on expiry, quantity, distance & demand.' },
-    { icon: <MapPin size={22} />, title: 'Hunger vs Surplus Heatmap', desc: 'Visualize high-waste zones vs high-demand areas on live maps.' },
-    { icon: <RefreshCw size={22} />, title: 'Auto Redistribution', desc: 'Unclaimed food auto-alerts backup NGOs and nearest shelters.' },
-    { icon: <ShieldCheck size={22} />, title: 'Trust & Safety', desc: 'Food safety checklists, expiry validation & verified donors.' },
-    { icon: <Star size={22} />, title: 'Kindness Score', desc: 'Track community impact — "You helped feed 120 people ❤️"' },
-    { icon: <Wifi size={22} />, title: 'Low-Network Mode', desc: 'Lightweight offline mode & SMS fallback alerts for all zones.' },
-    { icon: <Truck size={22} />, title: 'Micro-Logistics', desc: 'Volunteer & delivery partner coordination built-in.' },
-    { icon: <Leaf size={22} />, title: 'CO₂ Tracker', desc: 'Measure environmental impact per donation in real time.' },
+    { icon: <Zap size={20} />, title: 'Urgency Score System', desc: 'Real-time priority based on expiry, quantity, distance & demand.' },
+    { icon: <MapPin size={20} />, title: 'Hunger vs Surplus Heatmap', desc: 'Visualize high-waste zones vs high-demand areas on live maps.' },
+    { icon: <RefreshCw size={20} />, title: 'Auto Redistribution', desc: 'Unclaimed food auto-alerts backup NGOs and nearest shelters.' },
+    { icon: <ShieldCheck size={20} />, title: 'Trust & Safety', desc: 'Food safety checklists, expiry validation & verified donors.' },
+    { icon: <Star size={20} />, title: 'Kindness Score', desc: 'Track community impact — "You helped feed 120 people ❤️"' },
+    { icon: <Wifi size={20} />, title: 'Low-Network Mode', desc: 'Lightweight offline mode & SMS fallback alerts for all zones.' },
+    { icon: <Truck size={20} />, title: 'Micro-Logistics', desc: 'Volunteer & delivery partner coordination built-in.' },
+    { icon: <Leaf size={20} />, title: 'CO₂ Tracker', desc: 'Measure environmental impact per donation in real time.' },
   ];
 
   return (
@@ -105,21 +105,21 @@ export const Landing: React.FC = () => {
       {/* Stats */}
       <section className="stats-section">
         <div className="section-header">
-          <h2 className="section-title">Our <span className="gradient-text">Impact</span> So Far</h2>
-          <p>Every meal counts. Every donor matters.</p>
+          <h2 className="section-title">Our <span className="title-accent">Impact</span> So Far</h2>
+          <p className="section-subtitle">Every meal counts. Every donor matters.</p>
         </div>
         <div className="stats-grid">
           {[
-            { icon: <Utensils size={28} />, value: meals.toLocaleString(), label: 'Meals Saved', suffix: '+' },
-            { icon: <Users size={28} />, value: people.toLocaleString(), label: 'People Fed', suffix: '+' },
-            { icon: <Heart size={28} />, value: donors, label: 'Active Donors', suffix: '' },
-            { icon: <Leaf size={28} />, value: co2.toLocaleString(), label: 'kg CO₂ Reduced', suffix: '+' },
+            { icon: <Utensils size={24} />, value: meals.toLocaleString(), label: 'Meals Saved', suffix: '+' },
+            { icon: <Users size={24} />, value: people.toLocaleString(), label: 'People Fed', suffix: '+' },
+            { icon: <Heart size={24} />, value: donors, label: 'Active Donors', suffix: '' },
+            { icon: <Leaf size={24} />, value: co2.toLocaleString(), label: 'kg CO₂ Reduced', suffix: '+' },
           ].map((s, i) => (
-            <Card key={i} className="stat-card">
-              <div className="stat-icon-wrap">{s.icon}</div>
-              <div className="stat-value">{s.value}{s.suffix}</div>
-              <div className="stat-label">{s.label}</div>
-            </Card>
+            <div key={i} className="stat-card-replica">
+              <div className="stat-icon-circle">{s.icon}</div>
+              <div className="stat-value-large">{s.value}{s.suffix}</div>
+              <div className="stat-label-text">{s.label}</div>
+            </div>
           ))}
         </div>
       </section>
@@ -130,19 +130,26 @@ export const Landing: React.FC = () => {
           <h2 className="section-title">How It <span className="gradient-text">Works</span></h2>
           <p>From surplus to satisfied — in under 30 minutes.</p>
         </div>
-        <div className="flow-steps">
-          {systemFlow.map((step, i) => (
-            <React.Fragment key={i}>
-              <div className="flow-step-card">
-                <div className="flow-step-icon">{step.icon}</div>
-                <div className="flow-step-label">{step.label}</div>
-                <div className="flow-step-desc">{step.desc}</div>
-              </div>
-              {i < systemFlow.length - 1 && (
-                <div className="flow-arrow"><ArrowRight size={18} /></div>
-              )}
-            </React.Fragment>
-          ))}
+        <div className="flow-container-outer">
+          <div className="flow-steps-row">
+            {systemFlow.slice(0, 5).map((step, i) => (
+              <React.Fragment key={i}>
+                <div className="flow-step-card premium-box">
+                  <div className="flow-step-icon">{step.icon}</div>
+                  <div className="flow-step-label">{step.label}</div>
+                  <div className="flow-step-desc">{step.desc}</div>
+                </div>
+                {i < 4 && <div className="flow-arrow-subtle">→</div>}
+              </React.Fragment>
+            ))}
+          </div>
+          <div className="flow-steps-row row-bottom">
+            <div className="flow-step-card premium-box">
+              <div className="flow-step-icon">{systemFlow[5].icon}</div>
+              <div className="flow-step-label">{systemFlow[5].label}</div>
+              <div className="flow-step-desc">{systemFlow[5].desc}</div>
+            </div>
+          </div>
         </div>
         <div className="flow-tagline">
           <Zap size={16} />

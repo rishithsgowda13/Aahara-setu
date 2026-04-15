@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Upload, MapPin, LayoutDashboard, Star, Bell, Target } from 'lucide-react';
+import { Home, Upload, MapPin, LayoutDashboard, Star, Bell, Target, LogOut } from 'lucide-react';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
@@ -8,6 +8,12 @@ export const Navbar: React.FC = () => {
 
   const userRole = localStorage.getItem('userType') || 'receiver'; // Default to receiver for testing
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('userType');
+    // The App.tsx listener will handle the redirection automatically
+  };
 
   const navLinks = [
     { name: 'Home', path: '/', icon: <Home size={18} /> },
@@ -46,6 +52,12 @@ export const Navbar: React.FC = () => {
               <span>{link.name}</span>
             </Link>
           ))}
+          {isAuthenticated && (
+            <button onClick={handleLogout} className="nav-link logout-btn" style={{ background: 'none', border: 'none', color: 'var(--color-danger)', cursor: 'pointer' }}>
+              <LogOut size={18} />
+              <span>Logout</span>
+            </button>
+          )}
           {!isAuthenticated && (
             <Link to="/login" className="nav-login-btn">
               Login

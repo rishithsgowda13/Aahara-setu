@@ -20,7 +20,21 @@ interface FoodItem {
   demand: string;
 }
 
+import { findMatch } from './AaharaAI';
+
 const MOCK_FOOD_ITEMS: FoodItem[] = [
+  {
+    id: '7', name: 'Steamed Basmati Rice', type: 'Main Course',
+    quantity: '40 portions', distance: '0.5 km', expiry: '2 hours',
+    donor: 'Royal Biryani House', urgencyScore: 88, urgencyLevel: 'high',
+    urgencyLabel: '⚡ High - 2 hr', verified: true, demand: 'High'
+  },
+  {
+    id: '8', name: 'Mixed Vegetable Sambar', type: 'Side Dish',
+    quantity: '2 large containers', distance: '1.1 km', expiry: '3 hours',
+    donor: 'Udupi Point', urgencyScore: 75, urgencyLevel: 'medium',
+    urgencyLabel: '⏰ Medium - 3 hr', verified: true, demand: 'Medium'
+  },
   {
     id: '1', name: 'KFC Fried Chicken Bucket', type: 'Fast Food',
     quantity: '15 pieces', distance: '0.8 km', expiry: '30 mins',
@@ -210,6 +224,12 @@ export const Explore: React.FC = () => {
                 <span className={`urgency-badge ${item.urgencyLevel}`}>
                   {item.urgencyLabel}
                 </span>
+                {/* Aahara AI Smart Match Badge */}
+                {findMatch(item.name, items.filter(i => i.id !== item.id).map(i => i.name)) && (
+                  <div className="ai-pairing-badge">
+                    <Zap size={14} /> AI: Complete Meal Match Found
+                  </div>
+                )}
               </div>
               <div className="food-card-title-row">
                 <h3 className="food-name">{item.name}</h3>

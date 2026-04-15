@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { MapPin, Clock, Truck, ChevronRight, PackageOpen, Utensils, Camera, AlertTriangle, ShieldCheck, UploadCloud, X, ImagePlus } from 'lucide-react';
+import { MapPin, Clock, Truck, ChevronRight, PackageOpen, Utensils, Camera, AlertTriangle, ShieldCheck, UploadCloud, X, ImagePlus, Zap } from 'lucide-react';
 import './Receiver.css';
 
 interface ClaimedItem {
@@ -144,6 +144,19 @@ export const Receiver: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Aahara AI Smart Pairing Banner */}
+      <div className="account-lock-banner ai-smart-banner">
+        <Zap size={24} className="pulse-icon" />
+        <div className="lock-banner-content">
+          <div className="ai-tag">AAHARA AI MATCH</div>
+          <h3>Complete Your Meal: Sambar Found!</h3>
+          <p>You recently claimed <strong>"Steamed Basmati Rice"</strong>. A donor just listed <strong>"Mixed Vegetable Sambar"</strong> only 0.6km away! Claim it now to serve a complete meal.</p>
+          <Button variant="glass" size="sm" style={{ marginTop: '10px', color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }}>
+            Claim Matching Item <ChevronRight size={16} />
+          </Button>
+        </div>
+      </div>
 
       <div className="receiver-kpi-grid">
         <Card className="kpi-card">

@@ -66,6 +66,21 @@
 .filter-chip.chip-medium.active { background: var(--urgency-medium); border-color: var(--urgency-medium); }
 .filter-chip.chip-low.active { background: var(--urgency-low); border-color: var(--urgency-low); }
 
+.ai-pairing-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  margin-top: 8px;
+  width: fit-content;
+}
+
 /* Urgency Alert Banner */
 .urgency-alert {
   display: flex;

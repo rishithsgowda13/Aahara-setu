@@ -26,15 +26,19 @@ function App() {
   useEffect(() => {
     // Listen for storage changes (helpful for multi-tab or manual overrides)
     const handleStorageChange = () => {
-      setAuthState({
-        isAuthenticated: localStorage.getItem('isAuthenticated') === 'true',
-        userRole: localStorage.getItem('userType')
+      const isAuth = localStorage.getItem('isAuthenticated') === 'true';
+      const role = localStorage.getItem('userType');
+      
+      setAuthState(prev => {
+        if (prev.isAuthenticated === isAuth && prev.userRole === role) {
+          return prev; // No change, don't trigger re-render
+        }
+        return { isAuthenticated: isAuth, userRole: role };
       });
     };
     window.addEventListener('storage', handleStorageChange);
     
-    // We also need a way to trigger this locally since 'storage' event doesn't fire in the same tab
-    const interval = setInterval(handleStorageChange, 500); 
+    const interval = setInterval(handleStorageChange, 1000); 
 
     const t1 = setTimeout(() => {
       addToast('⚡ High Priority Alert', 'Paneer Tikka expiring in 45 mins — 0.4 km away!', 'warning');

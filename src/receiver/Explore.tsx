@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Search, MapPin, Clock, AlertCircle, Zap, ShieldCheck, Users } from 'lucide-react';
+import { Search, MapPin, Clock, AlertCircle, Zap, ShieldCheck, Users, X } from 'lucide-react';
 import { LeafletMap } from '../components/ui/LeafletMap';
 import './Explore.css';
 
@@ -55,7 +55,7 @@ const MOCK_FOOD_ITEMS: FoodItem[] = [
   },
 
   {
-    id: '2', name: 'Veg Dum Biryani', type: 'Main Course',
+    id: '9', name: 'Veg Dum Biryani', type: 'Main Course',
     quantity: '10 portions', distance: '1.2 km', expiry: '4 hours',
     donor: 'Taj Hotel', urgencyScore: 60, urgencyLevel: 'medium',
     urgencyLabel: '⏰ Medium - 4 hr', verified: true, demand: 'High',

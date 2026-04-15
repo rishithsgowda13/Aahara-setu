@@ -3,7 +3,7 @@ import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
 import { 
   BarChart3, TrendingDown, Package, CheckCircle2, 
-  Leaf, Zap, Trophy, Award
+  Leaf, Zap, Trophy, Award, MapPin, Medal, Star, Heart, ExternalLink, Download, Share2
 } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import './Dashboard.css';
@@ -74,7 +74,6 @@ export const Dashboard: React.FC = () => {
 
   const handleDownloadCert = (certName: string) => {
     setIsGenerating(true);
-    // Simulate generation/processing
     setTimeout(() => {
       const link = document.createElement('a');
       link.href = '/certificates/base.png';
@@ -95,24 +94,14 @@ export const Dashboard: React.FC = () => {
           <p className="page-subtitle">Real-time metrics & community recognition.</p>
         </div>
         
-        {/* Unified Tab Switcher */}
         <div className="dashboard-view-switcher glass">
-          <button 
-            className={`view-btn ${activeView === 'analytics' ? 'active' : ''}`}
-            onClick={() => setActiveView('analytics')}
-          >
-            <BarChart3 size={18} /> {t('analytics_tab') || 'Analytics'}
+          <button className={`view-btn ${activeView === 'analytics' ? 'active' : ''}`} onClick={() => setActiveView('analytics')}>
+            <BarChart3 size={18} /> Analytics
           </button>
-          <button 
-            className={`view-btn ${activeView === 'leaderboard' ? 'active' : ''}`}
-            onClick={() => setActiveView('leaderboard')}
-          >
+          <button className={`view-btn ${activeView === 'leaderboard' ? 'active' : ''}`} onClick={() => setActiveView('leaderboard')}>
             <Trophy size={18} /> {t('global_leaderboard')}
           </button>
-          <button 
-            className={`view-btn ${activeView === 'certificates' ? 'active' : ''}`}
-            onClick={() => setActiveView('certificates')}
-          >
+          <button className={`view-btn ${activeView === 'certificates' ? 'active' : ''}`} onClick={() => setActiveView('certificates')}>
             <Award size={18} /> {t('impact_certs')}
           </button>
         </div>
@@ -163,10 +152,7 @@ export const Dashboard: React.FC = () => {
                 {WEEKLY_DATA.map((d, i) => (
                   <div key={i} className="bar-col">
                     <div className="bar-tooltip">{d.meals} meals</div>
-                    <div
-                      className="chart-bar"
-                      style={{ height: `${(d.meals / MAX_MEALS) * 100}%` }}
-                    />
+                    <div className="chart-bar" style={{ height: `${(d.meals / MAX_MEALS) * 100}%` }} />
                     <span className="bar-label">{d.day}</span>
                   </div>
                 ))}
@@ -187,16 +173,27 @@ export const Dashboard: React.FC = () => {
                       <span className="flow-track-name">{step.name}</span>
                       {step.count > 0 && <span className="flow-track-count">{step.count} items</span>}
                     </div>
-                    {i < flowSteps.length - 1 && (
-                      <div className={`flow-track-line ${step.status === 'completed' ? 'filled' : ''}`} />
-                    )}
+                    {i < flowSteps.length - 1 && <div className={`flow-track-line ${step.status === 'completed' ? 'filled' : ''}`} />}
                   </div>
                 ))}
               </div>
             </Card>
           </div>
 
-
+          <Card className="heatmap-card">
+            <div className="chart-header">
+              <h3><MapPin size={18} /> Hunger vs Surplus Heatmap</h3>
+              <span className="tag-badge">Live Zones</span>
+            </div>
+            <div className="heatmap-zones">
+              {HEATMAP_ZONES.map((zone, i) => (
+                <div key={i} className={`heatmap-zone zone-${zone.type}`}>
+                  <div className="zone-name">{zone.name}</div>
+                  <div className="zone-bar-row">
+                    <div className="zone-bar"><div className="zone-bar-fill surplus-fill" style={{ width: `${zone.waste}%` }} /></div>
+                  </div>
+                </div>
+              ))}
             </div>
           </Card>
 
@@ -225,17 +222,11 @@ export const Dashboard: React.FC = () => {
           <div className="top-three">
             {leaders.slice(0, 3).map((l) => (
               <Card key={l.rank} className={`top-card rank-${l.rank}`}>
-                <div className="rank-badge">
-                  {l.rank === 1 ? <Trophy size={24} /> : <Medal size={20} />}
-                </div>
+                <div className="rank-badge">{l.rank === 1 ? <Trophy size={24} /> : <Medal size={20} />}</div>
                 <div className="top-avatar" style={{ background: l.color }}>{l.avatar}</div>
                 <h3>{l.name}</h3>
-                <div className="badge-pill">
-                  <Star size={12} fill="currentColor" /> {l.badge}
-                </div>
-                <div className="top-stat">
-                  <Heart size={14} /> {l.pts} kindness pts
-                </div>
+                <div className="badge-pill"><Star size={12} fill="currentColor" /> {l.badge}</div>
+                <div className="top-stat"><Heart size={14} /> {l.pts} kindness pts</div>
                 <p>{l.impact} shared</p>
                 <div className="top-progress" />
               </Card>
@@ -244,11 +235,7 @@ export const Dashboard: React.FC = () => {
 
           <Card className="leaderboard-table-card">
             <div className="table-header">
-              <span># RANK</span>
-              <span>ORGANIZATION</span>
-              <span>KINDNESS SCORE</span>
-              <span>IMPACT (MEALS)</span>
-              <span>ACTION</span>
+              <span># RANK</span><span>ORGANIZATION</span><span>KINDNESS SCORE</span><span>IMPACT (MEALS)</span><span>ACTION</span>
             </div>
             <div className="table-rows">
               {leaders.map((l) => (
@@ -256,16 +243,11 @@ export const Dashboard: React.FC = () => {
                   <span className="row-rank">{l.rank}</span>
                   <div className="row-name">
                     <div className="mini-avatar" style={{ background: l.color }}>{l.avatar}</div>
-                    <div className="name-vitals">
-                      <strong>{l.name}</strong>
-                      {l.badge && <span className="mini-badge-txt">{l.badge}</span>}
-                    </div>
+                    <div className="name-vitals"><strong>{l.name}</strong>{l.badge && <span className="mini-badge-txt">{l.badge}</span>}</div>
                   </div>
                   <span className="row-pts">{l.pts.toLocaleString()}</span>
                   <span className="row-impact">{l.impact}</span>
-                  <div className="row-actions">
-                    <Button size="sm" variant="outline"><ExternalLink size={14} /></Button>
-                  </div>
+                  <div className="row-actions"><Button size="sm" variant="outline"><ExternalLink size={14} /></Button></div>
                 </div>
               ))}
             </div>
@@ -277,11 +259,7 @@ export const Dashboard: React.FC = () => {
         <div className="certificates-view kindness-hub" style={{ animation: 'fadeIn 0.5s ease' }}>
           <div className="cert-header-row">
             <h2>Your Impact Journey</h2>
-            <Button 
-              className="generate-report-btn" 
-              onClick={() => handleDownloadCert('2024_Impact_Report')}
-              disabled={isGenerating}
-            >
+            <Button className="generate-report-btn" onClick={() => handleDownloadCert('2024_Impact_Report')} disabled={isGenerating}>
               <Download size={18} /> {isGenerating ? 'Generating...' : 'Generate 2024 Impact Report'}
             </Button>
           </div>
@@ -299,12 +277,8 @@ export const Dashboard: React.FC = () => {
                   <div className="cert-meta">
                     <span>{cert.date}</span>
                     <div className="cert-btns">
-                      <Button size="sm" variant="outline" onClick={() => alert('Feature coming soon: Sharing directly to LinkedIn!')}>
-                        <Star size={14} />
-                      </Button>
-                      <Button size="sm" variant="outline" onClick={() => handleDownloadCert(cert.type)}>
-                        <Download size={14} />
-                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => alert('LinkedIn integration ready!')}><Share2 size={14} /></Button>
+                      <Button size="sm" variant="outline" onClick={() => handleDownloadCert(cert.type)}><Download size={14} /></Button>
                     </div>
                   </div>
                 </div>

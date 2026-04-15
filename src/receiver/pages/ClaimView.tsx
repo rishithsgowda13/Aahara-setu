@@ -4,6 +4,7 @@ import { Card } from '../../donor/components/ui/Card/Card';
 import { Button } from '../../donor/components/ui/Button/Button';
 import { MapPin, Phone, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { LeafletMap } from '../../donor/components/ui/LeafletMap/LeafletMap';
+import { supabase } from '../../lib/supabase';
 import '../styles/Explore.css';
 
 interface FoodItem {
@@ -38,8 +39,39 @@ export const ClaimView: React.FC = () => {
   const [step, setStep] = useState<'details' | 'logistics'>('details');
 
   useEffect(() => {
-    const found = MOCK_FOOD_ITEMS.find(i => i.id === id);
-    if (found) setItem(found);
+    const fetchItem = async () => {
+      // 1. Try fetching from Supabase first
+      const { data, error } = await supabase
+        .from('food_listings')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (data) {
+        setItem({
+          id: data.id,
+          name: data.name,
+          type: data.category,
+          quantity: data.quantity,
+          distance: data.distance,
+          expiry: data.expires_in,
+          donor: data.donor,
+          urgencyScore: data.urgency_score,
+          urgencyLevel: data.urgency_level as any,
+          urgencyLabel: `⚡ ${data.urgency_level === 'high' ? 'High Priority' : 'Active'} - ${data.expires_in}`,
+          verified: true,
+          demand: data.demand,
+          phone: data.phone || '+91 98765 43210'
+        });
+        return;
+      }
+
+      // 2. Fallback to mock data for hardcoded IDs
+      const found = MOCK_FOOD_ITEMS.find(i => i.id === id);
+      if (found) setItem(found);
+    };
+
+    fetchItem();
   }, [id]);
 
   if (!item) return <div className="p-12 text-center" style={{ background: '#f8fafc', height: '100vh' }}>Loading contribution details...</div>;

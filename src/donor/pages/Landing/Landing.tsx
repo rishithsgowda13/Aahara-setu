@@ -71,11 +71,6 @@ export const Landing: React.FC = () => {
                 <Heart size={20} /> Donate Food
               </Button>
             </Link>
-            <Link to="/explore" style={{ textDecoration: 'none' }}>
-              <Button variant="glass" size="lg" className="hero-btn">
-                <Search size={20} /> Find Food Nearby
-              </Button>
-            </Link>
           </div>
           <div className="hero-trust">
             <span className="trust-badge"><ShieldCheck size={14} /> Verified Donors</span>
@@ -179,7 +174,6 @@ export const Landing: React.FC = () => {
           <p>Join 450+ donors and 120+ NGOs transforming food waste into community impact.</p>
           <div className="cta-actions">
             <Link to="/upload"><Button size="lg"><Heart size={18} /> Donate Food</Button></Link>
-            <Link to="/explore"><Button variant="glass" size="lg"><Search size={18} /> Find Food</Button></Link>
           </div>
         </div>
       </section>

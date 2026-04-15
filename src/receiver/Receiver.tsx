@@ -20,8 +20,8 @@ const ACTIVE_CLAIMS: ClaimedItem[] = [
     name: 'Assorted Gourmet Pastries', 
     donor: 'Baskin & Scones', 
     quantity: '15 pieces', 
-    status: 'in_transit', 
-    eta: 'Arriving in 10 mins', 
+    status: 'pending' as const, 
+    eta: 'Pick up by 6:00 PM today', 
     distance: '0.8 km' 
   }
 ];
@@ -257,8 +257,8 @@ export const Receiver: React.FC = () => {
                 
                 <div className="claim-status-col">
                   <div className={`status-badge status-${item.status}`}>
-                    {item.status === 'in_transit' && <><Truck size={14} /> In Transit</>}
-                    {item.status === 'pending' && <><Clock size={14} /> Pending Pickup</>}
+                    {item.status === 'in_transit' && <><Truck size={14} /> On the way</>}
+                    {item.status === 'pending' && <><MapPin size={14} /> Self-Pickup</>}
                     {item.status === 'proof_required' && <><AlertTriangle size={14} /> Needs Proof</>}
                     {item.status === 'proof_submitted' && <><Clock size={14} /> Admin Reviewing</>}
                     {item.status === 'completed' && <><ShieldCheck size={14} /> Verified</>}
@@ -266,9 +266,9 @@ export const Receiver: React.FC = () => {
                   
                   <div className="eta-text">{item.eta}</div>
                   
-                  {item.status === 'in_transit' && (
+                  {item.status === 'pending' && (
                     <Button variant="outline" className="track-btn">
-                      Track Delivery <ChevronRight size={14} />
+                      Required <ChevronRight size={14} />
                     </Button>
                   )}
 

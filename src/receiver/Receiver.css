@@ -259,16 +259,11 @@
   font-weight: 600;
 }
 
-.status-in_transit {
-  background: rgba(59, 130, 246, 0.1);
-  color: #3b82f6;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-}
 
 .status-pending {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: rgba(139, 161, 148, 0.1);
+  color: var(--color-primary);
+  border: 1px solid rgba(139, 161, 148, 0.3);
 }
 
 .status-proof_required {

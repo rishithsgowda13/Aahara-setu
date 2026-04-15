@@ -1,0 +1,241 @@
+.explore-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 40px 0 100px 0;
+}
+
+.explore-header {
+  margin-bottom: 20px;
+}
+
+/* Search Bar */
+.search-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px 24px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg);
+  border: 1px solid rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-sm);
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  background: #f8fafc;
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.search-icon { color: var(--color-primary); }
+
+.search-inner-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 0;
+  font-weight: 600;
+  outline: none;
+}
+
+.filter-chips {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-chip {
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1.5px solid rgba(0,0,0,0.05);
+  background: #f8fafc;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.filter-chip:hover { transform: translateY(-2px); border-color: var(--color-primary); }
+.filter-chip.active { background: var(--color-primary); color: white; border-color: var(--color-primary); box-shadow: 0 5px 15px rgba(79, 99, 61, 0.3); }
+
+/* Food Cards */
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+.food-card {
+  padding: 30px !important;
+  background: #FCF9F1 !important;
+  border: 1px solid #E8EDE4 !important;
+  border-radius: 24px !important;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Red top border ONLY for high urgency cards */
+.food-card.urgency-border-high {
+  border-top: 6px solid #E53E3E !important;
+}
+
+.food-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.food-type-badge {
+  background: #F1F3EE;
+  color: #5D6355;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid #D6DBCF;
+}
+
+.urgency-badge {
+  background: #FFF5F5;
+  color: #E53E3E;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.urgency-badge.high { background: #FFF5F5; color: #E53E3E; }
+.urgency-badge.medium { background: #FEF3C7; color: #D69E2E; }
+.urgency-badge.low { background: #F0FFF4; color: #38A169; }
+
+.food-card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.food-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #2D3724;
+  margin: 0;
+}
+
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #F1F3EE;
+  color: #5D6355;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1px solid #D6DBCF;
+}
+
+.donor-name {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+/* Boxed Meta Grid */
+.food-meta-grid {
+  background: var(--color-background-soft);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.meta-label {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.meta-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.meta-value.text-danger {
+  color: #E53E3E;
+}
+
+/* Progress bar style */
+.urgency-bar-wrap {
+  margin-bottom: 28px;
+}
+
+.urgency-bar-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #4F633D;
+  margin-bottom: 12px;
+}
+
+.urgency-score-num {
+  margin-left: auto;
+  color: #1a1a1a;
+}
+
+.urgency-bar {
+  height: 8px;
+  background: #E1E5DC;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.urgency-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.urgency-bar-fill.high { background: #E53E3E; }
+.urgency-bar-fill.medium { background: #D69E2E; }
+.urgency-bar-fill.low { background: #38A169; }
+
+.claim-btn-premium {
+  background: #4F633D !important;
+  color: white !important;
+  border-radius: 30px !important;
+  font-weight: 700 !important;
+  height: 52px;
+}
+
+@media (max-width: 900px) {
+  .search-filter-bar { flex-direction: column; align-items: stretch; }
+  .food-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .food-grid { grid-template-columns: 1fr; }
+  .search-filter-bar { flex-direction: column; align-items: stretch; }
+}

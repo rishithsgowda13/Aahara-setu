@@ -61,6 +61,8 @@ const PAST_CLAIMS: ClaimedItem[] = [
 
 export const Receiver: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'active' | 'pending_proofs' | 'history' | 'ai_match'>('ai_match');
+  const [aiSearchStep, setAiSearchStep] = useState<'prompt' | 'searching' | 'result'>('prompt');
+  const [aiQuery, setAiQuery] = useState('');
   
   const [items, setItems] = useState({
     active: ACTIVE_CLAIMS,
@@ -223,31 +225,75 @@ export const Receiver: React.FC = () => {
         <div className="claims-list">
           {activeTab === 'ai_match' ? (
             <div className="ai-match-view">
-              <Card className="ai-discovery-card glass">
-                <div className="ai-discovery-header">
-                  <div className="ai-tag">SMART BUNDLE READY</div>
-                  <h3>We found a perfect pairing!</h3>
-                </div>
-                <div className="match-visual-row">
-                  <div className="match-item-bubble">
-                    <span className="bubble-label">You Claimed</span>
-                    <p>Rice</p>
+              {aiSearchStep === 'prompt' ? (
+                <Card className="ai-discovery-card glass" style={{ textAlign: 'center', padding: '40px' }}>
+                  <div style={{ width: '80px', height: '80px', background: '#e8f5e9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                    <Zap size={40} color="#4f633d" />
                   </div>
-                  <div className="match-connector">
-                    <Zap size={20} className="text-warning" />
+                  <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#1a1a1a', marginBottom: '12px' }}>What are you looking for?</h2>
+                  <p style={{ color: '#666', fontSize: '1rem', marginBottom: '32px', maxWidth: '500px', margin: '0 auto 32px' }}>
+                    Tell Aahara AI what you already have or what you need to complete your meal distribution (e.g., Rice, Chapati, Sambar).
+                  </p>
+                  <div style={{ display: 'flex', gap: '12px', maxWidth: '500px', margin: '0 auto' }}>
+                    <input 
+                      type="text" 
+                      value={aiQuery}
+                      onChange={(e) => setAiQuery(e.target.value)}
+                      placeholder="e.g. I have 10kgs of Rice, I need curry..." 
+                      style={{ flex: 1, padding: '16px', borderRadius: '12px', border: '1px solid #ddd', fontSize: '1rem' }} 
+                    />
+                    <Button 
+                      style={{ padding: '0 24px', borderRadius: '12px', fontWeight: 700 }}
+                      disabled={aiQuery.trim().length === 0}
+                      onClick={() => {
+                        if (aiQuery.trim().length === 0) return;
+                        setAiSearchStep('searching');
+                        setTimeout(() => setAiSearchStep('result'), 1500);
+                      }}
+                    >
+                      Find Matches
+                    </Button>
                   </div>
-                  <div className="match-item-bubble highlight">
-                    <span className="bubble-label">AI Suggests</span>
-                    <p>Sambar</p>
+                </Card>
+              ) : aiSearchStep === 'searching' ? (
+                <Card className="ai-discovery-card glass" style={{ textAlign: 'center', padding: '60px' }}>
+                  <div style={{ animation: 'pulse-red 1.5s infinite', width: '60px', height: '60px', background: '#fdfcf7', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', boxShadow: '0 0 15px rgba(79, 99, 61, 0.3)' }}>
+                    <Zap size={30} color="#f59e0b" />
                   </div>
-                </div>
-                <p className="ai-suggestion-text">
-                  Distributing <strong>Rice</strong> alone often leads to lower satisfaction. 
-                  A donor just listed <strong>Mixed Vegetable Sambar</strong> 0.6km away. 
-                  Claiming them together increases your impact score by <strong>+45%</strong>.
-                </p>
-                <Button fullWidth className="ai-primary-btn">Claim Matching Sambar Now</Button>
-              </Card>
+                  <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#333' }}>Scanning nearby donations...</h3>
+                  <p style={{ color: '#666', marginTop: '10px' }}>Aahara AI is analyzing distances and optimal pairings.</p>
+                </Card>
+              ) : (
+                <Card className="ai-discovery-card glass animate-fade-in">
+                  <div className="ai-discovery-header">
+                    <div className="ai-tag">SMART BUNDLE READY</div>
+                    <h3>We found a perfect pairing!</h3>
+                  </div>
+                  <div className="match-visual-row">
+                    <div className="match-item-bubble">
+                      <span className="bubble-label">You Have</span>
+                      <p>Rice</p>
+                    </div>
+                    <div className="match-connector">
+                      <Zap size={20} className="text-warning" />
+                    </div>
+                    <div className="match-item-bubble highlight">
+                      <span className="bubble-label">AI Suggests</span>
+                      <p>Sambar</p>
+                    </div>
+                  </div>
+                  <p className="ai-suggestion-text">
+                    Distributing <strong>Rice</strong> alone often leads to lower satisfaction. 
+                    A donor just listed <strong>Mixed Vegetable Sambar</strong> 0.6km away. 
+                    Claiming them together increases your impact score by <strong>+45%</strong>.
+                  </p>
+                  <Button fullWidth className="ai-primary-btn">Claim Matching Sambar Now</Button>
+                  <Button variant="ghost" fullWidth style={{ marginTop: '12px' }} onClick={() => {
+                    setAiSearchStep('prompt');
+                    setAiQuery('');
+                  }}>Search Again</Button>
+                </Card>
+              )}
             </div>
           ) : displayItems.length === 0 ? (
             <div className="empty-claims">No records found.</div>

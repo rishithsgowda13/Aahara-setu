@@ -175,7 +175,7 @@ export const Landing: React.FC = () => {
       {/* CTA */}
       <section className="cta-section">
         <div className="cta-content">
-          <h2>Start Making a Difference <span className="gradient-text">Today</span></h2>
+          <h2>Start Making a Difference <span style={{ color: '#FFF7E2' }}>Today</span></h2>
           <p>Join 450+ donors and 120+ NGOs transforming food waste into community impact.</p>
           <div className="cta-actions">
             <Link to="/upload"><Button size="lg"><Heart size={18} /> Donate Food</Button></Link>

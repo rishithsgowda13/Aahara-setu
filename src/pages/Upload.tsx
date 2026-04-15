@@ -175,7 +175,7 @@ export const Upload: React.FC = () => {
               <li>Directly feed people in your community</li>
               <li>Earn Kindness Score points & recognition</li>
               <li>Improve your organization's social impact</li>
-              <li>Join 450+ verified donors on CFRN</li>
+              <li>Join 450+ verified donors on Aahara Setu</li>
             </ul>
           </Card>
 

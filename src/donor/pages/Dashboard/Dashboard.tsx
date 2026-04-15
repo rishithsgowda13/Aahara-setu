@@ -143,6 +143,7 @@ export const Dashboard: React.FC = () => {
             {t('impact_certs')}
           </button>
         </div>
+      </div>
       {activeTab === 'analytics' && (
         <div className="analytics-view animate-fade-in">
           <div className="kpi-grid">

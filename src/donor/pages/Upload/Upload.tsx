@@ -107,18 +107,20 @@ export const Upload: React.FC = () => {
 
     try {
       const { error } = await supabase
-        .from('food_listings')
+        .from('donations')
         .insert([{
-          name: itemName,
-          donor: 'Gaurav Sweets', // Demo donor name
+          food_name: itemName,
+          donor_id: '00000000-0000-0000-0000-000000000000', // Mock Donor ID for Demo
           category: category,
-          quantity: `${itemQty} ${unit}`,
-          expires_in: expiry,
-          dietary: dietary,
-          address: address,
-          urgency_level: isDisaster ? 'critical' : 'high',
+          dietary_type: dietary,
+          is_disaster: isDisaster,
+          quantity_value: parseFloat(itemQty) || 0,
+          quantity_unit: unit,
+          expiry_time: new Date(expiry).toISOString(),
+          pickup_address: address,
+          pickup_location: 'POINT(77.6413 12.9719)', // Mock coords for demo (Bangalore)
           urgency_score: isDisaster ? 100 : 95,
-          is_disaster: isDisaster
+          status: 'available'
         }]);
 
       if (error) throw error;
@@ -126,7 +128,7 @@ export const Upload: React.FC = () => {
       setSubmitted(true);
     } catch (error) {
       console.error('Error uploading:', error);
-      alert('Upload failed. Check console for details.');
+      alert('Upload failed. Check console for details (Table: donations).');
     } finally {
       setIsSubmitting(false);
     }

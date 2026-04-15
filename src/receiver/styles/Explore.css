@@ -419,3 +419,60 @@
 
 .partner-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 10px; }
 .partner-grid button { border-radius: 10px !important; border: 1px solid #ddd !important; font-weight: 700 !important; }
+
+/* DISASTER RELIEF CARD THEME */
+.food-card.disaster-card {
+  border: 2px solid #ef4444 !important;
+  background: linear-gradient(180deg, #fffcfc, #fff5f5) !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(239, 68, 68, 0.15) !important;
+}
+
+.disaster-ribbon {
+  background: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-bottom-left-radius: 12px;
+  z-index: 10;
+  letter-spacing: 0.5px;
+  animation: pulseBG 2s infinite;
+}
+
+@keyframes pulseBG {
+  0% { opacity: 1; }
+  50% { opacity: 0.85; }
+  100% { opacity: 1; }
+}
+
+.urgency-badge.critical {
+  background: #7f1d1d !important;
+  color: #fff !important;
+  animation: pulseCritical 1.5s infinite;
+}
+
+@keyframes pulseCritical {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.disaster-btn {
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
+}
+
+.disaster-btn:hover {
+  background: #dc2626 !important;
+  transform: translateY(-2px);
+}

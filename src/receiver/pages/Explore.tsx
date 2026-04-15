@@ -95,22 +95,23 @@ export const Explore: React.FC = () => {
     // 1. Fetch existing items
     const fetchItems = async () => {
       const { data, error } = await supabase
-        .from('food_listings')
-        .select('*')
+        .from('donations')
+        .select('*, profiles(organization_name)')
+        .eq('status', 'available')
         .order('created_at', { ascending: false });
       
       if (data) {
         const formatted = data.map((d: any) => ({
           id: d.id,
-          name: d.name,
-          donor: d.donor,
+          name: d.food_name,
+          donor: d.profiles?.organization_name || 'Anonymous Donor',
           category: d.category,
-          quantity: d.quantity,
-          expiresIn: d.expires_in,
-          distance: d.distance,
-          demand: d.demand,
+          quantity: `${d.quantity_value} ${d.quantity_unit}`,
+          expiresIn: new Date(d.expiry_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          distance: '0.4 km', // Default for demo
+          demand: 'High',
           urgencyScore: d.urgency_score,
-          urgencyLevel: d.urgency_level,
+          urgencyLevel: d.urgency_score > 90 ? 'high' : d.urgency_score > 60 ? 'medium' : 'low',
           isDisaster: d.is_disaster
         }));
         setFoodItems([...formatted, ...MOCK_FOOD_ITEMS]);
@@ -122,19 +123,19 @@ export const Explore: React.FC = () => {
     // 2. Subscribe to real-time updates
     const channel = supabase
       .channel('realtime_food')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'food_listings' }, (payload) => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'donations' }, (payload) => {
         const newItem = payload.new as any;
         const formatted: FoodItem = {
           id: newItem.id,
-          name: newItem.name,
-          donor: newItem.donor,
+          name: newItem.food_name,
+          donor: 'New Donor', // Profile join not easy in single real-time payload
           category: newItem.category,
-          quantity: newItem.quantity,
-          expiresIn: newItem.expires_in,
-          distance: newItem.distance,
-          demand: newItem.demand,
+          quantity: `${newItem.quantity_value} ${newItem.quantity_unit}`,
+          expiresIn: new Date(newItem.expiry_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          distance: '0.4 km',
+          demand: 'High',
           urgencyScore: newItem.urgency_score,
-          urgencyLevel: newItem.urgency_level,
+          urgencyLevel: newItem.urgency_score > 90 ? 'high' : newItem.urgency_score > 60 ? 'medium' : 'low',
           isDisaster: newItem.is_disaster
         };
         setFoodItems(prev => [formatted, ...prev]);

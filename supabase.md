@@ -51,6 +51,7 @@ CREATE TABLE public.donations (
   food_name TEXT NOT NULL,
   category TEXT NOT NULL,
   dietary_type TEXT DEFAULT 'Veg',
+  is_disaster BOOLEAN DEFAULT FALSE,
   quantity_value NUMERIC NOT NULL,
   quantity_unit TEXT NOT NULL,
   expiry_time TIMESTAMPTZ NOT NULL,

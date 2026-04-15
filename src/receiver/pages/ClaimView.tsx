@@ -42,26 +42,26 @@ export const ClaimView: React.FC = () => {
     const fetchItem = async () => {
       // 1. Try fetching from Supabase first
       const { data, error } = await supabase
-        .from('food_listings')
-        .select('*')
+        .from('donations')
+        .select('*, profiles(organization_name, phone_number)')
         .eq('id', id)
         .single();
 
       if (data) {
         setItem({
           id: data.id,
-          name: data.name,
+          name: data.food_name,
           type: data.category,
-          quantity: data.quantity,
-          distance: data.distance,
-          expiry: data.expires_in,
-          donor: data.donor,
+          quantity: `${data.quantity_value} ${data.quantity_unit}`,
+          distance: '0.4 km',
+          expiry: new Date(data.expiry_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          donor: data.profiles?.organization_name || 'Anonymous Donor',
           urgencyScore: data.urgency_score,
-          urgencyLevel: data.urgency_level as any,
-          urgencyLabel: `⚡ ${data.urgency_level === 'high' ? 'High Priority' : 'Active'} - ${data.expires_in}`,
+          urgencyLevel: data.urgency_score > 90 ? 'high' : data.urgency_score > 60 ? 'medium' : 'low',
+          urgencyLabel: `⚡ ${data.is_disaster ? 'SOS EMERGENCY' : 'High Priority'} - ${new Date(data.expiry_time).toLocaleTimeString()}`,
           verified: true,
-          demand: data.demand,
-          phone: data.phone || '+91 98765 43210'
+          demand: 'High',
+          phone: data.profiles?.phone_number || '+91 98765 43210'
         });
         return;
       }

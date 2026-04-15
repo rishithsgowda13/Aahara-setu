@@ -1,14 +1,22 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio, Globe, LogOut } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
+import { useAuth } from '../../../context/AuthContext';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
   const { t } = useTranslation();
+  const { role, isAuthenticated, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
-  const navLinks = [
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const donorLinks = [
     { name: t('nav_home'), path: '/', icon: <Home size={18} /> },
     { name: t('nav_dashboard'), path: '/dashboard', icon: <LayoutDashboard size={18} /> },
     { name: t('nav_traceability'), path: '/traceability', icon: <Radio size={18} /> },
@@ -20,13 +28,12 @@ export const Navbar: React.FC = () => {
 
   const receiverLinks = [
     { name: 'Dashboard', path: '/receiver', icon: <LayoutDashboard size={18} /> },
+    { name: 'Explore Food', path: '/receiver/explore', icon: <Globe size={18} /> },
     { name: 'Notifications', path: '/receiver/notifications', icon: <Bell size={18} /> },
-    { name: 'Explore Food', path: '/disasters', icon: <Globe size={18} /> },
     { name: 'Profile', path: '/profile', icon: <Star size={18} /> },
   ];
 
-  const isReceiver = location.pathname.startsWith('/receiver');
-  const links = isReceiver ? receiverLinks : navLinks;
+  const links = role === 'receiver' ? receiverLinks : donorLinks;
 
   return (
     <nav className="navbar">
@@ -36,13 +43,6 @@ export const Navbar: React.FC = () => {
           <span className="logo-text">Aahara Setu</span>
         </Link>
         
-        <div className="role-switcher-wrap">
-           <Link to={isReceiver ? "/" : "/receiver"} className="role-switch-btn glass">
-              {isReceiver ? "NGO Mode" : "Donor Mode"}
-              <div className="role-dot" />
-           </Link>
-        </div>
-
         <div className="navbar-links">
           {links.map((link) => (
             <Link
@@ -54,6 +54,13 @@ export const Navbar: React.FC = () => {
               <span>{link.name}</span>
             </Link>
           ))}
+          
+          {isAuthenticated && (
+            <button className="nav-link logout-btn-navbar" onClick={handleLogout}>
+              <LogOut size={18} />
+              <span>Sign Out</span>
+            </button>
+          )}
         </div>
       </div>
     </nav>

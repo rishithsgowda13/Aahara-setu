@@ -124,7 +124,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [lang, setLang] = useState<Language>('EN');
 
   const t = (key: string) => {
-    return translations[lang][key] || key;
+    return translations[lang]?.[key] || translations['EN']?.[key] || key;
   };
 
   return (
@@ -136,6 +136,13 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
 export const useTranslation = () => {
   const context = useContext(LanguageContext);
-  if (!context) throw new Error('useTranslation must be used within LanguageProvider');
+  if (!context) {
+    // Return a dummy context to prevent crashes if used outside provider
+    return {
+      lang: 'EN' as const,
+      setLang: () => {},
+      t: (key: string) => key
+    };
+  }
   return context;
 };

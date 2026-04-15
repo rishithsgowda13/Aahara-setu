@@ -70,6 +70,18 @@
   margin-right: auto;
 }
 
+.logout-btn-navbar {
+  background: none;
+  border: none;
+  font-family: inherit;
+  color: #ef4444 !important;
+  margin-left: 12px;
+}
+
+.logout-btn-navbar:hover {
+  background: rgba(239, 68, 68, 0.05) !important;
+}
+
 .role-switch-btn {
   display: flex;
   align-items: center;

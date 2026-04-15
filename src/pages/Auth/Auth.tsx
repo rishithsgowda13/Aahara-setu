@@ -31,7 +31,7 @@ export const Auth: React.FC = () => {
 
   return (
     <div className="auth-fullscreen">
-      <div className="auth-split-card glass">
+      <div className={`auth-split-card glass ${activeTab === 'signup' ? 'is-signup' : ''}`}>
         {/* Left Panel: Visual Branding */}
         <div className="auth-visual-panel">
           <div className="visual-content">

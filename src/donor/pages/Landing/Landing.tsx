@@ -6,6 +6,7 @@ import {
   Heart, Users, Utensils, Leaf, Zap, ShieldCheck,
   MapPin, Star, Truck, Wifi, RefreshCw
 } from 'lucide-react';
+import { useTranslation } from '../../context/LanguageContext';
 import './Landing.css';
 
 const COUNTER_TARGETS = { meals: 12450, people: 8300, donors: 450, co2: 3200 };
@@ -26,19 +27,11 @@ function useCounter(target: number, duration: number) {
 }
 
 export const Landing: React.FC = () => {
+  const { t } = useTranslation();
   const meals = useCounter(COUNTER_TARGETS.meals, 1800);
   const people = useCounter(COUNTER_TARGETS.people, 1800);
   const donors = useCounter(COUNTER_TARGETS.donors, 1800);
   const co2 = useCounter(COUNTER_TARGETS.co2, 1800);
-
-  const systemFlow = [
-    { icon: '📤', label: 'Upload', desc: 'Donor lists surplus food' },
-    { icon: '🏷️', label: 'Tag & Score', desc: 'Urgency computed' },
-    { icon: '🔗', label: 'Match', desc: 'Nearest NGO matched' },
-    { icon: '✅', label: 'Claim', desc: 'NGO claims instantly' },
-    { icon: '🚚', label: 'Pickup', desc: 'Logistics triggered' },
-    { icon: '⭐', label: 'Feedback', desc: 'System learns & improves' },
-  ];
 
   const features = [
     { icon: <Zap size={20} />, title: 'Urgency Score System', desc: 'Real-time priority based on expiry, quantity, distance & demand.' },
@@ -58,17 +51,16 @@ export const Landing: React.FC = () => {
         <div className="hero-content">
           <div className="hero-eyebrow">🌱 Circular Food Redistribution Network</div>
           <h1 className="hero-title">
-            Reduce Waste.<br />
-            <span className="gradient-text">Feed Lives.</span>
+            {t('hero_title').split('.')[0]}<br />
+            <span className="gradient-text">{t('hero_title').split('.')[1]}</span>
           </h1>
           <p className="hero-subtitle">
-            A real-time, location-based platform connecting restaurants &amp; hotels with NGOs and
-            individuals in need — powered by smart urgency matching and community kindness.
+            {t('hero_subtitle')}
           </p>
           <div className="hero-actions">
             <Link to="/upload" style={{ textDecoration: 'none' }}>
               <Button size="lg" className="hero-btn">
-                <Heart size={20} /> Donate Food
+                <Heart size={20} /> {t('donate_btn')}
               </Button>
             </Link>
           </div>
@@ -110,10 +102,10 @@ export const Landing: React.FC = () => {
         </div>
         <div className="stats-grid">
           {[
-            { icon: <Utensils size={24} />, value: meals.toLocaleString(), label: 'Meals Saved', suffix: '+' },
+            { icon: <Utensils size={24} />, value: meals.toLocaleString(), label: t('meals_dist'), suffix: '+' },
             { icon: <Users size={24} />, value: people.toLocaleString(), label: 'People Fed', suffix: '+' },
             { icon: <Heart size={24} />, value: donors, label: 'Active Donors', suffix: '' },
-            { icon: <Leaf size={24} />, value: co2.toLocaleString(), label: 'kg CO₂ Reduced', suffix: '+' },
+            { icon: <Leaf size={24} />, value: co2.toLocaleString(), label: t('co2_reduced'), suffix: '+' },
           ].map((s, i) => (
             <div key={i} className="stat-card-replica">
               <div className="stat-icon-circle">{s.icon}</div>
@@ -121,39 +113,6 @@ export const Landing: React.FC = () => {
               <div className="stat-label-text">{s.label}</div>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* System Flow */}
-      <section className="flow-section">
-        <div className="section-header">
-          <h2 className="section-title">How It <span className="gradient-text">Works</span></h2>
-          <p>From surplus to satisfied — in under 30 minutes.</p>
-        </div>
-        <div className="flow-container-outer">
-          <div className="flow-steps-row">
-            {systemFlow.slice(0, 5).map((step, i) => (
-              <React.Fragment key={i}>
-                <div className="flow-step-card premium-box">
-                  <div className="flow-step-icon">{step.icon}</div>
-                  <div className="flow-step-label">{step.label}</div>
-                  <div className="flow-step-desc">{step.desc}</div>
-                </div>
-                {i < 4 && <div className="flow-arrow-subtle">→</div>}
-              </React.Fragment>
-            ))}
-          </div>
-          <div className="flow-steps-row row-bottom">
-            <div className="flow-step-card premium-box">
-              <div className="flow-step-icon">{systemFlow[5].icon}</div>
-              <div className="flow-step-label">{systemFlow[5].label}</div>
-              <div className="flow-step-desc">{systemFlow[5].desc}</div>
-            </div>
-          </div>
-        </div>
-        <div className="flow-tagline">
-          <Zap size={16} />
-          Dynamic urgency-based matching with fallback redistribution ensures near-zero food waste in real-time.
         </div>
       </section>
 
@@ -180,7 +139,7 @@ export const Landing: React.FC = () => {
           <h2>Start Making a Difference <span style={{ color: '#FFF7E2' }}>Today</span></h2>
           <p>Join 450+ donors and 120+ NGOs transforming food waste into community impact.</p>
           <div className="cta-actions">
-            <Link to="/upload"><Button size="lg"><Heart size={18} /> Donate Food</Button></Link>
+            <Link to="/upload"><Button size="lg"><Heart size={18} /> {t('donate_btn')}</Button></Link>
           </div>
         </div>
       </section>

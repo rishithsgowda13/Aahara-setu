@@ -1,22 +1,22 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio } from 'lucide-react';
+import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio, Trophy, Globe } from 'lucide-react';
+import { useTranslation } from '../../context/LanguageContext';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {
+  const { lang, setLang, t } = useTranslation();
   const location = useLocation();
 
   const navLinks = [
-    { name: 'Home', path: '/', icon: <Home size={18} /> },
-    { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
-    { name: 'Traceability', path: '/traceability', icon: <Radio size={18} /> },
-    { name: 'Donate', path: '/upload', icon: <Upload size={18} /> },
-    { name: 'Disasters', path: '/disasters', icon: <Flame size={18} /> },
-    { name: 'Alerts', path: '/notifications', icon: <Bell size={18} /> },
-    { name: 'Profile', path: '/profile', icon: <Star size={18} /> },
+    { name: t('nav_home'), path: '/', icon: <Home size={18} /> },
+    { name: t('nav_dashboard'), path: '/dashboard', icon: <LayoutDashboard size={18} /> },
+    { name: t('nav_kindness'), path: '/kindness-hub', icon: <Trophy size={18} /> },
+    { name: t('nav_traceability'), path: '/traceability', icon: <Radio size={18} /> },
+    { name: t('nav_donate'), path: '/upload', icon: <Upload size={18} /> },
+    { name: t('nav_disasters'), path: '/disasters', icon: <Flame size={18} /> },
+    { name: t('nav_alerts'), path: '/notifications', icon: <Bell size={18} /> },
   ];
-
-  // Role-based logic can be implemented here
 
   return (
     <nav className="navbar">
@@ -27,24 +27,38 @@ export const Navbar: React.FC = () => {
         </Link>
         
         <div className="navbar-links">
-          {navLinks
-            .filter(l => l.name !== 'Profile')
-            .map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
-              >
-                {link.icon}
-                <span>{link.name}</span>
-              </Link>
-            ))}
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}
+            >
+              {link.icon}
+              <span>{link.name}</span>
+            </Link>
+          ))}
+          
+          {/* Language Switcher MAGIC TOGGLE */}
+          <div className="lang-switcher-wrap">
+            <Globe size={16} className="lang-icon" />
+            <div className="lang-btns">
+              {(['EN', 'HI', 'KA'] as const).map(l => (
+                <button 
+                  key={l}
+                  className={`lang-toggle-btn ${lang === l ? 'active' : ''}`}
+                  onClick={() => setLang(l)}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         <div className="navbar-actions">
           <Link to="/profile" className={`nav-link profile-btn ${location.pathname === '/profile' ? 'active' : ''}`}>
             <Star size={18} />
-            <span>Profile</span>
+            <span>{t('nav_profile')}</span>
           </Link>
         </div>
       </div>

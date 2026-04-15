@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card } from '../../components/ui/Card/Card';
+import { Button } from '../../components/ui/Button/Button';
 import { BarChart3, TrendingDown, Package, CheckCircle2, Leaf, Zap, Trophy, MapPin, RefreshCw } from 'lucide-react';
+import { useTranslation } from '../../context/LanguageContext';
 import './Dashboard.css';
 
 const WEEKLY_DATA = [
@@ -24,10 +26,11 @@ const HEATMAP_ZONES = [
 ];
 
 export const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
   const stats = [
-    { label: 'Food Saved', value: '452 kg', icon: <Package size={22} />, color: '#4F633D', trend: '+12%' },
-    { label: 'Meals Distributed', value: '1,280', icon: <BarChart3 size={22} />, color: '#8BA194', trend: '+8%' },
-    { label: 'CO₂ Reduced', value: '3,200 kg', icon: <Leaf size={22} />, color: '#22c55e', trend: '+15%' },
+    { label: t('food_saved'), value: '452 kg', icon: <Package size={22} />, color: '#4F633D', trend: '+12%' },
+    { label: t('meals_dist'), value: '1,280', icon: <BarChart3 size={22} />, color: '#8BA194', trend: '+8%' },
+    { label: t('co2_reduced'), value: '3,200 kg', icon: <Leaf size={22} />, color: '#22c55e', trend: '+15%' },
     { label: 'Match Rate', value: '94%', icon: <CheckCircle2 size={22} />, color: '#f59e0b', trend: '+2%' },
     { label: 'Waste Reduced', value: '32%', icon: <TrendingDown size={22} />, color: '#3b82f6', trend: '+5%' },
     { label: 'Kindness Score', value: '210 pts', icon: <Trophy size={22} />, color: '#a855f7', trend: '+10' },
@@ -51,11 +54,26 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1 className="page-title">Impact <span className="gradient-text">Dashboard</span></h1>
+        <h1 className="page-title">{t('impact_dash')}</h1>
         <p className="page-subtitle">Real-time analytics for your contribution to the circular food economy.</p>
       </div>
 
-      {/* KPI Grid */}
+      <Card className="ai-insights-banner glass">
+        <div className="ai-visual">
+          <div className="ai-pulse" />
+          <Zap size={24} className="ai-icon" />
+        </div>
+        <div className="ai-text">
+          <div className="ai-badge">AI PREDICTIVE INSIGHT</div>
+          <h4>Expected Surplus: <strong>12-15 kg</strong> (Next 4 hours)</h4>
+          <p>Based on your historical patterns, we predict a surplus of Biryani & Salads. <strong>Pre-matching is active</strong> with 3 verified NGOs nearby.</p>
+        </div>
+        <div className="ai-actions">
+          <Button variant="outline" size="sm">Adjust Forecast</Button>
+          <Button variant="primary" size="sm">Auto-Notify NGOs</Button>
+        </div>
+      </Card>
+
       <div className="kpi-grid">
         {stats.map((stat, i) => (
           <Card key={i} className="kpi-card">
@@ -73,7 +91,6 @@ export const Dashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Chart + Flow */}
       <div className="dashboard-main-row">
         <Card className="chart-card">
           <div className="chart-header">
@@ -121,22 +138,15 @@ export const Dashboard: React.FC = () => {
         </Card>
       </div>
 
-      {/* Heatmap Section */}
       <Card className="heatmap-card">
         <div className="chart-header">
           <h3><MapPin size={18} /> Hunger vs Surplus Heatmap</h3>
           <span className="tag-badge">Live Zones</span>
         </div>
         <div className="heatmap-legend">
-          <div className="legend-item">
-            <div className="legend-dot surplus" /> High Surplus
-          </div>
-          <div className="legend-item">
-            <div className="legend-dot demand" /> High Demand
-          </div>
-          <div className="legend-item">
-            <div className="legend-dot balanced" /> Balanced
-          </div>
+          <div className="legend-item"><div className="legend-dot surplus" /> High Surplus</div>
+          <div className="legend-item"><div className="legend-dot demand" /> High Demand</div>
+          <div className="legend-item"><div className="legend-dot balanced" /> Balanced</div>
         </div>
         <div className="heatmap-zones">
           {HEATMAP_ZONES.map((zone, i) => (
@@ -145,16 +155,12 @@ export const Dashboard: React.FC = () => {
               <div className="zone-bars">
                 <div className="zone-bar-row">
                   <span className="zone-bar-lbl">Surplus</span>
-                  <div className="zone-bar">
-                    <div className="zone-bar-fill surplus-fill" style={{ width: `${zone.waste}%` }} />
-                  </div>
+                  <div className="zone-bar"><div className="zone-bar-fill surplus-fill" style={{ width: `${zone.waste}%` }} /></div>
                   <span className="zone-bar-val">{zone.waste}%</span>
                 </div>
                 <div className="zone-bar-row">
                   <span className="zone-bar-lbl">Demand</span>
-                  <div className="zone-bar">
-                    <div className="zone-bar-fill demand-fill" style={{ width: `${zone.demand}%` }} />
-                  </div>
+                  <div className="zone-bar"><div className="zone-bar-fill demand-fill" style={{ width: `${zone.demand}%` }} /></div>
                   <span className="zone-bar-val">{zone.demand}%</span>
                 </div>
               </div>
@@ -166,7 +172,6 @@ export const Dashboard: React.FC = () => {
         </div>
       </Card>
 
-      {/* Auto-Redistribution + Activity */}
       <div className="bottom-grid">
         <Card className="activity-card">
           <h3>Recent Activity</h3>
@@ -184,10 +189,7 @@ export const Dashboard: React.FC = () => {
         </Card>
 
         <Card className="fallback-card">
-          <div className="fallback-header">
-            <RefreshCw size={18} />
-            <h3>Auto Redistribution Stats</h3>
-          </div>
+          <div className="fallback-header"><RefreshCw size={18} /><h3>Auto Redistribution Stats</h3></div>
           <p className="card-desc">Fallback system performance this week</p>
           <div className="fallback-stats">
             {[

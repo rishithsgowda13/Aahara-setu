@@ -9,7 +9,9 @@ import { Notifications } from './donor/pages/Notifications/Notifications';
 import { Profile } from './donor/pages/Profile/Profile';
 import { Disasters } from './donor/pages/Disasters/Disasters';
 import { Traceability } from './donor/pages/Traceability/Traceability';
+import { KindnessHub } from './donor/pages/KindnessHub/KindnessHub';
 import { Toast } from './donor/components/ui/Toast/Toast';
+import { LanguageProvider } from './donor/context/LanguageContext';
 import type { ToastMessage } from './donor/components/ui/Toast/Toast';
 import './donor/styles/App.css';
 
@@ -50,6 +52,7 @@ function AppContent() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/disasters" element={<Disasters />} />
           <Route path="/traceability" element={<Traceability />} />
+          <Route path="/kindness-hub" element={<KindnessHub />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="*" element={<div style={{ padding: '40px', textAlign: 'center' }}><h2>404: Page Not Found</h2><Link to="/">Go Home</Link></div>} />
         </Routes>
@@ -62,9 +65,11 @@ function AppContent() {
 
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </LanguageProvider>
   );
 }
 

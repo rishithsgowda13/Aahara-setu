@@ -33,6 +33,7 @@ export const Auth: React.FC = () => {
         {/* Left Panel: Visual Branding */}
         <div className="auth-visual-panel">
           <div className="visual-content">
+            <img src="/donor/logo.png" alt="Aahara Setu Logo" className="auth-visual-logo" />
             <span className="visual-eyebrow">BEYOND THE PLATE</span>
             <h1 className="visual-title">Aahara Setu <br /> <span className="title-serif">Platform</span></h1>
             <p className="visual-desc">

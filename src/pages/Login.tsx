@@ -152,7 +152,7 @@ export const Login: React.FC = () => {
             )}
 
             <Input 
-              type="email"
+              type="text"
               label="Email Address" 
               placeholder="Enter your email" 
               value={email}

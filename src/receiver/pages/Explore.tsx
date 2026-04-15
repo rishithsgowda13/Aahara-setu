@@ -21,7 +21,45 @@ interface FoodItem {
   isDisaster?: boolean;
 }
 
-const MOCK_FOOD_ITEMS: FoodItem[] = []; // Empty mock array
+const MOCK_FOOD_ITEMS: FoodItem[] = [
+  {
+    id: 'mock-1',
+    name: 'Assorted Pastries',
+    donor: 'Gaurav Sweets',
+    quantity: '25 portions',
+    expiresIn: '45 mins',
+    distance: '0.4 km',
+    demand: 'High',
+    category: 'Bakery',
+    urgencyScore: 98,
+    urgencyLevel: 'high'
+  },
+  {
+    id: 'mock-2',
+    name: 'Paneer Tikka Thali',
+    donor: 'Skyline Hotels',
+    quantity: '10 packs',
+    expiresIn: '2 hrs',
+    distance: '1.2 km',
+    demand: 'Medium',
+    category: 'Cooked Meals',
+    urgencyScore: 85,
+    urgencyLevel: 'medium'
+  },
+  {
+    id: 'mock-disaster-1',
+    name: 'Survival Kits (Bread & Milk)',
+    donor: 'Central Relief Hub',
+    quantity: '50 units',
+    expiresIn: 'ASAP',
+    distance: '2.5 km',
+    demand: 'Critical',
+    category: 'Emergency',
+    urgencyScore: 100,
+    urgencyLevel: 'critical',
+    isDisaster: true
+  }
+];
 
 export const Explore: React.FC = () => {
   const { t } = useTranslation();
@@ -154,9 +192,6 @@ export const Explore: React.FC = () => {
           >
             ✅ {t('urgency_low')}
           </button>
-          <Button variant="outline" size="sm" className="filter-chip map-btn">
-            <MapIcon size={16} /> Map View
-          </Button>
         </div>
       </div>
 

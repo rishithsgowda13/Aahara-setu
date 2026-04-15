@@ -27,7 +27,30 @@ export const Disasters: React.FC = () => {
       .select('*')
       .order('created_at', { ascending: false });
     
-    if (data) {
+    const MOCK_DISASTERS: DisasterAlert[] = [
+      {
+        id: 'mock-d-1',
+        type: 'Flood Relief',
+        location: 'Assam High-Waste Zone B',
+        urgency: 'CRITICAL',
+        peopleInNeed: 1200,
+        suppliesNeeded: 'Ready-to-eat meals, Water, Biscuits',
+        impact: 'Severely affected by monsoon',
+        timeRemaining: 'ASAP'
+      },
+      {
+        id: 'mock-d-2',
+        type: 'Earthquake Support',
+        location: 'North-East Sector 4',
+        urgency: 'HIGH',
+        peopleInNeed: 850,
+        suppliesNeeded: 'Protein bars, Canned food, Milk powder',
+        impact: 'Structural damage in residential areas',
+        timeRemaining: 'Within 4 hours'
+      }
+    ];
+
+    if (data && data.length > 0) {
       const formatted = data.map((d: any) => ({
         id: d.id,
         type: d.title,
@@ -39,6 +62,8 @@ export const Disasters: React.FC = () => {
         timeRemaining: 'ASAP'
       }));
       setActiveDisasters(formatted);
+    } else {
+      setActiveDisasters(MOCK_DISASTERS);
     }
     setLoading(false);
   };

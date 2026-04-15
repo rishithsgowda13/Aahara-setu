@@ -215,6 +215,23 @@ export const Upload: React.FC = () => {
         </div>
       )}
 
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+        <Button variant="glass" size="sm" onClick={() => {
+          setItemName('Paneer Butter Masala (Fresh Batch)');
+          setCategory('Main Course');
+          setItemQty('25');
+          setUnit('portions');
+          setDietary('Vegetarian');
+          const futureDate = new Date();
+          futureDate.setHours(futureDate.getHours() + 4);
+          setExpiry(futureDate.toISOString().slice(0, 16));
+          setAddress('Empire Restaurant, Koramangala 5th Block');
+          setCheckedItems(new Array(SAFETY_CHECKLIST.length).fill(true));
+        }}>
+          💡 FILL DEMO DATA
+        </Button>
+      </div>
+
       <div className="upload-layout">
         <div className="upload-main">
           <Card className="upload-card">

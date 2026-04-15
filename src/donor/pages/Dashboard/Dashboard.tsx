@@ -79,7 +79,15 @@ export const Dashboard: React.FC = () => {
         .order('kindness_score', { ascending: false })
         .limit(5);
 
-      if (data) {
+      const MOCK_LEADERS: Leader[] = [
+        { rank: 1, name: "McDonald's - VVCE", impact: "12,450 meals", pts: 8500, avatar: "M", color: "#FFD700", badge: 'Golden Plate' },
+        { rank: 2, name: "Taj Hotel - City Center", impact: "8,300 meals", pts: 6200, avatar: "T", color: "#C0C0C0", badge: 'Elite Circle' },
+        { rank: 3, name: "KFC - Mall Road", impact: "5,120 meals", pts: 4100, avatar: "K", color: "#CD7F32", badge: 'Rising Star' },
+        { rank: 4, name: "Akshaya Patra", impact: "4,200 meals", pts: 3800, avatar: "A", color: "#E2E8F0" },
+        { rank: 5, name: "Doner King", impact: "3,100 meals", pts: 2900, avatar: "D", color: "#E2E8F0" },
+      ];
+
+      if (data && data.length > 0) {
         const colors = ["#FFD700", "#C0C0C0", "#CD7F32", "#E2E8F0", "#E2E8F0"];
         const badges = ["Golden Plate", "Elite Circle", "Rising Star"];
         const formatted = data.map((p, i) => ({
@@ -92,11 +100,13 @@ export const Dashboard: React.FC = () => {
           badge: badges[i]
         }));
         setLeaders(formatted);
+      } else {
+        setLeaders(MOCK_LEADERS);
       }
     };
 
     fetchLeaders();
-  }, []);
+  }, [t]);
 
   const certificatesList = [
     { id: 'AS-2025-01', type: 'Platinum Sustainability', date: 'April 2025', desc: 'Offsets 3,200kg of CO₂' },

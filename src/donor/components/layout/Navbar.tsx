@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Upload, MapPin, LayoutDashboard, Star, Bell, Flame } from 'lucide-react';
+import { Home, Upload, LayoutDashboard, Star, Bell, Flame } from 'lucide-react';
 import './Navbar.css';
 
 export const Navbar: React.FC = () => {

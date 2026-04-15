@@ -59,14 +59,16 @@ export const Dashboard: React.FC = () => {
       <div className="kpi-grid">
         {stats.map((stat, i) => (
           <Card key={i} className="kpi-card">
-            <div className="kpi-icon-row">
-              <div className="kpi-icon" style={{ background: stat.color + '18', color: stat.color }}>
+            <div className="kpi-top-row">
+              <div className="kpi-icon-badge" style={{ background: stat.color + '15', borderColor: stat.color + '30', color: stat.color }}>
                 {stat.icon}
               </div>
-              <span className="kpi-trend" style={{ color: stat.color }}>↑ {stat.trend}</span>
+              <span className="kpi-trend-pill" style={{ color: stat.color, background: stat.color + '10' }}>↑ {stat.trend}</span>
             </div>
-            <div className="kpi-value">{stat.value}</div>
-            <div className="kpi-label">{stat.label}</div>
+            <div className="kpi-content">
+              <div className="kpi-value-text">{stat.value}</div>
+              <div className="kpi-label-text">{stat.label}</div>
+            </div>
           </Card>
         ))}
       </div>

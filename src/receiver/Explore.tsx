@@ -18,6 +18,8 @@ interface FoodItem {
   urgencyLabel: string;
   verified: boolean;
   demand: string;
+  phone?: string;
+  locationLink?: string;
 }
 
 import { findMatch } from './AaharaAI';
@@ -27,49 +29,65 @@ const MOCK_FOOD_ITEMS: FoodItem[] = [
     id: '7', name: 'Steamed Basmati Rice', type: 'Main Course',
     quantity: '40 portions', distance: '0.5 km', expiry: '2 hours',
     donor: 'Royal Biryani House', urgencyScore: 88, urgencyLevel: 'high',
-    urgencyLabel: '⚡ High - 2 hr', verified: true, demand: 'High'
+    urgencyLabel: '⚡ High - 2 hr', verified: true, demand: 'High',
+    phone: '+91 98765 43210'
   },
   {
     id: '8', name: 'Mixed Vegetable Sambar', type: 'Side Dish',
     quantity: '2 large containers', distance: '1.1 km', expiry: '3 hours',
     donor: 'Udupi Point', urgencyScore: 75, urgencyLevel: 'medium',
-    urgencyLabel: '⏰ Medium - 3 hr', verified: true, demand: 'Medium'
+    urgencyLabel: '⏰ Medium - 3 hr', verified: true, demand: 'Medium',
+    phone: '+91 99887 76655'
   },
   {
     id: '1', name: 'KFC Fried Chicken Bucket', type: 'Fast Food',
     quantity: '15 pieces', distance: '0.8 km', expiry: '30 mins',
     donor: 'KFC', urgencyScore: 95, urgencyLevel: 'high',
-    urgencyLabel: '⚡ High Priority - 30 min', verified: true, demand: 'Very High'
+    urgencyLabel: '⚡ High Priority - 30 min', verified: true, demand: 'Very High',
+    phone: '+91 88776 65544'
   },
+  {
+    id: '2', name: 'Haldiram\'s Paneer Butter Masala', type: 'Main Course',
+    quantity: '20 portions', distance: '0.4 km', expiry: '45 mins',
+    donor: 'Haldiram\'s', urgencyScore: 90, urgencyLevel: 'high',
+    urgencyLabel: '⚡ High - 45 min', verified: true, demand: 'Very High',
+    phone: '+91 91234 56789'
+  },
+
   {
     id: '2', name: 'Veg Dum Biryani', type: 'Main Course',
     quantity: '10 portions', distance: '1.2 km', expiry: '4 hours',
     donor: 'Taj Hotel', urgencyScore: 60, urgencyLevel: 'medium',
-    urgencyLabel: '⏰ Medium - 4 hr', verified: true, demand: 'High'
+    urgencyLabel: '⏰ Medium - 4 hr', verified: true, demand: 'High',
+    phone: '+91 98888 77777'
   },
   {
     id: '3', name: 'Masala Dosa & Sambar', type: 'South Indian',
     quantity: '5 portions', distance: '2.5 km', expiry: '1 hour',
     donor: 'MTR (Mavalli Tiffin Room)', urgencyScore: 85, urgencyLevel: 'high',
-    urgencyLabel: '⚡ High Priority - 1 hr', verified: false, demand: 'Medium'
+    urgencyLabel: '⚡ High Priority - 1 hr', verified: false, demand: 'Medium',
+    phone: '+91 97777 66666'
   },
   {
     id: '4', name: 'McDonald\'s Happy Meals', type: 'Fast Food',
     quantity: '3 meals', distance: '3.1 km', expiry: '5 hours',
     donor: 'McDonald\'s', urgencyScore: 30, urgencyLevel: 'low',
-    urgencyLabel: '✅ Low Priority - 5 hr', verified: true, demand: 'Low'
+    urgencyLabel: '✅ Low Priority - 5 hr', verified: true, demand: 'Low',
+    phone: '+91 96666 55555'
   },
   {
     id: '5', name: 'Paneer Butter Masala', type: 'North Indian',
     quantity: '20 portions', distance: '0.4 km', expiry: '45 mins',
     donor: 'Haldiram\'s', urgencyScore: 92, urgencyLevel: 'high',
-    urgencyLabel: '⚡ High Priority - 45 min', verified: true, demand: 'Very High'
+    urgencyLabel: '⚡ High Priority - 45 min', verified: true, demand: 'Very High',
+    phone: '+91 95555 44444'
   },
   {
     id: '6', name: 'Chole Bhature', type: 'North Indian',
     quantity: '8 portions', distance: '1.8 km', expiry: '8 hours',
     donor: 'Bikanerwala', urgencyScore: 20, urgencyLevel: 'low',
-    urgencyLabel: '✅ Low Priority - 8 hr', verified: true, demand: 'Moderate'
+    urgencyLabel: '✅ Low Priority - 8 hr', verified: true, demand: 'Moderate',
+    phone: '+91 94444 33333'
   },
 ];
 
@@ -103,72 +121,81 @@ export const Explore: React.FC = () => {
     <div className="explore-container">
       {/* Dynamic Pop-up Modal for Claiming */}
       {selectedFood && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
-          <Card className="glass" style={{ maxWidth: '450px', width: '90%', padding: '24px', position: 'relative' }}>
-            <h2 style={{ marginBottom: '16px', fontSize: '1.4rem', borderBottom: '1px solid rgba(139, 161, 148, 0.3)', paddingBottom: '12px' }}>Claim Donation</h2>
+        <div className="modal-overlay" onClick={() => setSelectedFoodId(null)}>
+          <Card className="claim-item-modal glass" onClick={e => e.stopPropagation()}>
+            <div className="claim-modal-header">
+              <h2 className="modal-title">Claim Donation</h2>
+              <button className="close-x" onClick={() => setSelectedFoodId(null)}><X size={20} /></button>
+            </div>
             
-            <div style={{ marginBottom: '16px', fontSize: '0.9rem', color: 'var(--color-text-muted)', background: 'rgba(0,0,0,0.05)', padding: '16px', borderRadius: '8px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              
+            <div className="claim-info-container">
               {/* Left Column: Donor Info */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderRight: '1px dashed rgba(139, 161, 148, 0.2)', paddingRight: '16px' }}>
-                <h4 style={{ margin: 0, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-primary)', fontWeight: 800 }}>Donor Details</h4>
-                <p><strong>Name:</strong> {selectedFood.donor}</p>
-                <p><strong>Item:</strong> {selectedFood.name}</p>
-                <p><strong>Available:</strong> <span style={{ color: 'var(--color-primary)', fontWeight: 800 }}>{selectedFood.quantity}</span></p>
-                <p style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontSize: '0.85rem' }}>📞 <strong>+91 98765 43210</strong></p>
+              <div className="info-column">
+                <div className="info-label-group">DONOR DETAILS</div>
+                <div className="info-row"><strong>Name:</strong> {selectedFood.donor}</div>
+                <div className="info-row"><strong>Item:</strong> {selectedFood.name}</div>
+                <div className="info-row">
+                  <strong>Available:</strong> 
+                  <span className="text-primary-bold"> {selectedFood.quantity}</span>
+                </div>
+                <a href={`tel:${selectedFood.phone || '+919876543210'}`} className="contact-link">
+                  📞 {selectedFood.phone || '+91 98765 43210'}
+                </a>
               </div>
 
-              {/* Right Column: Receiver Info */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <h4 style={{ margin: 0, fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--color-primary)', fontWeight: 800 }}>Logistics Info</h4>
-                <p><strong>Distance:</strong> {selectedFood.distance}</p>
-                <p><strong>Expires In:</strong> <span style={{ color: selectedFood.urgencyLevel === 'high' ? 'var(--color-error)' : 'inherit', fontWeight: 'bold' }}>{selectedFood.expiry}</span></p>
-                <p><strong>Demand:</strong> {selectedFood.demand}</p>
-                <p style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontSize: '0.85rem' }}>📞 <strong>+91 98221 00334</strong></p>
-              </div>
+              <div className="info-divider"></div>
 
+              {/* Right Column: Logistics Info */}
+              <div className="info-column">
+                <div className="info-label-group">LOGISTICS INFO</div>
+                <div className="info-row"><strong>Distance:</strong> {selectedFood.distance}</div>
+                <div className="info-row">
+                  <strong>Expires In:</strong> 
+                  <span className="text-danger-bold"> {selectedFood.expiry}</span>
+                </div>
+                <div className="info-row"><strong>Demand:</strong> {selectedFood.demand}</div>
+                <div className="contact-link">
+                   📞 +91 98221 00334
+                </div>
+              </div>
             </div>
 
             {/* Embedded Interactive Map */}
-            <LeafletMap location={selectedFood.donor} />
+            <div className="map-view-container">
+              <LeafletMap location={selectedFood.donor} />
+            </div>
             
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '8px', fontWeight: 600, color: 'var(--color-text)' }}>How much quantity do you need?</label>
+            <div className="quantity-section">
+              <p className="quantity-prompt">How much quantity do you need?</p>
               
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <input 
-                  type="number" 
-                  min="1"
-                  max={parseInt(selectedFood.quantity, 10) || 20}
-                  value={claimQuantity || 1} 
-                  onChange={(e) => setClaimQuantity(e.target.value)} 
-                  style={{ width: '70px', padding: '10px', borderRadius: '8px', border: '2px solid rgba(139, 161, 148, 0.4)', background: 'var(--color-bg)', color: 'var(--color-primary)', fontSize: '1.1rem', textAlign: 'center', fontWeight: 'bold', outline: 'none' }}
-                />
+              <div className="quantity-interaction">
+                <div className="quantity-bubble">{claimQuantity || 1}</div>
                 <input 
                   type="range"
                   min="1"
                   max={parseInt(selectedFood.quantity, 10) || 20}
                   value={claimQuantity || 1} 
                   onChange={(e) => setClaimQuantity(e.target.value)} 
-                  style={{ flex: 1, accentColor: 'var(--color-primary)', cursor: 'pointer', height: '6px' }}
+                  className="pretty-slider"
                 />
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '8px', marginLeft: '86px' }}>
+              <div className="quantity-labels-flex">
                 <span>1</span>
                 <span>Max: {selectedFood.quantity}</span>
               </div>
             </div>
             
-            <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
-              <Button onClick={() => setSelectedFoodId(null)} style={{ flex: 1, background: 'rgba(0,0,0,0.1)', color: 'var(--color-text)', boxShadow: 'none' }}>Close</Button>
-              <Button onClick={handleConfirmClaim} style={{ flex: 1 }}>Confirm Claim</Button>
+            <div className="modal-primary-actions">
+              <Button onClick={() => setSelectedFoodId(null)} variant="outline" className="modal-close-btn">Close</Button>
+              <Button onClick={handleConfirmClaim} className="modal-confirm-btn">Confirm Claim</Button>
             </div>
 
             <Button 
+              variant="outline"
+              className="google-maps-action"
               onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedFood.donor)}`, '_blank')}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
             >
-              <MapPin size={16} /> Open in Google Maps
+              <MapPin size={18} /> Open in Google Maps
             </Button>
           </Card>
         </div>

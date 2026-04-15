@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio, Globe, LogOut } from 'lucide-react';
+import { Home, Upload, LayoutDashboard, Star, Bell, Flame, Radio, Globe } from 'lucide-react';
 import { useTranslation } from '../../context/LanguageContext';
 import { useAuth } from '../../../context/AuthContext';
 import './Navbar.css';
@@ -11,10 +11,6 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
 
   const donorLinks = [
     { name: t('nav_home'), path: '/', icon: <Home size={18} /> },
@@ -55,12 +51,6 @@ export const Navbar: React.FC = () => {
             </Link>
           ))}
           
-          {isAuthenticated && (
-            <button className="nav-link logout-btn-navbar" onClick={handleLogout}>
-              <LogOut size={18} />
-              <span>Sign Out</span>
-            </button>
-          )}
         </div>
       </div>
     </nav>

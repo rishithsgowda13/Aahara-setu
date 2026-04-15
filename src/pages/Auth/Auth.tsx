@@ -88,8 +88,8 @@ export const Auth: React.FC = () => {
             <div className="input-field-wrap">
               <Mail size={18} className="input-icon" />
               <input 
-                type="email" 
-                placeholder="Email Address" 
+                type="text" 
+                placeholder="User ID or Email" 
                 required 
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

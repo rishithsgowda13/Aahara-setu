@@ -7,4 +7,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error("Missing Supabase Environmental Variables. Please ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in your .env file.");
 }
 
-export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
+// Provide a valid dummy URL to prevent the entire React app from crashing (blank screen) if Vercel env variables are missing
+export const supabase = createClient(
+  supabaseUrl || 'https://placeholder-project.supabase.co', 
+  supabaseAnonKey || 'placeholder-key'
+);

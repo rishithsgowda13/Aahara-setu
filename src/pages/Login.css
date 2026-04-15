@@ -100,14 +100,36 @@
   .login-container {
     grid-template-columns: 1fr;
     text-align: center;
+    padding: 20px 20px 120px 20px; /* Critical: Adds clearance for the new bottom floating navbar dock */
+    gap: 24px;
+    align-items: flex-start;
   }
   .login-visual {
     align-items: center;
+    gap: 16px;
   }
   .login-logo {
     justify-content: center;
+    gap: 10px;
   }
+  .login-logo h1 { font-size: 2.2rem; }
+  .login-logo img { width: 50px; }
+  
+  .login-visual p {
+    font-size: 1rem;
+  }
+  
   .trust-stats {
     justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
   }
+  .tstat { font-size: 0.85rem; padding: 6px 12px; }
+
+  .auth-card {
+    padding: 32px 24px !important;
+  }
+  
+  .auth-header h2 { font-size: 1.6rem; }
+  .auth-header p { font-size: 0.9rem; }
 }

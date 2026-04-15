@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Search, MapPin, Clock, AlertCircle, Zap, ShieldCheck, Users } from 'lucide-react';
+import { LeafletMap } from '../components/ui/LeafletMap';
 import './Explore.css';
 
 interface FoodItem {
@@ -113,6 +114,9 @@ export const Explore: React.FC = () => {
               </div>
 
             </div>
+
+            {/* Embedded Interactive Map */}
+            <LeafletMap location={selectedFood.donor} />
             
             <div style={{ marginBottom: '24px' }}>
               <label style={{ display: 'block', fontSize: '0.9rem', marginBottom: '8px', fontWeight: 600, color: 'var(--color-text)' }}>How much quantity do you need?</label>
@@ -147,10 +151,10 @@ export const Explore: React.FC = () => {
             </div>
 
             <Button 
-              onClick={() => window.open(`https://www.openstreetmap.org/search?query=${encodeURIComponent(selectedFood.donor)}`, '_blank')}
+              onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedFood.donor)}`, '_blank')}
               style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
             >
-              <MapPin size={16} /> View Location on Map
+              <MapPin size={16} /> Open in Google Maps
             </Button>
           </Card>
         </div>

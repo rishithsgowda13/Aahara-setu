@@ -279,6 +279,10 @@
     transition: all 0.3s ease;
   }
   
+  .disaster-pill span {
+    display: none !important;
+  }
+
   .disaster-pill.active {
     background: var(--color-primary) !important;
     box-shadow: 0 8px 24px rgba(79, 99, 61, 0.4);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../../components/ui/Button/Button';
 import { Card } from '../../components/ui/Card/Card';
+import { useToast } from '../../../context/ToastContext';
 import { Input } from '../../components/ui/Input/Input';
 import { Select } from '../../components/ui/Select/Select';
 import { MapPin, CheckSquare, Square, AlertOctagon } from 'lucide-react';
@@ -40,6 +41,7 @@ const DIETARY_INFO = [
 ];
 
 export const Upload: React.FC = () => {
+  const { addToast } = useToast();
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -63,7 +65,7 @@ export const Upload: React.FC = () => {
 
   const handleFetchLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
+      addToast('Error', 'Geolocation is not supported by your browser', 'warning');
       return;
     }
 
@@ -91,7 +93,7 @@ export const Upload: React.FC = () => {
       },
       (error) => {
         console.error('Error fetching location:', error);
-        alert('Unable to retrieve your location');
+        addToast('Error', 'Unable to retrieve your location', 'warning');
         setIsDetecting(false);
       }
     );
@@ -129,7 +131,7 @@ export const Upload: React.FC = () => {
       setSubmitted(true);
     } catch (error) {
       console.error('Error uploading:', error);
-      alert('Upload failed. Check console for details (Table: donations).');
+      addToast('Error', 'Upload failed. Check console for details.', 'warning');
     } finally {
       setIsSubmitting(false);
     }
@@ -204,6 +206,55 @@ export const Upload: React.FC = () => {
       <div className="upload-header">
         <h1 className="page-title">{t('upload_title')}</h1>
         <p className="page-subtitle">{t('upload_sub')}</p>
+      </div>
+
+      <div className="demo-presets-row" style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
+        <button 
+          className="demo-btn" 
+          onClick={() => {
+            setItemName('Survival Kits (Bread & Milk)');
+            setCategory('Groceries & Staples');
+            setItemQty('50');
+            setUnit('pieces');
+            setExpiry(new Date(Date.now() + 3600000).toISOString().slice(0, 16));
+            setAddress('2.5 km - Central Relief Hub');
+            setCheckedItems(new Array(SAFETY_CHECKLIST.length).fill(true));
+            navigate('/upload', { state: { isDisaster: true } });
+          }}
+          style={{ padding: '8px 16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '100px', cursor: 'pointer', fontWeight: 600 }}
+        >
+          SOS: Survival Kits
+        </button>
+        <button 
+          className="demo-btn" 
+          onClick={() => {
+            setItemName('Assorted Pastries');
+            setCategory('Bakery & Sweets');
+            setItemQty('25');
+            setUnit('portions');
+            setExpiry(new Date(Date.now() + 2700000).toISOString().slice(0, 16));
+            setAddress('0.4 km - Gaurav Sweets');
+            setCheckedItems(new Array(SAFETY_CHECKLIST.length).fill(true));
+          }}
+          style={{ padding: '8px 16px', background: 'rgba(79, 99, 61, 0.1)', border: '1px solid #4F633D', color: '#4F633D', borderRadius: '100px', cursor: 'pointer', fontWeight: 600 }}
+        >
+          Demo: Pastries
+        </button>
+        <button 
+          className="demo-btn" 
+          onClick={() => {
+            setItemName('Paneer Tikka Thali');
+            setCategory('Main Course');
+            setItemQty('10');
+            setUnit('portions');
+            setExpiry(new Date(Date.now() + 7200000).toISOString().slice(0, 16));
+            setAddress('1.2 km - Skyline Hotels');
+            setCheckedItems(new Array(SAFETY_CHECKLIST.length).fill(true));
+          }}
+          style={{ padding: '8px 16px', background: 'rgba(139, 161, 148, 0.1)', border: '1px solid #8BA194', color: '#4F633D', borderRadius: '100px', cursor: 'pointer', fontWeight: 600 }}
+        >
+          Demo: Tikka Thali
+        </button>
       </div>
 
       {isDisaster && (
@@ -361,7 +412,7 @@ export const Upload: React.FC = () => {
           <Card className="volunteer-card">
             <h4>🚚 SMART LOGISTICS</h4>
             <p>Our AI automatically matches your listing with the nearest verified transport volunteers.</p>
-            <Button variant="outline" size="sm" fullWidth onClick={() => alert('Feature coming soon: Live matching with 12 available logistics partners in your zone.')}>VIEW LOGISTICS PARTNERS</Button>
+            <Button variant="outline" size="sm" fullWidth onClick={() => addToast('Coming Soon', 'Live matching with 12 available logistics partners in your zone.', 'info')}>VIEW LOGISTICS PARTNERS</Button>
           </Card>
         </div>
       </div>

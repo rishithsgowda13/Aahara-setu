@@ -105,18 +105,16 @@
   height: 100px;
 }
 
-.mcd-logo-placeholder {
+.mcd-logo-placeholder, .ngo-logo-placeholder {
   width: 100%;
   height: 100%;
-  background: #FF2D55; /* McDonald's-ish Red */
+  background: white;
+  border: 1px solid #D6DBCF;
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFC72C; /* McDonald's-ish Gold */
-  font-size: 3rem;
-  font-weight: 900;
-  box-shadow: 0 12px 24px rgba(255, 45, 85, 0.2);
+  box-shadow: 0 8px 20px rgba(79, 99, 61, 0.05);
 }
 
 .premium-header-bottom {
@@ -382,30 +380,6 @@
 .meta-lbl { font-size: 0.75rem; color: #666; font-weight: 600; }
 .meta-val { font-size: 0.8rem; font-weight: 700; color: #1a1a1a; }
 
-.profile-badges-section {
-  padding-top: 8px;
-}
-
-.badges-flex {
-  display: flex;
-  gap: 8px;
-}
-
-.mini-badge {
-  width: 36px;
-  height: 36px;
-  background: white;
-  border: 1px solid #E8EDE4;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.mini-badge:hover { transform: translateY(-3px); }
 
 .profile-signout-btn {
   margin-top: 12px !important;

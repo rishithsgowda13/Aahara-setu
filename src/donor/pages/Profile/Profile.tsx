@@ -105,7 +105,7 @@ export const Profile: React.FC = () => {
               </div>
               <div className="premium-avatar-box">
                 <div className={isReceiver ? "ngo-logo-placeholder" : "mcd-logo-placeholder"}>
-                  {isReceiver ? 'H' : 'M'}
+                  <Award size={32} color="#4F633D" />
                 </div>
               </div>
             </div>
@@ -271,15 +271,6 @@ export const Profile: React.FC = () => {
             </div>
           </div>
 
-          <div className="profile-badges-section">
-            <h4 className="meta-title">{t('achievements')}</h4>
-            <div className="badges-flex">
-              <div className="mini-badge" title={isReceiver ? "Rapid Response" : "Fast Responder"}>{isReceiver ? '🚁' : '⚡'}</div>
-              <div className="mini-badge" title="Eco Warrior">🌱</div>
-              <div className="mini-badge" title="Verified Safety">🛡️</div>
-              <div className="mini-badge" title={isReceiver ? "Top NGO" : "Top 1% Donor"}>🏆</div>
-            </div>
-          </div>
 
           <Card className="profile-settings-card glass" style={{ marginTop: '24px', padding: '24px' }}>
             <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>

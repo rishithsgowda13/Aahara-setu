@@ -8,6 +8,8 @@ import {
 } from 'lucide-react';
 import './Disasters.css';
 import { supabase } from '../../../lib/supabase';
+import { useAuth } from '../../../context/AuthContext';
+
 
 interface DisasterAlert {
   id: string;
@@ -21,6 +23,8 @@ interface DisasterAlert {
 }
 
 export const Disasters: React.FC = () => {
+  const { role } = useAuth();
+
   const [activeDisasters, setActiveDisasters] = useState<DisasterAlert[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -136,15 +140,18 @@ export const Disasters: React.FC = () => {
             <AlertTriangle className="alert-icon-pulse" /> Active Critical Zones
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <Button 
-              className="broadcast-btn animate-pulse" 
-              onClick={() => setIsModalOpen(true)}
-              style={{ borderRadius: '100px', background: '#e11d48', color: 'white', gap: '8px', height: '40px', fontSize: '0.9rem' }}
-            >
-              <Plus size={18} /> Broadcast Emergency
-            </Button>
+            {role === 'receiver' && (
+              <Button 
+                className="broadcast-btn animate-pulse" 
+                onClick={() => setIsModalOpen(true)}
+                style={{ borderRadius: '100px', background: '#e11d48', color: 'white', gap: '8px', height: '40px', fontSize: '0.9rem' }}
+              >
+                <Plus size={18} /> Broadcast Emergency
+              </Button>
+            )}
             <span className="live-badge" style={{ margin: 0 }}>LIVE UPDATES</span>
           </div>
+
         </div>
         
         <div className="alerts-grid">

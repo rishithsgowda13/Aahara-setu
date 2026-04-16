@@ -100,17 +100,26 @@ export const Receiver: React.FC = () => {
   };
 
   const handleSubmitProof = () => {
-    if (selectedImages.length < 3) return; // Prevent submission if less than 3
+    if (selectedImages.length < 3) return;
     
-    // In a real app, you would send Files to an API here
+    const targetId = uploadingForId;
     setItems(prev => ({
         ...prev,
-        proofs: prev.proofs.map(i => i.id === uploadingForId ? { ...i, status: 'proof_submitted' as const } : i)
+        proofs: prev.proofs.map(i => i.id === targetId ? { ...i, status: 'proof_submitted' as const } : i)
     }));
     
     setUploadingForId(null);
     setSelectedImages([]);
+
+    // Simulate Admin Review for Demo
+    setTimeout(() => {
+        setItems(prev => ({
+            ...prev,
+            proofs: prev.proofs.map(i => i.id === targetId ? { ...i, status: 'completed' as const } : i)
+        }));
+    }, 4000);
   };
+
 
   const [demands, setDemands] = useState([
     { id: 'd1', item: 'Rice & Sambar', priority: 'High', status: 'monitoring' },
@@ -325,8 +334,8 @@ displayItems.length === 0 ? (
                     {item.status === 'in_transit' && <><Truck size={14} /> On the way</>}
                     {item.status === 'pending' && <><MapPin size={14} /> Self-Pickup</>}
                     {item.status === 'proof_required' && <><AlertTriangle size={14} /> Needs Proof</>}
-                    {item.status === 'proof_submitted' && <><Clock size={14} /> Admin Reviewing</>}
-                    {item.status === 'completed' && <><ShieldCheck size={14} /> Verified</>}
+                    {item.status === 'proof_submitted' && <><Clock size={14} /> Reviewing...</>}
+                    {item.status === 'completed' && <><ShieldCheck size={14} /> Reviewed</>}
                   </div>
                   
                   <div className="eta-text">{item.eta}</div>
@@ -342,7 +351,20 @@ displayItems.length === 0 ? (
                       <UploadCloud size={18} style={{ marginRight: '6px' }} /> Upload Utilization Photos
                     </Button>
                   )}
+
+                  {item.status === 'proof_submitted' && (
+                    <Button className="track-btn" disabled style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', border: '1px solid #f59e0b' }}>
+                      <Clock size={18} style={{ marginRight: '6px' }} /> Reviewing...
+                    </Button>
+                  )}
+
+                  {item.status === 'completed' && (
+                    <Button className="track-btn" disabled style={{ background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', border: '1px solid #22c55e' }}>
+                      <ShieldCheck size={18} style={{ marginRight: '6px' }} /> Verified & Reviewed
+                    </Button>
+                  )}
                 </div>
+
               </Card>
             ))
           )}

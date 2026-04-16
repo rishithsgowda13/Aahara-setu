@@ -10,44 +10,65 @@ export const Footer: React.FC = () => {
 
   const isReceiver = role === 'receiver';
 
+  const navItems = [
+    { 
+      to: "/", 
+      icon: <Home size={20} />, 
+      label: "Home", 
+      active: location.pathname === '/' 
+    },
+    { 
+      to: isReceiver ? "/receiver" : "/dashboard", 
+      icon: <LayoutDashboard size={20} />, 
+      label: "Dashboard", 
+      active: ['/receiver', '/dashboard'].includes(location.pathname) 
+    },
+    { 
+      to: isReceiver ? "/receiver/explore" : "/explore", 
+      icon: <Globe size={20} />, 
+      label: "Explore Food", 
+      active: location.pathname.includes('/explore') 
+    },
+    { 
+      to: "/traceability", 
+      icon: <Radio size={20} />, 
+      label: "Traceability", 
+      active: location.pathname === '/traceability' 
+    },
+    { 
+      to: isReceiver ? "/receiver/disasters" : "/disasters", 
+      icon: <Flame size={20} />, 
+      label: "Disasters", 
+      active: ['/disasters', '/receiver/disasters'].includes(location.pathname) 
+    },
+    { 
+      to: isReceiver ? "/receiver/notifications" : "/notifications", 
+      icon: <Bell size={20} />, 
+      label: "Alerts", 
+      active: ['/notifications', '/receiver/notifications'].includes(location.pathname) 
+    },
+    { 
+      to: "/profile", 
+      icon: <User size={20} />, 
+      label: "Profile", 
+      active: location.pathname === '/profile' 
+    }
+  ];
+
   return (
     <footer className="floating-footer-wrapper">
       <div className="floating-footer-dock">
-        
-        <div className="dock-logo">
-          <Link to="/">
-            <img src="/donor/logo.png" alt="Aahara Setu" />
-          </Link>
-        </div>
-
         <div className="dock-icons">
-          <Link to="/" className={`dock-icon ${location.pathname === '/' ? 'active' : ''}`}>
-            <Home size={22} />
-          </Link>
-          
-          <Link to={isReceiver ? "/receiver" : "/dashboard"} className={`dock-icon ${['/receiver', '/dashboard'].includes(location.pathname) ? 'active' : ''}`}>
-            <LayoutDashboard size={22} />
-          </Link>
-
-          <Link to={isReceiver ? "/receiver/explore" : "/explore"} className={`dock-icon ${location.pathname.includes('/explore') ? 'active' : ''}`}>
-            <Globe size={22} />
-          </Link>
-          
-          <Link to="/traceability" className={`dock-icon ${location.pathname === '/traceability' ? 'active' : ''}`}>
-             <Radio size={22} />
-          </Link>
-
-          <Link to={isReceiver ? "/receiver/disasters" : "/disasters"} className={`dock-icon emergency-trigger ${['/disasters', '/receiver/disasters'].includes(location.pathname) ? 'active' : ''}`}>
-            <Flame size={24} />
-          </Link>
-          
-          <Link to={isReceiver ? "/receiver/notifications" : "/notifications"} className={`dock-icon ${['/notifications', '/receiver/notifications'].includes(location.pathname) ? 'active' : ''}`}>
-            <Bell size={22} />
-          </Link>
-
-          <Link to="/profile" className={`dock-icon ${location.pathname === '/profile' ? 'active' : ''}`}>
-            <User size={22} />
-          </Link>
+          {navItems.map((item, index) => (
+            <Link 
+              key={index} 
+              to={item.to} 
+              className={`dock-item ${item.active ? 'active' : ''}`}
+            >
+              <span className="dock-item-icon">{item.icon}</span>
+              <span className="dock-item-label">{item.label}</span>
+            </Link>
+          ))}
         </div>
       </div>
     </footer>

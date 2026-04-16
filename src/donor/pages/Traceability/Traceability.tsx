@@ -9,13 +9,72 @@ import {
 import { supabase } from '../../../lib/supabase';
 import './Traceability.css';
 
+interface ChainStep {
+  role: string;
+  name: string;
+  time: string;
+  status: string;
+  location: string;
+}
+
+interface Batch {
+  id: string;
+  item: string;
+  donor: string;
+  status: string;
+  time: string;
+  chain: ChainStep[];
+}
+
+
+// Hardcoded mock batches matching the reference design
+const MOCK_BATCHES: Batch[] = [
+  {
+    id: '1991',
+    item: 'Assorted Pastries (Batch #7742)',
+    donor: 'Baskin & Scones',
+    status: 'Delivered',
+    time: '14:20 PM',
+    chain: [
+      { role: 'Donor', name: "McDonald's - VVCE", time: '12:05 PM', status: 'verified', location: '12.332, 76.612' },
+      { role: 'Logistics', name: 'Volunteer #AS-09 (Rahul K.)', time: '12:45 PM', status: 'verified', location: '12.340, 76.620' },
+      { role: 'Receiver', name: 'Hope Orphanage', time: '13:15 PM', status: 'verified', location: '12.355, 76.645' },
+    ],
+  },
+  {
+    id: '9921',
+    item: 'Paneer Tikka (Batch #9921)',
+    donor: 'Hotel Empire',
+    status: 'In Transit',
+    time: '05 mins left',
+    chain: [
+      { role: 'Donor', name: 'Hotel Empire - Jayanagar', time: '11:30 AM', status: 'verified', location: '12.925, 77.583' },
+      { role: 'Logistics', name: 'Volunteer #AS-14 (Meena S.)', time: '12:10 PM', status: 'active', location: '12.930, 77.590' },
+      { role: 'Receiver', name: 'Akshaya Patra Foundation', time: '--:--', status: 'pending', location: '...' },
+    ],
+  },
+  {
+    id: '4421',
+    item: 'Veg Biryani (Batch #4421)',
+    donor: 'Royal Palace',
+    status: 'Listed',
+    time: 'Live Now',
+    chain: [
+      { role: 'Donor', name: 'Royal Palace Restaurant', time: '13:45 PM', status: 'verified', location: '12.971, 77.594' },
+      { role: 'Logistics', name: 'Pending Match', time: '--:--', status: 'pending', location: '...' },
+      { role: 'Receiver', name: 'Searching...', time: '--:--', status: 'pending', location: '...' },
+    ],
+  },
+];
+
+
 export const Traceability: React.FC = () => {
-  const [activeBatch, setActiveBatch] = useState<string | null>(null);
+  const [activeBatch, setActiveBatch] = useState<string | null>('1991');
   const [isRecalling, setIsRecalling] = useState(false);
   const [recallProgress, setRecallProgress] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const [liveBatches, setLiveBatches] = useState<any[]>([]);
+  const [liveBatches, setLiveBatches] = useState<Batch[]>([]);
 
   React.useEffect(() => {
     const fetchBatches = async () => {
@@ -24,7 +83,7 @@ export const Traceability: React.FC = () => {
         .select('*, profiles(organization_name)')
         .order('created_at', { ascending: false });
 
-      if (data) {
+      if (data && data.length > 0) {
         const formatted = data.map(d => ({
           id: d.id,
           rawId: d.id,
@@ -39,19 +98,15 @@ export const Traceability: React.FC = () => {
           ]
         }));
         setLiveBatches(formatted);
-        
-        // Auto-select first batch if none selected
-        if (formatted.length > 0 && !activeBatch) {
-          setActiveBatch(formatted[0].id);
-        }
       }
     };
     fetchBatches();
     const ch = supabase.channel('trace_live').on('postgres_changes', { event: '*', table: 'donations', schema: 'public' }, fetchBatches).subscribe();
     return () => { supabase.removeChannel(ch); };
-  }, [activeBatch]);
+  }, []);
 
-  const batches = React.useMemo(() => liveBatches, [liveBatches]);
+  // Merge live Supabase data on top of mock data
+  const batches = React.useMemo(() => [...liveBatches, ...MOCK_BATCHES], [liveBatches]);
 
   const handleTriggerRecall = () => {
     setIsRecalling(true);
@@ -153,7 +208,7 @@ export const Traceability: React.FC = () => {
               </div>
 
               <div className="chain-timeline">
-                {selected.chain.map((step, i) => (
+                {selected.chain.map((step: ChainStep, i: number) => (
                   <div key={i} className={`chain-step ${step.status}`}>
                     <div className="step-marker">
                       {step.role === 'Donor' ? <MapPin size={18} /> : 

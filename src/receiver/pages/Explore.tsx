@@ -5,6 +5,7 @@ import { Search, Map as MapIcon, Zap, AlertTriangle } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useTranslation } from '../../donor/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import '../styles/Explore.css';
 
 interface FoodItem {
@@ -62,6 +63,7 @@ const MOCK_FOOD_ITEMS: FoodItem[] = [
 ];
 
 export const Explore: React.FC = () => {
+  const { addToast } = useToast();
   const { t } = useTranslation();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
@@ -110,7 +112,9 @@ export const Explore: React.FC = () => {
           urgencyLevel: (d.urgency_score > 90 ? 'high' : d.urgency_score > 60 ? 'medium' : 'low') as any,
           isDisaster: d.is_disaster
         }));
-        setFoodItems(formatted);
+        setFoodItems([...MOCK_FOOD_ITEMS, ...formatted]);
+      } else {
+        setFoodItems(MOCK_FOOD_ITEMS);
       }
     };
 
@@ -280,85 +284,154 @@ export const Explore: React.FC = () => {
               {/* Left Side: Interactive Claim Action */}
               <div className="modal-left-receiver">
                 <div className="modal-branding-head">
-                  <h2 className="modal-title">Initiate <span className="title-accent">Claim</span></h2>
+                  <h2 className="modal-title">
+                    {modalStep === 'init' ? 'Initiate ' : 'Select '}
+                    <span className="title-accent">{modalStep === 'init' ? 'Claim' : 'Logistics'}</span>
+                  </h2>
                 </div>
 
-                <div className="receiver-card-visual">
-                  <div className="receiver-status-tag">NGO RECEIVER</div>
-                  <div className="receiver-main-row">
-                    <div className="receiver-logo-circle">
-                      {user?.email?.charAt(0).toUpperCase() || 'H'}
-                    </div>
-                    <div className="receiver-details">
-                      <h4 className="receiver-name-bold">{user?.email?.split('@')[0].toUpperCase() || 'HOPE NGO'}</h4>
-                      <p className="receiver-email-sub">{user?.email || 'verified_ngo@aahara.org'}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="quantity-selection-area">
-                  <label className="input-field-label">HOW MUCH QUANTITY DO YOU NEED?</label>
-                  <div className="interactive-qty-row">
-                    <div className="slider-container-pretty">
-                      <input 
-                        type="range" 
-                        min="1" 
-                        max={parseInt(selectedItem.quantity) || 50} 
-                        value={claimQty}
-                        onChange={(e) => setClaimQty(parseInt(e.target.value))}
-                        className="modern-range-slider"
-                      />
-                      <div className="slider-bounds">
-                        <span>1</span>
-                        <span>Max available: {selectedItem.quantity}</span>
+                {modalStep === 'init' ? (
+                  <>
+                    <div className="receiver-card-visual">
+                      <div className="receiver-status-tag">NGO RECEIVER</div>
+                      <div className="receiver-main-row">
+                        <div className="receiver-logo-circle">
+                          <Award size={20} />
+                        </div>
+                        <div className="receiver-details">
+                          <h4 className="receiver-name-bold">{user?.email?.split('@')[0].toUpperCase() || 'HOPE NGO'}</h4>
+                          <p className="receiver-email-sub">{user?.email || 'verified_ngo@aahara.org'}</p>
+                        </div>
                       </div>
                     </div>
-                    <div className="qty-numeric-display">
-                      <input 
-                        type="number" 
-                        value={claimQty}
-                        onChange={(e) => setClaimQty(Math.min(parseInt(e.target.value) || 1, parseInt(selectedItem.quantity) || 50))}
-                      />
+
+                    <div className="quantity-selection-area">
+                      <label className="input-field-label">HOW MUCH QUANTITY DO YOU NEED?</label>
+                      <div className="interactive-qty-row">
+                        <div className="slider-container-pretty">
+                          <input 
+                            type="range" 
+                            min="1" 
+                            max={parseInt(selectedItem.quantity) || 50} 
+                            value={claimQty}
+                            onChange={(e) => setClaimQty(parseInt(e.target.value))}
+                            className="modern-range-slider"
+                          />
+                          <div className="slider-bounds">
+                            <span>1</span>
+                            <span>Max available: {selectedItem.quantity}</span>
+                          </div>
+                        </div>
+                        <div className="qty-numeric-display">
+                          <input 
+                            type="number" 
+                            value={claimQty}
+                            onChange={(e) => setClaimQty(Math.min(parseInt(e.target.value) || 1, parseInt(selectedItem.quantity) || 50))}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="modal-primary-actions">
-                  <div className="action-buttons-grid">
-                    <Button 
-                      variant="outline" 
-                      className="modal-cancel-btn"
-                      onClick={() => setSelectedItem(null)}
-                    >
-                      CANCEL
-                    </Button>
-                    <Button 
-                      className="modal-claim-btn" 
-                      onClick={async () => {
-                          const { error } = await supabase
-                            .from('donations')
-                            .update({ status: 'claimed' })
-                            .eq('id', selectedItem.id);
+                    <div className="modal-primary-actions">
+                      <div className="action-buttons-grid">
+                        <Button 
+                          variant="outline" 
+                          className="modal-cancel-btn"
+                          onClick={() => setSelectedItem(null)}
+                        >
+                          CANCEL
+                        </Button>
+                        <Button 
+                          className="modal-claim-btn" 
+                          onClick={() => setModalStep('logistics')}
+                        >
+                          CLAIM NOW
+                        </Button>
+                      </div>
+                      <Button 
+                        fullWidth 
+                        className="modal-maps-btn"
+                        onClick={() => handleOpenGoogleMaps(selectedItem.donor + " " + selectedItem.distance)}
+                      >
+                        <MapIcon size={18} /> OPEN IN GOOGLE MAPS (Leaflet)
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="logistics-selection-area animate-fade-in" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                       <p className="pane-sup-label" style={{ color: '#4f633d', fontSize: '0.8rem' }}>HOW SHOULD THE FOOD BE DELIVERED?</p>
+                       
+                       <div className="logistics-options-stack" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                          <div 
+                            className={`logistics-option-card ${logisticsType === 'self' ? 'active' : ''}`}
+                            onClick={() => setLogisticsType('self')}
+                            style={{ 
+                              padding: '20px', borderRadius: '16px', border: '2px solid #edf2f0', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer',
+                              background: logisticsType === 'self' ? '#f0f4f0' : 'white', borderColor: logisticsType === 'self' ? '#4f633d' : '#edf2f0'
+                            }}
+                          >
+                             <div className="log-opt-icon" style={{ fontSize: '1.5rem' }}>🚗</div>
+                             <div className="log-opt-content" style={{ flex: 1 }}>
+                                <h5 style={{ margin: 0, fontWeight: 800 }}>Self Pickup / Delivery</h5>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#666' }}>Our NGO vehicle will collect the items directly.</p>
+                             </div>
+                             {logisticsType === 'self' && <div className="log-opt-check" style={{ color: '#4f633d' }}>✓</div>}
+                          </div>
 
-                          if (error) {
-                            alert('Error claiming item: ' + error.message);
-                          } else {
-                            alert(`Claiming ${claimQty} portions of ${selectedItem.name}. Success!`);
-                            setSelectedItem(null);
-                          }
-                      }}
-                    >
-                      CLAIM NOW
-                    </Button>
-                  </div>
-                  <Button 
-                    fullWidth 
-                    className="modal-maps-btn"
-                    onClick={() => handleOpenGoogleMaps(selectedItem.donor + " " + selectedItem.distance)}
-                  >
-                    <MapIcon size={18} /> OPEN IN GOOGLE MAPS (Leaflet)
-                  </Button>
-                </div>
+                          <div 
+                            className={`logistics-option-card ${logisticsType === 'rapido' ? 'active' : ''}`}
+                            onClick={() => setLogisticsType('rapido')}
+                            style={{ 
+                              padding: '20px', borderRadius: '16px', border: '2px solid #edf2f0', display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer',
+                              background: logisticsType === 'rapido' ? '#f0f4f0' : 'white', borderColor: logisticsType === 'rapido' ? '#4f633d' : '#edf2f0'
+                            }}
+                          >
+                             <div className="log-opt-icon" style={{ fontSize: '1.5rem' }}>🛵</div>
+                             <div className="log-opt-content" style={{ flex: 1 }}>
+                                <h5 style={{ margin: 0, fontWeight: 800 }}>Rapido Parcel</h5>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#666' }}>Instant bike delivery for high-urgency batches.</p>
+                             </div>
+                             {logisticsType === 'rapido' && <div className="log-opt-check" style={{ color: '#4f633d' }}>✓</div>}
+                          </div>
+                       </div>
+                    </div>
+
+                    <div className="modal-final-actions" style={{ marginTop: 'auto' }}>
+                       <div className="action-buttons-grid">
+                          <Button 
+                            variant="outline" 
+                            className="modal-cancel-btn"
+                            onClick={() => setModalStep('init')}
+                          >
+                            BACK
+                          </Button>
+                          <Button 
+                            className="modal-claim-btn" 
+                            onClick={async () => {
+                                const { error } = await supabase
+                                  .from('donations')
+                                  .update({ 
+                                    status: 'claimed',
+                                    claimed_by: user?.id,
+                                    logistics_method: logisticsType
+                                  })
+                                  .eq('id', selectedItem.id);
+
+                                 if (error) {
+                                  addToast('Error', 'Error claiming item: ' + error.message, 'warning');
+                                } else {
+                                  addToast('Success', 'Item claimed successfully! Coordinating logistics...', 'success');
+                                  setSelectedItem(null);
+                                }
+                            }}
+                          >
+                            CONFIRM CLAIM
+                          </Button>
+                       </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Right Side: Donor Identity & Safety (Dark Theme) */}
@@ -384,6 +457,10 @@ export const Explore: React.FC = () => {
                    <div className="spec-row">
                       <span className="spec-label">Item Name</span>
                       <span className="spec-value">{selectedItem.name}</span>
+                   </div>
+                   <div className="spec-row">
+                      <span className="spec-label">Quantity Selected</span>
+                      <span className="spec-value">{claimQty} portions</span>
                    </div>
                    <div className="spec-row">
                       <span className="spec-label">Category</span>

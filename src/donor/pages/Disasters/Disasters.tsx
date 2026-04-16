@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/ui/Button/Button';
 import { Card } from '../../components/ui/Card/Card';
+import { useToast } from '../../../context/ToastContext';
 import { Flame, AlertTriangle, MapPin, Users, Heart, ArrowRight, Zap, Shield } from 'lucide-react';
 import './Disasters.css';
 import { supabase } from '../../../lib/supabase';
@@ -18,6 +19,7 @@ interface DisasterAlert {
 }
 
 export const Disasters: React.FC = () => {
+  const { addToast } = useToast();
   const [activeDisasters, setActiveDisasters] = React.useState<DisasterAlert[]>([]);
   const [loading, setLoading] = React.useState(true);
 
@@ -82,13 +84,8 @@ export const Disasters: React.FC = () => {
     return () => {
       supabase.removeChannel(subscription);
     };
-  }, []);
+  }, [fetchAlerts]);
   
-  const [toast, setToast] = React.useState<string | null>(null);
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 3000);
-  };
 
   return (
     <div className="disasters-container">
@@ -187,18 +184,9 @@ export const Disasters: React.FC = () => {
       <div className="cta-disaster">
         <h3>Institutional Donor?</h3>
         <p>Large-scale corporate or hotel donations are handled via our express hotline.</p>
-        <Button variant="outline" onClick={() => showToast('Connecting to Institutional Hotline...')}>Contact Response Team <ArrowRight size={16} /></Button>
+        <Button variant="outline" onClick={() => addToast('Connecting...', 'Connecting to Institutional Hotline...', 'info')}>Contact Response Team <ArrowRight size={16} /></Button>
       </div>
 
-      {toast && (
-        <div style={{
-          position: 'fixed', bottom: '40px', left: '50%', transform: 'translateX(-50%)',
-          background: 'var(--color-primary)', color: 'white', padding: '16px 32px', borderRadius: '100px',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.2)', zIndex: 10000, fontWeight: 700
-        }}>
-          🚀 {toast}
-        </div>
-      )}
     </div>
   );
 };

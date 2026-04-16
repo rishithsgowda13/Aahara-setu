@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Link, useNavigate } from 'react-router-dom';
 import { Navbar } from './donor/components/layout/Navbar';
 import { Footer } from './donor/components/layout/Footer';
@@ -16,31 +16,17 @@ import { Explore as ReceiverExplore } from './receiver/pages/Explore';
 import { Notifications as ReceiverNotifications } from './receiver/pages/Notifications';
 import { ClaimView } from './receiver/pages/ClaimView';
 import { Admin } from './pages/Admin';
-import { Toast } from './donor/components/ui/Toast/Toast';
 import { LanguageProvider } from './donor/context/LanguageContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ToastProvider, useToast } from './context/ToastContext';
 import { Auth } from './pages/Auth/Auth';
-import type { ToastMessage } from './donor/components/ui/Toast/Toast';
 import './donor/styles/App.css';
 
 function AppContent() {
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const { isAuthenticated, role } = useAuth();
+  const { addToast } = useToast();
   const location = useLocation();
   const navigate = useNavigate();
-
-  const isAuthPage = location.pathname === '/login';
-  const showFooter = !isAuthPage;
-
-  const addToast = (title: string, message: string, type: 'info' | 'success' | 'warning') => {
-    const id = Math.random().toString(36).substr(2, 9);
-    setToasts((prev) => [...prev, { id, title, message, type }]);
-    setTimeout(() => removeToast(id), 6000);
-  };
-
-  const removeToast = (id: string) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  };
 
   useEffect(() => {
     // Auth Redirects
@@ -65,7 +51,6 @@ function AppContent() {
 
     // Disable demo notifications on the Landing/Login page
     if (location.pathname === '/' || location.pathname === '/login') {
-      if (toasts.length > 0) setToasts([]);
       return;
     }
 
@@ -73,13 +58,32 @@ function AppContent() {
     const seen = JSON.parse(localStorage.getItem('seen_demo_notifications') || '[]');
     let t1: any;
     let t2: any;
+    let t3: any;
 
     if (!seen.includes('alert_demo')) {
       t1 = setTimeout(() => {
-        addToast('⚡ High Priority Alert', 'Paneer Tikka expiring in 45 mins — 0.4 km away!', 'warning');
+        addToast(
+          '⚡ High Priority Alert', 
+          'Paneer Tikka expiring in 45 mins — 0.4 km away! Tap to view.', 
+          'warning', 
+          role === 'receiver' ? '/receiver/explore' : '/dashboard'
+        );
         seen.push('alert_demo');
         localStorage.setItem('seen_demo_notifications', JSON.stringify(seen));
       }, 3000);
+    }
+
+    if (!seen.includes('disaster_demo')) {
+      t3 = setTimeout(() => {
+        addToast(
+          '🚨 DISASTER ALERT: Flash Floods', 
+          '500 meals urgently required. Tap to coordinate.', 
+          'warning', 
+          role === 'receiver' ? '/receiver/disasters' : '/disasters'
+        );
+        seen.push('disaster_demo');
+        localStorage.setItem('seen_demo_notifications', JSON.stringify(seen));
+      }, 7000);
     }
 
     if (!seen.includes('match_demo')) {
@@ -87,11 +91,14 @@ function AppContent() {
         addToast('✅ Match Found', 'Assorted Pastries matched with Hope NGO nearby.', 'success');
         seen.push('match_demo');
         localStorage.setItem('seen_demo_notifications', JSON.stringify(seen));
-      }, 8000);
+      }, 12000);
     }
 
-    return () => { if (t1) clearTimeout(t1); if (t2) clearTimeout(t2); };
-  }, [location.pathname]);
+    return () => { if (t1) clearTimeout(t1); if (t2) clearTimeout(t2); if (t3) clearTimeout(t3); };
+  }, [location.pathname, isAuthenticated, role, addToast, navigate]);
+
+  const isAuthPage = location.pathname === '/login';
+  const showFooter = !isAuthPage;
 
   return (
     <>
@@ -122,7 +129,6 @@ function AppContent() {
         </Routes>
       </main>
       {showFooter && <Footer />}
-      <Toast messages={toasts} onRemove={removeToast} />
     </>
   );
 }
@@ -131,9 +137,11 @@ function App() {
   return (
     <AuthProvider>
       <LanguageProvider>
-        <Router>
-          <AppContent />
-        </Router>
+        <ToastProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </ToastProvider>
       </LanguageProvider>
     </AuthProvider>
   );

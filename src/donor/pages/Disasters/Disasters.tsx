@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../components/ui/Button/Button';
 import { Card } from '../../components/ui/Card/Card';
-import { Flame, AlertTriangle, MapPin, Users, Heart, ArrowRight, Zap, Shield, Plus } from 'lucide-react';
+import { Flame, AlertTriangle, MapPin, Users, Heart, ArrowRight, Zap, Shield, Plus, Siren } from 'lucide-react';
 import './Disasters.css';
 import { supabase } from '../../../lib/supabase';
 
@@ -20,6 +20,9 @@ interface DisasterAlert {
 export const Disasters: React.FC = () => {
   const [activeDisasters, setActiveDisasters] = React.useState<DisasterAlert[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [isReportModalOpen, setIsReportModalOpen] = React.useState(false);
+  const [reportMessage, setReportMessage] = React.useState('');
+  const [isReporting, setIsReporting] = React.useState(false);
 
   const fetchAlerts = async () => {
     const { data } = await supabase
@@ -70,20 +73,42 @@ export const Disasters: React.FC = () => {
 
   React.useEffect(() => {
     fetchAlerts();
-
-    // Subscribe to new alerts
     const subscription = supabase
       .channel('disaster_alerts_donor_live')
       .on('postgres_changes', { event: '*', table: 'disaster_alerts', schema: 'public' }, () => {
         fetchAlerts();
       })
       .subscribe();
-
     return () => {
       supabase.removeChannel(subscription);
     };
   }, []);
   
+  const handleSendReport = async () => {
+    if (!reportMessage.trim()) return;
+    setIsReporting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('emergency_reports').insert({
+        user_id: user?.id,
+        user_role: 'donor',
+        reporter_name: user?.email || 'Donor',
+        message: reportMessage,
+        location_name: 'Near Donor Location'
+      });
+
+      if (error) throw error;
+      showToast('Report sent to Admin. Help is on the way!');
+      setIsReportModalOpen(false);
+      setReportMessage('');
+    } catch (err) {
+      console.error(err);
+      showToast('Error sending report.');
+    } finally {
+      setIsReporting(false);
+    }
+  };
+
   const [toast, setToast] = React.useState<string | null>(null);
   const showToast = (msg: string) => {
     setToast(msg);
@@ -116,7 +141,7 @@ export const Disasters: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <Button 
                 className="broadcast-btn animate-pulse" 
-                onClick={() => showToast('Switch to NGO/Receiver mode to Broadcast Emergency alerts.')}
+                onClick={() => setIsReportModalOpen(true)}
                 style={{ borderRadius: '100px', background: '#e11d48', color: 'white', gap: '8px', height: '40px', fontSize: '0.9rem' }}
               >
                 <Plus size={18} /> Broadcast Emergency
@@ -197,6 +222,37 @@ export const Disasters: React.FC = () => {
         <Button variant="outline" onClick={() => showToast('Connecting to Institutional Hotline...')}>Contact Response Team <ArrowRight size={16} /></Button>
       </div>
 
+      {isReportModalOpen && (
+        <div className="modal-overlay glass animate-fade-in" style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)',
+          backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '20px'
+        }}>
+          <div className="broadcast-modal-box" style={{
+            background: '#FFFDF7', border: '1px solid #E2E8F0', borderRadius: '24px', padding: '40px',
+            width: '100%', maxWidth: '500px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+          }}>
+            <h2 style={{ color: '#e11d48', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <AlertTriangle size={24} /> Emergency Report
+            </h2>
+            <p style={{ color: '#4F633D', marginBottom: '24px' }}>Describe the current situation. This goes directly to the Admin response team.</p>
+            
+            <textarea 
+              value={reportMessage}
+              onChange={(e) => setReportMessage(e.target.value)}
+              placeholder="What happened? E.g. Earthquake in Zone A, need immediate food dispatch..."
+              style={{ width: '100%', height: '150px', padding: '16px', borderRadius: '12px', border: '1px solid #E2E8F0', fontSize: '1rem', marginBottom: '24px', outline: 'none' }}
+            />
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <Button variant="outline" fullWidth onClick={() => setIsReportModalOpen(false)}>Cancel</Button>
+              <Button fullWidth variant="primary" style={{ background: '#e11d48' }} disabled={isReporting} onClick={handleSendReport}>
+                {isReporting ? 'Sending...' : 'Send Broadcast'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {toast && (
         <div style={{
           position: 'fixed', bottom: '40px', left: '50%', transform: 'translateX(-50%)',
@@ -209,15 +265,3 @@ export const Disasters: React.FC = () => {
     </div>
   );
 };
-
-const Siren = ({ size }: { size: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M7 11v8a5 5 0 0 0 10 0v-8" />
-    <path d="M9 7V5a3 3 0 0 1 6 0v2" />
-    <path d="M12 2v2" />
-    <path d="M21 12h2" />
-    <path d="M1 12h2" />
-    <path d="M20 7l-2 2" />
-    <path d="M6 9L4 7" />
-  </svg>
-);

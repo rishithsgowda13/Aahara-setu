@@ -84,11 +84,7 @@ export const Disasters: React.FC = () => {
       supabase.removeChannel(subscription);
     };
   }, []);
-
-  const handleBroadcast = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
+  const handleBroadcast = async () => {
     const { error } = await supabase.from('disaster_alerts').insert({
       title: broadcastData.title,
       location_name: broadcastData.location,
@@ -106,6 +102,35 @@ export const Disasters: React.FC = () => {
       showToast('Error broadcasting alert');
     }
     setLoading(false);
+  };
+
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [reportMessage, setReportMessage] = useState('');
+  const [isReporting, setIsReporting] = useState(false);
+
+  const handleSendReport = async () => {
+    if (!reportMessage.trim()) return;
+    setIsReporting(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { error } = await supabase.from('emergency_reports').insert({
+        user_id: user?.id,
+        user_role: 'receiver',
+        reporter_name: user?.email || 'Receiver',
+        message: reportMessage,
+        location_name: 'Near Receiver Location'
+      });
+
+      if (error) throw error;
+      showToast('Help report sent to Admin.');
+      setIsReportModalOpen(false);
+      setReportMessage('');
+    } catch (err) {
+      console.error(err);
+      showToast('Error sending report.');
+    } finally {
+      setIsReporting(false);
+    }
   };
   
   const [toast, setToast] = useState<string | null>(null);
@@ -138,7 +163,7 @@ export const Disasters: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <Button 
               className="broadcast-btn animate-pulse" 
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsReportModalOpen(true)}
               style={{ borderRadius: '100px', background: '#e11d48', color: 'white', gap: '8px', height: '40px', fontSize: '0.9rem' }}
             >
               <Plus size={18} /> Broadcast Emergency
@@ -185,82 +210,43 @@ export const Disasters: React.FC = () => {
         </div>
       </section>
 
-      {/* --- BROADCAST MODAL --- */}
-      {isModalOpen && (
-        <div className="modal-overlay glass animate-fade-in" onClick={() => setIsModalOpen(false)} style={{
+      {/* Emergency Report Modal */}
+      {isReportModalOpen && (
+        <div className="modal-overlay glass animate-fade-in" style={{
           position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)',
           backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10000, padding: '20px'
         }}>
-          <div className="broadcast-modal-box" onClick={e => e.stopPropagation()} style={{
+          <div className="broadcast-modal-box" style={{
             background: '#FFFDF7', border: '1px solid #E2E8F0', borderRadius: '24px', padding: '40px',
             width: '100%', maxWidth: '500px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
           }}>
-            <div className="modal-head" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
-               <h2 style={{ color: '#e11d48', display: 'flex', alignItems: 'center', gap: '12px', margin: 0 }}>
-                 <Globe size={24} /> Broadcast SOS
-               </h2>
-               <button onClick={() => setIsModalOpen(false)} style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer' }}><X /></button>
+            <h2 style={{ color: '#e11d48', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <AlertTriangle size={24} /> Emergency SOS
+            </h2>
+            <p style={{ color: '#4F633D', marginBottom: '24px' }}>Reporting on-ground emergency? This broadcast will notify the Admin response team immediately.</p>
+            
+            <textarea 
+              value={reportMessage}
+              onChange={(e) => setReportMessage(e.target.value)}
+              placeholder="Tell us what's happening. Help is just a broadcast away..."
+              style={{ width: '100%', height: '150px', padding: '16px', borderRadius: '12px', border: '1px solid #E2E8F0', fontSize: '1rem', marginBottom: '24px', outline: 'none' }}
+            />
+
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <Button variant="outline" fullWidth onClick={() => setIsReportModalOpen(false)}>Cancel</Button>
+              <Button fullWidth variant="primary" style={{ background: '#e11d48' }} disabled={isReporting} onClick={handleSendReport}>
+                {isReporting ? 'Broadcasting...' : 'Signal Admin'}
+              </Button>
             </div>
-
-            <form onSubmit={handleBroadcast} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-               <div className="input-group">
-                 <label style={{ fontSize: '0.75rem', color: '#4F633D', fontWeight: 800, textTransform: 'uppercase' }}>Disaster Title</label>
-                 <input 
-                   required
-                   placeholder="e.g. Flash Floods Relief"
-                   value={broadcastData.title}
-                   onChange={e => setBroadcastData({...broadcastData, title: e.target.value})}
-                   style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '12px', borderRadius: '12px', color: '#2D3A2A', marginTop: '4px' }}
-                 />
-               </div>
-               <div className="input-group">
-                 <label style={{ fontSize: '0.75rem', color: '#4F633D', fontWeight: 800, textTransform: 'uppercase' }}>Location</label>
-                 <input 
-                   required
-                   placeholder="Affected Zone / Neighborhood"
-                   value={broadcastData.location}
-                   onChange={e => setBroadcastData({...broadcastData, location: e.target.value})}
-                   style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '12px', borderRadius: '12px', color: '#2D3A2A', marginTop: '4px' }}
-                 />
-               </div>
-               <div className="input-group">
-                 <label style={{ fontSize: '0.75rem', color: '#4F633D', fontWeight: 800, textTransform: 'uppercase' }}>Severity</label>
-                 <select 
-                   value={broadcastData.severity}
-                   onChange={e => setBroadcastData({...broadcastData, severity: e.target.value})}
-                   style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '12px', borderRadius: '12px', color: '#2D3A2A', marginTop: '4px' }}
-                 >
-                   <option value="critical">🆘 CRITICAL</option>
-                   <option value="high">🟠 HIGH</option>
-                   <option value="medium">🟡 MEDIUM</option>
-                 </select>
-               </div>
-               <div className="input-group">
-                 <label style={{ fontSize: '0.75rem', color: '#4F633D', fontWeight: 800, textTransform: 'uppercase' }}>Needs (Comma separated)</label>
-                 <input 
-                   required
-                   placeholder="e.g. Rice, Water, Biscuits"
-                   value={broadcastData.needs}
-                   onChange={e => setBroadcastData({...broadcastData, needs: e.target.value})}
-                   style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '12px', borderRadius: '12px', color: '#2D3A2A', marginTop: '4px' }}
-                 />
-               </div>
-               <div className="input-group">
-                 <label style={{ fontSize: '0.75rem', color: '#4F633D', fontWeight: 800, textTransform: 'uppercase' }}>People Affected</label>
-                 <input 
-                   type="number"
-                   required
-                   placeholder="Approx. count"
-                   value={broadcastData.people_in_need}
-                   onChange={e => setBroadcastData({...broadcastData, people_in_need: e.target.value})}
-                   style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', padding: '12px', borderRadius: '12px', color: '#2D3A2A', marginTop: '4px' }}
-                 />
-               </div>
-
-               <Button type="submit" className="sumbit-sos-btn" fullWidth style={{ background: '#e11d48', height: '50px', fontSize: '1rem', marginTop: '10px' }}>
-                 {loading ? 'Broadcasting...' : 'Publish LIVE Alert'} <Send size={18} style={{ marginLeft: '10px' }} />
-               </Button>
-            </form>
+            
+            <div style={{ marginTop: '24px', textAlign: 'center' }}>
+              <p style={{ fontSize: '0.8rem', color: '#666' }}>
+                Need to create a global public alert instead? 
+                <button onClick={() => { setIsReportModalOpen(false); setIsModalOpen(true); }} style={{ background: 'none', border: 'none', color: '#e11d48', fontWeight: 700, cursor: 'pointer', marginLeft: '8px' }}>
+                  Create Public SOS
+                </button>
+              </p>
+            </div>
           </div>
         </div>
       )}

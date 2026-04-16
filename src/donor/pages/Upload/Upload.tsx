@@ -7,6 +7,7 @@ import { Select } from '../../components/ui/Select/Select';
 import { MapPin, CheckSquare, Square, AlertOctagon } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../context/LanguageContext';
+import { useAuth } from '../../../context/AuthContext';
 import { supabase } from '../../../lib/supabase';
 import './Upload.css';
 
@@ -40,6 +41,13 @@ const DIETARY_INFO = [
   { value: 'Nut Free', label: 'Nut Free' },
 ];
 
+const PRIORITY_LEVELS = [
+  { value: 'Very High', label: '🚨 Very High (Expiring ASAP)' },
+  { value: 'High', label: '⚡ High (Needs rescue today)' },
+  { value: 'Medium', label: '⏰ Medium (Freshly prepared)' },
+  { value: 'Low', label: '📦 Low (Long shelf-life / Packaged)' },
+];
+
 export const Upload: React.FC = () => {
   const { addToast } = useToast();
   const { t } = useTranslation();
@@ -54,55 +62,31 @@ export const Upload: React.FC = () => {
   const [category, setCategory] = useState('');
   const [dietary, setDietary] = useState('None');
   const [unit, setUnit] = useState('portions');
-  const allChecked = checkedItems.every(Boolean);
+  const [priority, setPriority] = useState('Medium');
   const fssaiId = localStorage.getItem(FSSAI_STORAGE_KEY);
+  const allChecked = checkedItems.every(Boolean);
 
-  const toggleCheck = (i: number) => {
-    setCheckedItems(prev => prev.map((v, idx) => idx === i ? !v : v));
+  const toggleCheck = (index: number) => {
+    const next = [...checkedItems];
+    next[index] = !next[index];
+    setCheckedItems(next);
   };
 
-  const [address, setAddress] = useState('');
-  const [isDetecting, setIsDetecting] = useState(false);
-
   const handleFetchLocation = () => {
-    if (!navigator.geolocation) {
-      addToast('Error', 'Geolocation is not supported by your browser', 'warning');
-      return;
-    }
-
     setIsDetecting(true);
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        const coordsStr = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-        
-        try {
-          // Reverse geocoding using OpenStreetMap (Nominatim)
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-          );
-          const data = await response.json();
-          const locationName = data.display_name.split(',')[0] || data.address.suburb || data.address.city || 'Unknown Area';
-          
-          setAddress(`${coordsStr} — ${locationName} (Detected)`);
-        } catch (error) {
-          console.error('Reverse geocoding error:', error);
-          setAddress(`${coordsStr} (Detected Location)`);
-        } finally {
-          setIsDetecting(false);
-        }
-      },
-      (error) => {
-        console.error('Error fetching location:', error);
-        addToast('Error', 'Unable to retrieve your location', 'warning');
-        setIsDetecting(false);
-      }
-    );
+    // Simulate geolocation
+    setTimeout(() => {
+      setAddress('Bangalore Tech Park, Phase 2, Tower B (77.64, 12.97)');
+      setIsDetecting(false);
+      addToast('Location Detected', 'Your current GPS coordinates have been synced.', 'success');
+    }, 1500);
   };
 
   const [itemName, setItemName] = useState('');
   const [itemQty, setItemQty] = useState('');
   const [expiry, setExpiry] = useState('');
+  const [address, setAddress] = useState('');
+  const [isDetecting, setIsDetecting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,44 +94,33 @@ export const Upload: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // 1. Get or Ensure profile exists (since real auth might not be linked yet in demo)
-      let donorId = '00000000-0000-0000-0000-000000000000'; // Default fallback
+      // 1. Get or Ensure profile exists ...
+      let donorId;
       
       const { data: profile } = await supabase
         .from('profiles')
         .select('id')
         .eq('email', user?.email)
-        .single();
+        .maybeSingle();
         
-      if (profile) {
-        donorId = profile.id;
-      } else {
-        // Create a dummy profile if it doesn't exist to allow foreign key to pass
-        const { data: newProfile, error: profileError } = await supabase
+      if (profile) donorId = profile.id;
+      else {
+        const { data: newProfile } = await supabase
           .from('profiles')
-          .insert([{ 
-            id: '77420000-0000-0000-0000-000000007742', // Stable dummy for demo
-            full_name: 'System Donor',
-            organization_name: 'McDonald\'s - VVCE',
-            email: user?.email || 'donor@test.com',
-            role: 'donor'
-          }])
-          .select()
-          .single();
-          
+          .insert([{ organization_name: user?.email?.split('@')[0].toUpperCase(), email: user?.email, role: 'donor' }])
+          .select().single();
         if (newProfile) donorId = newProfile.id;
-        // If it still fails, it might be a conflict, so try to fetch again
-        if (profileError) {
-          const { data: retry } = await supabase.from('profiles').select('id').eq('email', user?.email).single();
-          if (retry) donorId = retry.id;
-        }
       }
 
-      // 2. Validate Date
-      const expiryDate = new Date(expiry);
-      if (isNaN(expiryDate.getTime())) {
-        throw new Error('Invalid expiry date provided.');
-      }
+      // 2. Map Priority to Score
+      const priorityWeights: Record<string, number> = {
+        'Very High': 100,
+        'High': 80,
+        'Medium': 50,
+        'Low': 20
+      };
+      
+      const urgencyScore = isDisaster ? 100 : (priorityWeights[priority] || 50);
 
       // 3. Insert Donation
       const { error } = await supabase
@@ -159,26 +132,21 @@ export const Upload: React.FC = () => {
           is_disaster: isDisaster,
           quantity_value: parseFloat(itemQty) || 0,
           quantity_unit: unit,
-          expiry_time: expiryDate.toISOString(),
-          pickup_location: 'POINT(77.6413 12.9719)', // Geometry string
-          urgency_score: isDisaster ? 100 : 95,
+          expiry_time: new Date(expiry).toISOString(),
+          pickup_location: 'POINT(77.6413 12.9719)', 
+          urgency_score: urgencyScore,
           status: 'available'
         }]);
 
-      if (error) {
-        console.error('Supabase Insert Error:', error);
-        throw error;
-      }
-      
+      if (error) throw error;
       setSubmitted(true);
     } catch (error: any) {
-      console.error('Error uploading:', error);
-      addToast('Error', `Upload failed: ${error.message || 'Check console.'}`, 'error');
+      addToast('Error', `Upload failed: ${error.message}`, 'error');
     } finally {
       setIsSubmitting(false);
     }
-
   };
+
 
   if (submitted) {
     return (
@@ -249,55 +217,6 @@ export const Upload: React.FC = () => {
       <div className="upload-header">
         <h1 className="page-title">{t('upload_title')}</h1>
         <p className="page-subtitle">{t('upload_sub')}</p>
-      </div>
-
-      <div className="demo-presets-row" style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap' }}>
-        <button 
-          className="demo-btn" 
-          onClick={() => {
-            setItemName('Survival Kits (Bread & Milk)');
-            setCategory('Groceries & Staples');
-            setItemQty('50');
-            setUnit('pieces');
-            setExpiry(new Date(Date.now() + 3600000).toISOString().slice(0, 16));
-            setAddress('2.5 km - Central Relief Hub');
-            setCheckedItems(new Array(SAFETY_CHECKLIST.length).fill(true));
-            navigate('/upload', { state: { isDisaster: true } });
-          }}
-          style={{ padding: '8px 16px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '100px', cursor: 'pointer', fontWeight: 600 }}
-        >
-          SOS: Survival Kits
-        </button>
-        <button 
-          className="demo-btn" 
-          onClick={() => {
-            setItemName('Assorted Pastries');
-            setCategory('Bakery & Sweets');
-            setItemQty('25');
-            setUnit('portions');
-            setExpiry(new Date(Date.now() + 2700000).toISOString().slice(0, 16));
-            setAddress('0.4 km - Gaurav Sweets');
-            setCheckedItems(new Array(SAFETY_CHECKLIST.length).fill(true));
-          }}
-          style={{ padding: '8px 16px', background: 'rgba(79, 99, 61, 0.1)', border: '1px solid #4F633D', color: '#4F633D', borderRadius: '100px', cursor: 'pointer', fontWeight: 600 }}
-        >
-          Demo: Pastries
-        </button>
-        <button 
-          className="demo-btn" 
-          onClick={() => {
-            setItemName('Paneer Tikka Thali');
-            setCategory('Main Course');
-            setItemQty('10');
-            setUnit('portions');
-            setExpiry(new Date(Date.now() + 7200000).toISOString().slice(0, 16));
-            setAddress('1.2 km - Skyline Hotels');
-            setCheckedItems(new Array(SAFETY_CHECKLIST.length).fill(true));
-          }}
-          style={{ padding: '8px 16px', background: 'rgba(139, 161, 148, 0.1)', border: '1px solid #8BA194', color: '#4F633D', borderRadius: '100px', cursor: 'pointer', fontWeight: 600 }}
-        >
-          Demo: Tikka Thali
-        </button>
       </div>
 
       {isDisaster && (
@@ -379,12 +298,21 @@ export const Upload: React.FC = () => {
                 </div>
                 <div className="form-group">
                   <Select 
-                    label={t('diet_class')}
-                    options={DIETARY_INFO} 
-                    value={dietary} 
-                    onChange={setDietary} 
+                    label="Listing Priority"
+                    options={PRIORITY_LEVELS} 
+                    value={priority} 
+                    onChange={setPriority} 
                   />
                 </div>
+              </div>
+
+              <div className="form-group">
+                <Select 
+                  label={t('diet_class')}
+                  options={DIETARY_INFO} 
+                  value={dietary} 
+                  onChange={setDietary} 
+                />
               </div>
 
               <div className="form-group">

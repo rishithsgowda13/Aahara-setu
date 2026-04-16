@@ -17,8 +17,11 @@ import {
   AlertTriangle,
   MapPin
 } from 'lucide-react';
+import { Card } from '../../donor/components/ui/Card/Card';
+import { Button } from '../../donor/components/ui/Button/Button';
 import '../styles/Admin.css';
 import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
 
 interface VerificationRequest {
   id: string;
@@ -39,69 +42,13 @@ interface EmergencyReport {
   status: 'pending' | 'resolved';
 }
 
-const MOCK_REQUESTS: VerificationRequest[] = [
-  {
-    id: 'req-1',
-    receiverName: 'Hope Foundation',
-    itemName: 'Fresh Salad Bowls (50 portions)',
-    claimedAt: '2 hours ago',
-    images: [
-      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1540189567005-5b306a3ac70e?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80'
-    ],
-    status: 'pending'
-  },
-  {
-    id: 'req-2',
-    receiverName: 'Skyline Community Kitchen',
-    itemName: 'Vegetable Pulao (20 portions)',
-    claimedAt: '5 hours ago',
-    images: [
-      'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=400&q=80',
-      'https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=400&q=80'
-    ],
-    status: 'pending'
-  }
-];
-
 export const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'verification' | 'profile' | 'emergencies'>('verification');
-  const [requests, setRequests] = useState<VerificationRequest[]>(MOCK_REQUESTS);
+  const { logout } = useAuth();
+  const [activeTab, setActiveTab] = useState<'verification' | 'profile' | 'emergencies'>('verification');
+  const [requests, setRequests] = useState<VerificationRequest[]>([]);
   const [emergencies, setEmergencies] = useState<EmergencyReport[]>([]);
   const [loading, setLoading] = useState(false);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/login';
-  };
-
-  React.useEffect(() => {
-    fetchRealVerifications();
-    fetchRealEmergencies();
-
-    // Subscribe to new verifications
-    const claimSub = supabase
-      .channel('admin_claims_live')
-      .on('postgres_changes', { event: '*', table: 'claims', schema: 'public' }, () => {
-        fetchRealVerifications();
-      })
-      .subscribe();
-
-    // Subscribe to new emergency reports
-    const emergencySub = supabase
-      .channel('admin_emergencies_live')
-      .on('postgres_changes', { event: '*', table: 'emergency_reports', schema: 'public' }, () => {
-        fetchRealEmergencies();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(claimSub);
-      supabase.removeChannel(emergencySub);
-    };
-  }, []);
+  const [zoomImage, setZoomImage] = useState<string | null>(null);
 
   const fetchRealVerifications = async () => {
     try {
@@ -110,29 +57,31 @@ export const AdminDashboard: React.FC = () => {
         .select(`
           id, 
           status, 
-          proof_images,
           created_at,
-          profiles (full_name, organization_name),
-          donations (food_name)
+          proof_images,
+          profiles (
+            organization_name,
+            full_name
+          ),
+          donations (
+            food_name
+          )
         `)
-        .or('status.eq.proof_submitted,status.eq.pending');
+        .eq('status', 'proof_submitted');
 
       if (error) throw error;
-
       if (data) {
-        console.log("Admin Fetched Claims:", data); // DEBUG LOG
         const transformed: VerificationRequest[] = data.map((item: any) => {
-          // 1. Get images from DB or Fallback to localStorage
           let images = item.proof_images || [];
-          const localKey = `proof_${item.id}`;
-          const localData = localStorage.getItem(localKey);
+          if (typeof images === 'string') {
+            try { images = JSON.parse(images); } catch(e) { images = []; }
+          }
           
-          if (localData) {
-            try {
-              const parsed = JSON.parse(localData);
-              if (parsed.length > 0) images = parsed;
-            } catch (e) {
-              console.error("Local data parse error", e);
+          // CRITICAL DEMO FALLBACK: If DB is empty, check if this browser has the local proof
+          if ((!images || images.length === 0)) {
+            const localProof = localStorage.getItem(`proof_${item.id}`);
+            if (localProof) {
+              try { images = JSON.parse(localProof); } catch(e) { images = []; }
             }
           }
 
@@ -142,7 +91,7 @@ export const AdminDashboard: React.FC = () => {
             itemName: item.donations?.food_name || 'Donation Item',
             claimedAt: new Date(item.created_at).toLocaleDateString(),
             images: images,
-            status: 'pending' // Force to pending for verification list
+            status: 'pending'
           };
         });
         setRequests(transformed as VerificationRequest[]);
@@ -179,50 +128,69 @@ export const AdminDashboard: React.FC = () => {
   const handleAction = async (id: string, action: 'approved' | 'declined') => {
     setLoading(true);
     try {
-      const finalStatus = action === 'approved' ? 'completed' : 'cancelled'; // Corrected terminal status
+      // If approved -> completed (unlocked)
+      // If declined -> delivered (which triggers 'Proof Required' UI for re-upload)
+      const finalStatus = action === 'approved' ? 'completed' : 'delivered';
       
       const { error } = await supabase
         .from('claims')
         .update({ status: finalStatus })
         .eq('id', id);
-
+      
       if (error) throw error;
-
+      
+      // Update local state to reflect the change visually
       setRequests(prev => prev.map(req => req.id === id ? { ...req, status: action } : req));
     } catch (err) {
       console.error('Action failed:', err);
-      alert('Failed to update status.');
     } finally {
       setLoading(false);
     }
   };
 
+  React.useEffect(() => {
+    fetchRealVerifications();
+    fetchRealEmergencies();
+
+    const claimSub = supabase
+      .channel('admin_claims_live')
+      .on('postgres_changes', { event: '*', table: 'claims', schema: 'public' }, () => {
+        fetchRealVerifications();
+      })
+      .subscribe();
+
+    const emergencySub = supabase
+      .channel('admin_emergencies_live')
+      .on('postgres_changes', { event: '*', table: 'emergency_reports', schema: 'public' }, () => {
+        fetchRealEmergencies();
+      })
+      .subscribe();
+
+    return () => {
+       supabase.removeChannel(claimSub);
+       supabase.removeChannel(emergencySub);
+    };
+  }, []);
+
   const pendingCount = requests.filter(r => r.status === 'pending').length;
 
   return (
     <div className="admin-layout">
-      {/* Sidebar */}
+      {/* Sidebar - RESTORED */}
       <aside className="admin-sidebar">
         <div className="sidebar-logo">
-          <ShieldCheck size={32} />
-          <span>Aahar<span className="gradient-text">Admin</span></span>
+          <ShieldCheck size={24} />
+          <span>Aahar Setu Admin</span>
         </div>
 
         <nav className="sidebar-nav">
-          <button 
-            className={`nav-item ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
-          >
-            <LayoutDashboard size={20} />
-            Overview
-          </button>
           <button 
             className={`nav-item ${activeTab === 'verification' ? 'active' : ''}`}
             onClick={() => setActiveTab('verification')}
           >
             <CheckCircle size={20} />
             Verifications
-            {pendingCount > 0 && <span style={{ marginLeft: 'auto', background: 'var(--admin-danger)', color: 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem' }}>{pendingCount}</span>}
+            {pendingCount > 0 && <span className="admin-badge">{pendingCount}</span>}
           </button>
           <button 
             className={`nav-item ${activeTab === 'emergencies' ? 'active' : ''}`}
@@ -231,7 +199,7 @@ export const AdminDashboard: React.FC = () => {
             <Siren size={20} />
             Emergencies
             {emergencies.filter(e => e.status === 'pending').length > 0 && 
-              <span style={{ marginLeft: 'auto', background: 'var(--admin-danger)', color: 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '0.75rem' }}>
+              <span className="admin-badge">
                 {emergencies.filter(e => e.status === 'pending').length}
               </span>
             }
@@ -245,22 +213,16 @@ export const AdminDashboard: React.FC = () => {
           </button>
         </nav>
 
-        <div style={{ marginTop: 'auto', paddingTop: '2rem', borderTop: '1px solid var(--admin-border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-            <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <User size={20} />
-            </div>
-            <div>
-              <p style={{ fontWeight: 600, fontSize: '0.875rem' }}>Admin User</p>
-              <p style={{ color: 'var(--admin-text-light)', fontSize: '0.75rem' }}>Full Access</p>
+        <div className="sidebar-footer">
+          <div className="user-info">
+            <div className="user-avatar"><User size={20} /></div>
+            <div className="user-details">
+              <p className="user-name">Admin User</p>
+              <p className="user-role">Full Access</p>
             </div>
           </div>
           
-          <button 
-            className="nav-item logout-btn" 
-            onClick={handleLogout}
-            style={{ width: '100%', color: 'var(--admin-danger)', background: 'rgba(225, 29, 72, 0.05)', border: 'none', transition: 'all 0.3s ease' }}
-          >
+          <button className="logout-btn" onClick={logout}>
             <LogOut size={20} />
             Sign Out
           </button>
@@ -269,135 +231,124 @@ export const AdminDashboard: React.FC = () => {
 
       {/* Main Content */}
       <main className="admin-main">
-        {activeTab === 'overview' && (
-          <section className="admin-section">
-            <header className="admin-header">
-              <h1>Dashboard <span className="gradient-text">Overview</span></h1>
-              <p>Real-time insights and system status.</p>
-            </header>
-
-            <div className="stats-grid">
-              <div className="stat-card">
-                <div className="stat-label">Pending Reviews</div>
-                <div className="stat-value">{pendingCount}</div>
-                <div style={{ color: 'var(--admin-warning)', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.875rem' }}>
-                  <Clock size={14} /> Action required
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-label">Total Rescues Today</div>
-                <div className="stat-value">124</div>
-                <div style={{ color: 'var(--admin-success)', fontSize: '0.875rem' }}>+12% from yesterday</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-label">Active Receivers</div>
-                <div className="stat-value">42</div>
-                <div style={{ color: 'var(--admin-text-light)', fontSize: '0.875rem' }}>Verified organizations</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-label">System Health</div>
-                <div className="stat-value">Optimal</div>
-                <div style={{ color: 'var(--admin-success)', fontSize: '0.875rem' }}>All services online</div>
-              </div>
-            </div>
-          </section>
-        )}
-
         {activeTab === 'verification' && (
           <section className="admin-section">
             <header className="admin-header">
-              <h1>Claim <span className="gradient-text">Verifications</span></h1>
-              <p>Review proof-of-utilization images and approve meal distributions.</p>
+              <h1>Proof <span className="gradient-text">Verification</span></h1>
+              <p>Review photo evidence from reward/impact claims.</p>
             </header>
 
-            {requests.filter(r => r.status === 'pending').length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--admin-text-light)' }}>
-                <CheckCircle size={64} style={{ marginBottom: '1rem', opacity: 0.2 }} />
-                <h3>All Caught Up!</h3>
-                <p>No pending verification requests at the moment.</p>
-              </div>
-            ) : (
-              <div className="verification-grid">
-                {requests.filter(r => r.status === 'pending').map(req => (
-                  <div key={req.id} className="verification-card">
-                    <div className="v-card-header">
-                      <div className="v-receiver-info">
+            <div className="verification-grid">
+              {requests.filter(r => r.status === 'pending').length === 0 ? (
+                <div className="empty-subtle">
+                   <div className="empty-icon"><CheckCircle size={40} /></div>
+                   <p>All distributions verified.</p>
+                </div>
+              ) : (
+                requests.filter(r => r.status === 'pending').map(req => (
+                  <Card key={req.id} className="verify-card animate-slide-up">
+                    <div className="verify-card-header">
+                      <div>
                         <h3>{req.receiverName}</h3>
-                        <p>{req.itemName} • <Clock size={12} /> {req.claimedAt}</p>
+                        <p>{req.itemName}</p>
                       </div>
-                      <div style={{ background: 'var(--admin-primary-light)', color: 'var(--admin-primary)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 600 }}>
-                        {req.images.length} IMAGES ATTACHED
-                      </div>
+                      <span className="time-tag">{req.claimedAt}</span>
                     </div>
-                    
-                    <div className="v-card-gallery">
+
+                    <div className="evidence-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', margin: '15px 0' }}>
                       {req.images.map((img, i) => (
-                        <div key={i} className="v-image-wrapper">
-                          <img src={img} alt={`Proof ${i+1}`} />
+                        <div 
+                          key={i} 
+                          className="evidence-img-wrap" 
+                          style={{ height: '80px', borderRadius: '8px', overflow: 'hidden', cursor: 'pointer', border: '1px solid #ddd' }}
+                          onClick={() => setZoomImage(img)}
+                        >
+                           <img src={img} alt="Evidence" className="evidence-img" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
                       ))}
                     </div>
 
-                    <div className="v-card-footer">
-                      <button className="btn-decline" onClick={() => handleAction(req.id, 'declined')}>
+                    <div className="verify-actions">
+                      <Button 
+                        variant="outline" 
+                        fullWidth 
+                        onClick={() => handleAction(req.id, 'declined')}
+                        className="btn-decline"
+                        style={{ height: '40px' }}
+                      >
                         <XCircle size={18} /> Decline
-                      </button>
-                      <button className="btn-approve" onClick={() => handleAction(req.id, 'approved')}>
-                        <CheckCircle size={18} /> Approve Distribution
-                      </button>
+                      </Button>
+                      <Button 
+                        fullWidth 
+                        onClick={() => handleAction(req.id, 'approved')}
+                        className="btn-approve"
+                        style={{ height: '40px' }}
+                      >
+                        <CheckCircle size={18} /> Approve
+                      </Button>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  </Card>
+                ))
+              )}
+            </div>
           </section>
         )}
 
         {activeTab === 'emergencies' && (
-          <section className="admin-section">
+           <section className="admin-section">
             <header className="admin-header">
-              <h1>Emergency <span className="relief-text">Broadcasts</span></h1>
-              <p>Live reports from the field requiring immediate attention.</p>
+              <h1>Crisis <span className="gradient-text">Command Feed</span></h1>
+              <p>Real-time distress signals and broadcast monitoring.</p>
             </header>
 
-            <div className="emergencies-list" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div className="crisis-feed">
               {emergencies.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '60px', color: '#666' }}>No active emergency reports.</div>
+                <div className="empty-subtle"><p>No active distress signals.</p></div>
               ) : (
-                emergencies.map(report => (
-                  <div key={report.id} className="verification-card" style={{ borderLeft: report.status === 'pending' ? '4px solid #e11d48' : '4px solid #10b981' }}>
-                    <div className="v-card-header">
-                       <div className="v-receiver-info">
-                         <h3 style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            {report.reporterName} 
-                            <span style={{ fontSize: '0.7rem', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px', textTransform: 'uppercase' }}>{report.role}</span>
-                         </h3>
-                         <p><MapPin size={12} /> {report.location} • <Clock size={12} /> {report.createdAt}</p>
-                       </div>
-                       {report.status === 'pending' && <div className="urgency-pill critical animate-pulse">ACTION REQUIRED</div>}
-                    </div>
+                emergencies.map(e => (
+                  <div key={e.id} className={`crisis-card ${e.status === 'pending' ? 'urgent' : 'resolved'} animate-slide-up`}>
+                    <div className="crisis-side-indicator"></div>
                     
-                    <div style={{ padding: '0 24px 20px', fontSize: '1.1rem', color: '#2D3A2A', lineHeight: 1.5 }}>
-                      "{report.message}"
-                    </div>
+                    <div className="crisis-content">
+                      <div className="crisis-header">
+                        <div className="reporter-profile">
+                           <div className={`role-avatar ${e.role.toLowerCase()}`}>
+                              {e.role === 'Donor' ? <Package size={16} /> : <Users size={16} />}
+                           </div>
+                           <div className="reporter-meta">
+                              <h4>{e.reporterName}</h4>
+                              <span className={`role-tag ${e.role.toLowerCase()}`}>{e.role}</span>
+                           </div>
+                        </div>
+                        <div className="crisis-timing">
+                           <Clock size={12} /> {e.createdAt}
+                        </div>
+                      </div>
 
-                    <div className="v-card-footer">
-                       <div style={{ flex: 1 }} />
-                       {report.status === 'pending' ? (
-                         <button 
-                            className="btn-approve" 
-                            onClick={async () => {
-                              await supabase.from('emergency_reports').update({ status: 'resolved' }).eq('id', report.id);
+                      <div className="crisis-body">
+                         <div className="distress-message">
+                            <AlertTriangle size={18} className="alert-icon" />
+                            <p>{e.message}</p>
+                         </div>
+                         <div className="crisis-location">
+                            <MapPin size={14} />
+                            <span>{e.location}</span>
+                         </div>
+                      </div>
+
+                      <div className="crisis-footer">
+                         <div className="status-pill">
+                            <span className="dot"></span> {e.status.toUpperCase()}
+                         </div>
+                         {e.status === 'pending' && (
+                           <button className="resolve-action-btn" onClick={async () => {
+                              await supabase.from('emergency_reports').update({ status: 'resolved' }).eq('id', e.id);
                               fetchRealEmergencies();
-                            }}
-                         >
-                           <CheckCircle size={18} /> Mark as Resolved
-                         </button>
-                       ) : (
-                         <span style={{ color: '#10b981', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                           <CheckCircle size={18} /> RESOLVED
-                         </span>
-                       )}
+                           }}>
+                              <CheckCircle size={16} /> Mark as Resolved
+                           </button>
+                         )}
+                      </div>
                     </div>
                   </div>
                 ))
@@ -429,7 +380,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
                 <div className="info-group">
                   <label>Email Address</label>
-                  <p>admin@aaharsetu.org</p>
+                  <p>vvce25cse0500@vvce.ac.in</p>
                 </div>
                 <div className="info-group">
                   <label>Role</label>
@@ -437,21 +388,49 @@ export const AdminDashboard: React.FC = () => {
                 </div>
                 <div className="info-group">
                   <label>Status</label>
-                  <p style={{ color: 'var(--admin-success)' }}>Active / Verified</p>
-                </div>
-                <div className="info-group" style={{ gridColumn: 'span 2' }}>
-                  <label>Permissions</label>
-                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                    {['Verify Claims', 'User Management', 'Analytics', 'System Config'].map(p => (
-                      <span key={p} style={{ background: '#f1f5f9', padding: '4px 12px', borderRadius: '6px', fontSize: '0.875rem' }}>{p}</span>
-                    ))}
-                  </div>
+                  <p className="status-primary">Active / Verified</p>
                 </div>
               </div>
             </div>
           </section>
         )}
       </main>
+
+      {/* LIGHTBOX OVERLAY */}
+      {zoomImage && (
+        <div 
+          className="admin-lightbox-overlay animate-fade-in"
+          onClick={() => setZoomImage(null)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'rgba(0,0,0,0.9)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'zoom-out',
+            padding: '40px'
+          }}
+        >
+          <div className="lightbox-content animate-zoom-in" style={{ position: 'relative', maxWidth: '90%', maxHeight: '90%' }}>
+            <img 
+              src={zoomImage} 
+              alt="Zoomed Proof" 
+              style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '12px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} 
+            />
+            <button 
+              style={{ position: 'absolute', top: '-40px', right: 0, background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+              onClick={() => setZoomImage(null)}
+            >
+              <XCircle size={24} /> Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

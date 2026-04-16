@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Link, useNavigate } from 'react-router-dom';
+import { supabase } from './lib/supabase';
 import { Navbar } from './donor/components/layout/Navbar';
 import { Footer } from './donor/components/layout/Footer';
 import { Landing } from './donor/pages/Landing/Landing';
@@ -30,23 +31,41 @@ function AppContent() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Auth Redirects
+    // 1. Unauthenticated users must go to login
     if (!isAuthenticated && location.pathname !== '/login') {
       navigate('/login');
+      return;
     }
 
+    // 2. Authenticated users: Strict Role Isolation
     if (isAuthenticated) {
-      const isReceiverAllowed = location.pathname.startsWith('/receiver') || 
-                                ['/profile', '/traceability', '/disasters', '/'].includes(location.pathname);
-      
-      if (role === 'receiver' && !isReceiverAllowed) {
-        navigate('/');
+      const path = location.pathname;
+
+      // --- ADMIN TIER ---
+      if (role === 'admin') {
+        if (path !== '/admin') navigate('/admin');
+        return;
       }
-      if (role === 'donor' && location.pathname.startsWith('/receiver')) {
-        navigate('/');
+
+      // --- RECEIVER TIER ---
+      if (role === 'receiver') {
+        const isReceiverPath = path === '/' || path.startsWith('/receiver') || path === '/profile' || path === '/disasters' || path === '/traceability';
+        const isDonorOnlyPath = path === '/dashboard' || path === '/upload';
+        
+        if (!isReceiverPath || isDonorOnlyPath || path === '/admin') {
+          navigate('/'); // Receivers start at Landing
+          return;
+        }
       }
-      if (role === 'admin' && location.pathname !== '/admin') {
-        navigate('/admin');
+
+      // --- DONOR TIER ---
+      if (role === 'donor') {
+        const isReceiverOnlyPath = path.startsWith('/receiver');
+        
+        if (isReceiverOnlyPath || path === '/admin') {
+          navigate('/'); // Donors start at Landing
+          return;
+        }
       }
     }
 
@@ -97,6 +116,32 @@ function AppContent() {
 
     return () => { if (t1) clearTimeout(t1); if (t2) clearTimeout(t2); if (t3) clearTimeout(t3); };
   }, [location.pathname, isAuthenticated, role, addToast, navigate]);
+
+  // Real-time Global Notifications for New Listings
+  useEffect(() => {
+    if (!isAuthenticated || role !== 'receiver') return;
+
+    const channel = supabase
+      .channel('global_donations_notifs')
+      .on('postgres_changes', { 
+        event: 'INSERT', 
+        schema: 'public', 
+        table: 'donations' 
+      }, (payload) => {
+        const newItem = payload.new as any;
+        addToast(
+          '🍱 New Food Listed!',
+          `${newItem.food_name} is now available nearby. Tap to claim before it's gone!`,
+          'success',
+          '/receiver/explore'
+        );
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [isAuthenticated, role, addToast]);
 
   const isAuthPage = location.pathname === '/login';
   const showFooter = !isAuthPage;

@@ -309,3 +309,165 @@
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
+
+/* --- Crisis Command Feed --- */
+.crisis-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1000px;
+}
+
+.crisis-card {
+  display: flex;
+  background: white;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--admin-border);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.crisis-card.urgent {
+  border-left: 6px solid var(--admin-danger);
+  animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+  0% { border-left-color: var(--admin-danger); box-shadow: 0 0 0px rgba(239, 68, 68, 0); }
+  50% { border-left-color: #fca5a5; box-shadow: 0 0 20px rgba(239, 68, 68, 0.1); }
+  100% { border-left-color: var(--admin-danger); box-shadow: 0 0 0px rgba(239, 68, 68, 0); }
+}
+
+.crisis-card.resolved {
+  border-left: 6px solid var(--admin-success);
+  opacity: 0.8;
+}
+
+.crisis-content {
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.crisis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.reporter-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.role-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-avatar.donor { background: rgba(16, 185, 129, 0.1); color: var(--admin-success); }
+.role-avatar.receiver { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+
+.reporter-meta h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--admin-text);
+}
+
+.role-tag {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.role-tag.donor { background: var(--admin-success); color: white; }
+.role-tag.receiver { background: #3b82f6; color: white; }
+
+.crisis-timing {
+  font-size: 0.85rem;
+  color: var(--admin-text-light);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.distress-message {
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--admin-border);
+}
+
+.distress-message .alert-icon { color: var(--admin-danger); flex-shrink: 0; }
+.distress-message p { margin: 0; color: var(--admin-text); line-height: 1.6; font-weight: 500; font-size: 1.05rem; }
+
+.crisis-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--admin-text-light);
+  margin-top: 0.5rem;
+}
+
+.crisis-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--admin-border);
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--admin-text-light);
+  letter-spacing: 0.05em;
+}
+
+.status-pill .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--admin-border);
+}
+
+.urgent .status-pill .dot { background: var(--admin-danger); animation: blink 1s infinite; }
+.resolved .status-pill .dot { background: var(--admin-success); }
+
+.resolve-action-btn {
+  background: var(--admin-text);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.resolve-action-btn:hover {
+  background: #000;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}

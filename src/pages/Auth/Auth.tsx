@@ -18,14 +18,23 @@ export const Auth: React.FC = () => {
     
     // Demo identification logic
     let targetRole: UserRole = role;
-    if (email === '1' && password === '1') targetRole = 'donor';
-    if (email === '2' && password === '2') targetRole = 'receiver';
-    if (email === '3' && password === '3') targetRole = 'admin';
+    const isCorrectPass = password === '12345678';
+
+    if (email === 'rishithsgowda13@gmail.com' && isCorrectPass) targetRole = 'donor';
+    else if (email === 'rishithsgowda22@gmail.com' && isCorrectPass) targetRole = 'receiver';
+    else if (email === 'vvce25cse0500@vvce.ac.in' && isCorrectPass) targetRole = 'admin';
+    else if (password === '12345678') {
+      // Allow any email with the demo password to login as the selected role
+      targetRole = role;
+    } else {
+      alert("Invalid credentials. Use password: 12345678");
+      return;
+    }
 
     login(email, targetRole);
     
     if (targetRole === 'donor') navigate('/');
-    else if (targetRole === 'receiver') navigate('/');
+    else if (targetRole === 'receiver') navigate('/receiver');
     else if (targetRole === 'admin') navigate('/admin');
   };
 
@@ -116,16 +125,6 @@ export const Auth: React.FC = () => {
           </form>
 
           <div className="auth-extra-links">
-             {activeTab === 'login' && (
-               <div className="demo-creds">
-                  <span>DEMO CREDENTIALS (ID - PASS):</span>
-                  <div className="creds-tags">
-                     <span className="tag blue">DONOR: 1 - 1</span>
-                     <span className="tag green">NGO: 2 - 2</span>
-                     <span className="tag yellow">ADMIN: 3 - 3</span>
-                  </div>
-               </div>
-             )}
              <p className="toggle-auth-state" onClick={() => setActiveTab(activeTab === 'login' ? 'signup' : 'login')}>
                 {activeTab === 'login' ? "Don't have an account? Join Network" : "Already a member? Sign In"}
              </p>

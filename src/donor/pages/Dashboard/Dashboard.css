@@ -150,6 +150,21 @@
   margin-bottom: 24px;
 }
 
+@media (max-width: 768px) {
+  .dashboard-tabs-pills {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 12px;
+    border-radius: 16px;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+  }
+
+  .dashboard-tabs-pills::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome/Safari */
+  }
+}
+
 .tab-pill {
   border: none;
   background: white;
@@ -164,6 +179,8 @@
   color: #64748B;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid rgba(0,0,0,0.05);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .tab-pill.active {

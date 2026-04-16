@@ -324,11 +324,6 @@
   font-weight: 300;
 }
 
-.steps-row-center {
-  display: flex;
-  justify-content: center;
-  margin-top: -10px;
-}
 
 .banner-how {
   background: var(--color-bg-alt);
@@ -623,13 +618,6 @@
 
   .step-arrow {
     display: none !important;
-  }
-
-  .steps-row-center {
-    margin-top: 0 !important;
-    justify-content: flex-start !important;
-    padding: 0 10px !important;
-    display: flex !important;
   }
 
   .banner-how {

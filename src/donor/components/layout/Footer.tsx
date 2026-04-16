@@ -1,4 +1,6 @@
+import React from 'react';
 import { Home, Upload, LayoutDashboard, Radio, Flame, Bell, User } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import './Footer.css';
 

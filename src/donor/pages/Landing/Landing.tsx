@@ -169,17 +169,16 @@ export const Landing: React.FC = () => {
               <div className="step-arrow">→</div>
             </div>
 
-            <div className="work-step last">
+            <div className="work-step">
               <div className="step-card">
                  <div className="step-icon-box orange"><Truck size={20} /></div>
                  <h4 className="step-title">Pickup</h4>
                  <p className="step-desc">Logistics triggered</p>
               </div>
+              <div className="step-arrow">→</div>
             </div>
-          </div>
 
-          <div className="steps-row-center">
-            <div className="work-step">
+            <div className="work-step last">
               <div className="step-card">
                  <div className="step-icon-box gold"><Star size={20} /></div>
                  <h4 className="step-title">Feedback</h4>

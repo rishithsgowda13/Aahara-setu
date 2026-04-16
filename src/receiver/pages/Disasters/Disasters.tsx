@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../../../donor/components/ui/Button/Button';
 import { Card } from '../../../donor/components/ui/Card/Card';
 import { 
@@ -24,6 +24,7 @@ interface DisasterAlert {
 
 export const Disasters: React.FC = () => {
   const { role } = useAuth();
+  const location = useLocation();
 
   const [activeDisasters, setActiveDisasters] = useState<DisasterAlert[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,40 +38,47 @@ export const Disasters: React.FC = () => {
   });
 
   const fetchAlerts = async () => {
-    const { data } = await supabase
-      .from('disaster_alerts')
-      .select('*')
-      .order('created_at', { ascending: false });
-    
-    const MOCK_DISASTERS: DisasterAlert[] = [
-      {
-        id: 'mock-d-1',
-        type: 'Flood Relief',
-        location: 'Assam High-Waste Zone B',
-        urgency: 'CRITICAL',
-        peopleInNeed: 1200,
-        suppliesNeeded: 'Ready-to-eat meals, Water, Biscuits',
-        impact: 'Severely affected by monsoon',
-        timeRemaining: 'ASAP'
-      }
-    ];
+    try {
+      const { data, error } = await supabase
+        .from('disaster_alerts')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
 
-    if (data && data.length > 0) {
-      const formatted = data.map((d: any) => ({
-        id: d.id,
-        type: d.title,
-        location: d.location_name,
-        urgency: d.severity?.toUpperCase() || 'HIGH',
-        peopleInNeed: d.people_in_need || 500,
-        suppliesNeeded: d.needs?.join(', ') || 'Various food items',
-        impact: d.impact_desc || 'Urgent support required',
-        timeRemaining: 'ASAP'
-      }));
-      setActiveDisasters(formatted);
-    } else {
-      setActiveDisasters(MOCK_DISASTERS);
+      const MOCK_DISASTERS: DisasterAlert[] = [
+        {
+          id: 'mock-d-1',
+          type: 'Flood Relief',
+          location: 'Assam High-Waste Zone B',
+          urgency: 'CRITICAL',
+          peopleInNeed: 1200,
+          suppliesNeeded: 'Ready-to-eat meals, Water, Biscuits',
+          impact: 'Severely affected by monsoon',
+          timeRemaining: 'ASAP'
+        }
+      ];
+
+      if (data && data.length > 0) {
+        const formatted = data.map((d: any) => ({
+          id: d.id,
+          type: d.title,
+          location: d.location_name,
+          urgency: d.severity?.toUpperCase() || 'HIGH',
+          peopleInNeed: d.people_in_need || 500,
+          suppliesNeeded: Array.isArray(d.needs) ? d.needs.join(', ') : (d.needs || 'Various food items'),
+          impact: d.impact_desc || 'Urgent support required',
+          timeRemaining: 'ASAP'
+        }));
+        setActiveDisasters(formatted);
+      } else {
+        setActiveDisasters(MOCK_DISASTERS);
+      }
+    } catch (err) {
+      console.error('Fetch error:', err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -93,21 +101,29 @@ export const Disasters: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     
+    // Format needs as an array
+    const needsArray = broadcastData.needs
+      ? broadcastData.needs.split(',').map(s => s.trim()).filter(s => s.length > 0)
+      : [];
+
     const { error } = await supabase.from('disaster_alerts').insert({
       title: broadcastData.title,
       location_name: broadcastData.location,
-      severity: broadcastData.severity,
-      needs: broadcastData.needs.split(',').map(s => s.trim()),
+      severity: broadcastData.severity.toLowerCase(),
+      needs: needsArray,
       people_in_need: parseInt(broadcastData.people_in_need) || 0,
-      location_point: 'POINT(77.5946 12.9716)' // Default for demo, usually GPS
+      impact_desc: `Urgent requirement for ${broadcastData.title} in ${broadcastData.location}`,
+      location_point: 'SRID=4326;POINT(77.5946 12.9716)' // Standard PostGIS format for Supabase
     });
 
     if (!error) {
       showToast('Emergency Alert Broadcasted Globally!');
       setIsModalOpen(false);
       setBroadcastData({ title: '', location: '', severity: 'high', needs: '', people_in_need: '' });
+      fetchAlerts(); // Refresh list immediately
     } else {
-      showToast('Error broadcasting alert');
+      console.error('Broadcast error details:', error);
+      showToast(`Error: ${error.message || 'Failed to broadcast'}`);
     }
     setLoading(false);
   };
@@ -140,7 +156,7 @@ export const Disasters: React.FC = () => {
             <AlertTriangle className="alert-icon-pulse" /> Active Critical Zones
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {role === 'receiver' && (
+            {role === 'receiver' && location.pathname.includes('/receiver') && (
               <Button 
                 className="broadcast-btn animate-pulse" 
                 onClick={() => setIsModalOpen(true)}

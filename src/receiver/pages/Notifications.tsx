@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card } from '../../donor/components/ui/Card/Card';
 import { Button } from '../../donor/components/ui/Button/Button';
 import { Bell, BellOff, CheckCircle2, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/Notifications.css';
 
 interface Notification {
@@ -12,51 +13,52 @@ interface Notification {
   time: string;
   read: boolean;
   icon: string;
+  link?: string;
 }
 
 const MOCK_NOTIFICATIONS: Notification[] = [
   {
-    id: '1', type: 'urgent', title: '⚡ High Priority Food Alert',
-    message: 'Paneer Butter Masala (20 portions) from Haldiram\'s is expiring in 45 mins — 0.4 km away!',
-    time: '2 mins ago', read: false, icon: '⚡'
+    id: 'r1', type: 'urgent', title: '⚡ High Priority Food Alert',
+    message: 'Paneer Butter Masala (20 portions) from Haldiram\'s is expiring in 45 mins — 0.4 km away! Claim now.',
+    time: '2 mins ago', read: false, icon: '⚡', link: '/receiver/explore'
   },
   {
-    id: '2', type: 'match', title: '🔗 New Match Found',
-    message: 'Veg Dum Biryani from Taj Hotel has been matched with Hope NGO. Pickup in progress.',
-    time: '18 mins ago', read: false, icon: '🔗'
+    id: 'r2', type: 'match', title: '🔗 Algorithmic Match Found',
+    message: 'You have been automatically matched with Veg Dum Biryani from Taj Hotel based on your demand tag.',
+    time: '18 mins ago', read: false, icon: '🔗', link: '/traceability'
   },
   {
-    id: '3', type: 'claim', title: '✅ Food Claimed Successfully',
-    message: 'Your donation "KFC Fried Chicken Bucket" was claimed by Green NGO. Great work!',
-    time: '1 hour ago', read: true, icon: '✅'
+    id: 'r3', type: 'claim', title: '🚚 Volunteer Dispatched',
+    message: 'Logistics partner #AS-09 has picked up your claim of Assorted Pastries. Eta: 12 minutes.',
+    time: '1 hour ago', read: true, icon: '🚚', link: '/receiver'
   },
   {
-    id: '4', type: 'fallback', title: '🔄 Auto-Redistribution Triggered',
-    message: 'McDonald\'s Happy Meals were unclaimed. We have notified 3 backup NGOs and 2 shelters automatically.',
-    time: '2 hours ago', read: true, icon: '🔄'
+    id: 'r4', type: 'fallback', title: '🔄 Surplus Rerouted to You',
+    message: 'McDonald\'s Happy Meals match failed for the primary NGO. As the closest backup, this is now available to you.',
+    time: '2 hours ago', read: true, icon: '🔄', link: '/receiver/explore'
   },
   {
-    id: '5', type: 'urgent', title: '⚡ Urgent: Food Expiring Soon',
-    message: 'Masala Dosa & Sambar from MTR expires in 1 hour — only 2.5km away. Claim now!',
-    time: '3 hours ago', read: false, icon: '⚡'
+    id: 'r5', type: 'urgent', title: '🚨 DISASTER LOGISTICS: Flash Floods',
+    message: 'Your NGO is within the 10km relief radius. Can you accept 300 non-perishable survival kits?',
+    time: '3 hours ago', read: false, icon: '🚨', link: '/receiver/disasters'
   },
   {
-    id: '6', type: 'low-network', title: '📶 SMS Fallback Activated',
-    message: 'Low connectivity detected in your area. SMS alerts enabled for critical food notifications.',
+    id: 'r6', type: 'low-network', title: '📶 SMS Fallback Activated',
+    message: 'Low connectivity detected in your area. SMS alerts enabled for critical claim updates.',
     time: '5 hours ago', read: true, icon: '📶'
   },
   {
-    id: '7', type: 'match', title: '🏆 Kindness Score Updated',
-    message: 'You earned +10 Kindness Points! You are now ranked as a "Contributor 🌟". Keep it up!',
-    time: 'Yesterday', read: true, icon: '🏆'
+    id: 'r7', type: 'claim', title: '✅ Proof Verified',
+    message: 'The administrative team has verified your utilization photos for Batch #9982. Thank you!',
+    time: 'Yesterday', read: true, icon: '✅'
   },
 ];
 
 const TYPE_STYLES: Record<string, { label: string; bg: string; color: string }> = {
   urgent: { label: 'Urgent', bg: 'rgba(239,68,68,0.1)', color: '#ef4444' },
   match: { label: 'Match', bg: 'rgba(79,99,61,0.1)', color: '#4F633D' },
-  claim: { label: 'Claimed', bg: 'rgba(34,197,94,0.1)', color: '#22c55e' },
-  fallback: { label: 'Fallback', bg: 'rgba(245,158,11,0.1)', color: '#f59e0b' },
+  claim: { label: 'Logistics', bg: 'rgba(34,197,94,0.1)', color: '#22c55e' },
+  fallback: { label: 'Rerouted', bg: 'rgba(245,158,11,0.1)', color: '#f59e0b' },
   'low-network': { label: 'Network', bg: 'rgba(59,130,246,0.1)', color: '#3b82f6' },
 };
 
@@ -64,6 +66,7 @@ export const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -74,8 +77,14 @@ export const Notifications: React.FC = () => {
   const filtered = filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
 
   const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  const markRead = (id: string) => setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
   const clearAll = () => setNotifications([]);
+  
+  const markRead = (id: string, link?: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    if (link) {
+      navigate(link);
+    }
+  };
 
   return (
     <div className="notifications-page">
@@ -124,7 +133,8 @@ export const Notifications: React.FC = () => {
               <Card
                 key={n.id}
                 className={`notif-card hover-lift ${!n.read ? 'unread' : ''}`}
-                onClick={() => markRead(n.id)}
+                style={n.link ? { cursor: 'pointer' } : {}}
+                onClick={() => markRead(n.id, n.link)}
               >
                 <div className="notif-icon-col">
                   <div className="notif-icon" style={{ background: style.bg, color: style.color }}>

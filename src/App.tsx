@@ -137,11 +137,11 @@ function App() {
   return (
     <AuthProvider>
       <LanguageProvider>
-        <ToastProvider>
-          <Router>
+        <Router>
+          <ToastProvider>
             <AppContent />
-          </Router>
-        </ToastProvider>
+          </ToastProvider>
+        </Router>
       </LanguageProvider>
     </AuthProvider>
   );

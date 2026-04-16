@@ -122,12 +122,16 @@ export const Traceability: React.FC = () => {
   };
 
   const filteredBatches = React.useMemo(() => {
-    return batches.filter(
-      b => b.item.toLowerCase().includes(searchTerm.toLowerCase()) || 
-           b.id.toString().includes(searchTerm) ||
-           b.donor.toLowerCase().includes(searchTerm.toLowerCase())
+    const term = searchTerm.toLowerCase().trim();
+    if (!term) return batches;
+    
+    return batches.filter(b => 
+      b.item.toLowerCase().includes(term) || 
+      b.id.toString().toLowerCase().includes(term) ||
+      b.donor.toLowerCase().includes(term)
     );
   }, [searchTerm, batches]);
+
 
   const selected = React.useMemo(() => batches.find(b => b.id === activeBatch), [activeBatch, batches]);
 

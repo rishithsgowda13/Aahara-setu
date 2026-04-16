@@ -43,6 +43,7 @@ const DIETARY_INFO = [
 export const Upload: React.FC = () => {
   const { addToast } = useToast();
   const { t } = useTranslation();
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const isDisaster = location.state?.isDisaster || false;
@@ -109,32 +110,74 @@ export const Upload: React.FC = () => {
     setIsSubmitting(true);
 
     try {
+      // 1. Get or Ensure profile exists (since real auth might not be linked yet in demo)
+      let donorId = '00000000-0000-0000-0000-000000000000'; // Default fallback
+      
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', user?.email)
+        .single();
+        
+      if (profile) {
+        donorId = profile.id;
+      } else {
+        // Create a dummy profile if it doesn't exist to allow foreign key to pass
+        const { data: newProfile, error: profileError } = await supabase
+          .from('profiles')
+          .insert([{ 
+            id: '77420000-0000-0000-0000-000000007742', // Stable dummy for demo
+            full_name: 'System Donor',
+            organization_name: 'McDonald\'s - VVCE',
+            email: user?.email || 'donor@test.com',
+            role: 'donor'
+          }])
+          .select()
+          .single();
+          
+        if (newProfile) donorId = newProfile.id;
+        // If it still fails, it might be a conflict, so try to fetch again
+        if (profileError) {
+          const { data: retry } = await supabase.from('profiles').select('id').eq('email', user?.email).single();
+          if (retry) donorId = retry.id;
+        }
+      }
+
+      // 2. Validate Date
+      const expiryDate = new Date(expiry);
+      if (isNaN(expiryDate.getTime())) {
+        throw new Error('Invalid expiry date provided.');
+      }
+
+      // 3. Insert Donation
       const { error } = await supabase
         .from('donations')
         .insert([{
           food_name: itemName,
-          donor_id: '00000000-0000-0000-0000-000000000000', // Mock Donor ID for Demo
+          donor_id: donorId,
           category: category,
-          dietary_type: dietary,
           is_disaster: isDisaster,
           quantity_value: parseFloat(itemQty) || 0,
           quantity_unit: unit,
-          expiry_time: new Date(expiry).toISOString(),
-          pickup_address: address,
-          pickup_location: 'POINT(77.6413 12.9719)', // Mock coords for demo (Bangalore)
+          expiry_time: expiryDate.toISOString(),
+          pickup_location: 'POINT(77.6413 12.9719)', // Geometry string
           urgency_score: isDisaster ? 100 : 95,
           status: 'available'
         }]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase Insert Error:', error);
+        throw error;
+      }
       
       setSubmitted(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading:', error);
-      addToast('Error', 'Upload failed. Check console for details.', 'warning');
+      addToast('Error', `Upload failed: ${error.message || 'Check console.'}`, 'error');
     } finally {
       setIsSubmitting(false);
     }
+
   };
 
   if (submitted) {

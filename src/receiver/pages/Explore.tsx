@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '../../donor/components/ui/Card/Card';
 import { Button } from '../../donor/components/ui/Button/Button';
-import { Search, Map as MapIcon, Zap, AlertTriangle } from 'lucide-react';
+import { Search, Map as MapIcon, Zap, AlertTriangle, Award } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { useTranslation } from '../../donor/context/LanguageContext';
 import { useAuth } from '../../context/AuthContext';
@@ -387,10 +387,10 @@ export const Explore: React.FC = () => {
                               background: logisticsType === 'rapido' ? '#f0f4f0' : 'white', borderColor: logisticsType === 'rapido' ? '#4f633d' : '#edf2f0'
                             }}
                           >
-                             <div className="log-opt-icon" style={{ fontSize: '1.5rem' }}>🛵</div>
+                             <div className="log-opt-icon" style={{ fontSize: '1.5rem', display: 'flex', gap: '4px' }}><span>🛵</span><span>🚐</span></div>
                              <div className="log-opt-content" style={{ flex: 1 }}>
                                 <h5 style={{ margin: 0, fontWeight: 800 }}>Rapido Parcel</h5>
-                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#666' }}>Instant bike delivery for high-urgency batches.</p>
+                                <p style={{ margin: 0, fontSize: '0.8rem', color: '#666' }}>Instant bike or mini van delivery based on batch size.</p>
                              </div>
                              {logisticsType === 'rapido' && <div className="log-opt-check" style={{ color: '#4f633d' }}>✓</div>}
                           </div>
@@ -421,7 +421,11 @@ export const Explore: React.FC = () => {
                                  if (error) {
                                   addToast('Error', 'Error claiming item: ' + error.message, 'warning');
                                 } else {
-                                  addToast('Success', 'Item claimed successfully! Coordinating logistics...', 'success');
+                                  if (logisticsType === 'rapido') {
+                                    const pickupLocation = encodeURIComponent(selectedItem.donor + ' ' + (selectedItem.distance || ''));
+                                    window.open(`https://parcel.rapido.bike/?pickup=${pickupLocation}`, '_blank');
+                                  }
+
                                   setSelectedItem(null);
                                 }
                             }}

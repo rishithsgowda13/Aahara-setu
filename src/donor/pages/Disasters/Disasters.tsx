@@ -142,7 +142,6 @@ export const Disasters: React.FC = () => {
               <AlertTriangle className="alert-icon-pulse" /> Active Critical Zones
             </h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-<<<<<<< HEAD
               <Button 
                 className="broadcast-btn animate-pulse" 
                 onClick={() => setIsReportModalOpen(true)}

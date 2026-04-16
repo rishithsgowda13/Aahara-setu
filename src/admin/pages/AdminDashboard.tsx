@@ -80,6 +80,27 @@ export const AdminDashboard: React.FC = () => {
   React.useEffect(() => {
     fetchRealVerifications();
     fetchRealEmergencies();
+
+    // Subscribe to new verifications
+    const claimSub = supabase
+      .channel('admin_claims_live')
+      .on('postgres_changes', { event: '*', table: 'claims', schema: 'public' }, () => {
+        fetchRealVerifications();
+      })
+      .subscribe();
+
+    // Subscribe to new emergency reports
+    const emergencySub = supabase
+      .channel('admin_emergencies_live')
+      .on('postgres_changes', { event: '*', table: 'emergency_reports', schema: 'public' }, () => {
+        fetchRealEmergencies();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(claimSub);
+      supabase.removeChannel(emergencySub);
+    };
   }, []);
 
   const fetchRealVerifications = async () => {

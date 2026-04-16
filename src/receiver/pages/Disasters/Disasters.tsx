@@ -96,7 +96,6 @@ export const Disasters: React.FC = () => {
       supabase.removeChannel(subscription);
     };
   }, []);
-<<<<<<< HEAD
 
   const handleBroadcast = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,7 +185,6 @@ export const Disasters: React.FC = () => {
             <AlertTriangle className="alert-icon-pulse" /> Active Critical Zones
           </h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-<<<<<<< HEAD
             {role === 'receiver' && location.pathname.includes('/receiver') && (
               <Button 
                 className="broadcast-btn animate-pulse" 

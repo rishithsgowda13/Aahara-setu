@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from '../../components/ui/Card/Card';
 import { Button } from '../../components/ui/Button/Button';
-import { Star, MessageSquare, ThumbsUp, Award, Heart, BarChart3 } from 'lucide-react';
+import { Star, MessageSquare, ThumbsUp, Award } from 'lucide-react';
 import './Feedback.css';
 
 const KINDNESS_MILESTONES = [
@@ -17,7 +17,6 @@ export const Feedback: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [category, setCategory] = useState('');
   const kindnessScore = 210;
-  const meals = 120;
   const milestone = KINDNESS_MILESTONES.slice().reverse().find(m => kindnessScore >= m.threshold)!;
   const nextMilestone = KINDNESS_MILESTONES.find(m => m.threshold > kindnessScore);
   const progress = nextMilestone

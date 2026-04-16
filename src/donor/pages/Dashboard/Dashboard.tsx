@@ -113,18 +113,32 @@ export const Dashboard: React.FC = () => {
     { id: 'AS-2025-02', type: 'Community Hero', date: 'March 2025', desc: 'Fed 1,200 children' },
   ];
 
-  const handleDownloadCert = (certName: string) => {
+  const handleDownloadCert = async (certName: string) => {
     setIsGenerating(true);
-    setTimeout(() => {
+    try {
+      // Simulate rendering time
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      const response = await fetch('/certificates/base.png');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.href = '/certificates/base.png';
+      link.href = url;
       link.download = `${certName.replace(/\s+/g, '_')}_Aahara_Setu_Certificate.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      // Fallback msg if translation key is missing
+      const msg = t('cert_downloaded_msg');
+      alert(msg !== 'cert_downloaded_msg' ? msg : 'Impact Certificate successfully downloaded!');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to generate report. Please try again.');
+    } finally {
       setIsGenerating(false);
-      alert(t('cert_downloaded_msg'));
-    }, 1500);
+    }
   };
 
   return (

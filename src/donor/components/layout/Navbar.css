@@ -234,11 +234,14 @@
   .navbar {
     top: 10px;
     padding: 0 12px;
-    height: 60px;
+    height: 64px;
     width: 96vw;
   }
-  .navbar-logo { margin-right: 12px; }
-  .navbar-logo-img { height: 36px; }
+  .navbar-logo { margin-right: 8px; }
+  .navbar-logo-img { height: 38px; }
+  .nav-link span { display: none; }
+  .nav-link { padding: 8px; }
+  .navbar-links { gap: 4px; }
 }
 
 @media (max-width: 768px) {

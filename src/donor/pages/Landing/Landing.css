@@ -539,29 +539,30 @@
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   /* Hero Overhaul */
-  .hero-section { grid-template-columns: 1fr; min-height: auto; text-align: center; gap: 32px; margin-top: 10px; }
-  .hero-visual { height: 350px; width: 100%; overflow: visible; perspective: 1000px; }
-  .hero-content { align-items: center; }
-  .hero-title { font-size: 3rem; letter-spacing: -1.5px; text-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-  .hero-subtitle { font-size: 1.05rem; padding: 0 10px; line-height: 1.6; }
-  .hero-actions { justify-content: center; width: 100%; flex-direction: column; padding: 0 20px; }
+  .hero-section { min-height: 85vh; text-align: center; gap: 24px; padding-top: 60px; position: relative; overflow: hidden; }
+  .hero-visual { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; z-index: 1; pointer-events: none; }
+  .hero-content { align-items: center; z-index: 10; position: relative; width: 100%; }
+  .hero-title { font-size: 2.6rem; letter-spacing: -1px; text-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+  .hero-subtitle { font-size: 0.95rem; padding: 0 10px; line-height: 1.6; max-width: 100%; margin-bottom: 10px; }
+  .hero-actions { justify-content: center; width: 100%; flex-direction: column; padding: 0 20px; gap: 12px; }
   .hero-actions a { width: 100%; }
-  .hero-actions button { width: 100%; justify-content: center; }
-  .hero-trust { justify-content: center; gap: 6px; }
+  .hero-actions button { width: 100%; justify-content: center; height: 52px; font-size: 1rem; }
+  .hero-trust { justify-content: center; gap: 6px; margin-top: 15px; flex-wrap: wrap; }
+  .trust-badge { font-size: 0.75rem; padding: 4px 10px; }
 
-  /* Crazy Mobile Blobs */
-  .blob-1 { width: 160px; height: 160px; top: 10%; right: -5%; opacity: 0.9; }
-  .blob-2 { width: 120px; height: 120px; bottom: 0%; left: -10%; opacity: 0.9; }
-  .blob-3 { width: 80px; height: 80px; top: 30%; left: 35%; opacity: 0.9; filter: blur(3px) brightness(1.2); }
+  /* Crazy Mobile Blobs - Subtle background noise */
+  .blob-1 { width: 140px; height: 140px; top: 2%; right: -15%; opacity: 0.4; }
+  .blob-2 { width: 100px; height: 100px; bottom: 10%; left: -20%; opacity: 0.4; }
+  .blob-3 { display: none; }
 
-  /* Responsive Floating Cards with intense glowing */
-  .floating-card { padding: 10px 14px; font-size: 0.8rem; box-shadow: 0 8px 30px rgba(79, 99, 61, 0.15); backdrop-filter: blur(20px); border: 1.5px solid rgba(255, 255, 255, 0.3); }
-  .fcard-1 { top: 0%; right: 2%; transform: scale(0.9); animation: intenseFloat 4s ease-in-out infinite, glowPulseMobile 3s infinite; z-index: 20; }
-  .fcard-2 { bottom: 8%; left: 2%; transform: scale(0.9); animation: intenseFloat 5s ease-in-out infinite reverse; }
-  .fcard-3 { bottom: 15%; right: 2%; transform: scale(0.85); font-size: 0.8rem; }
-  .fcard-icon { font-size: 1.4rem; }
+  /* Repositioned Floating Cards - Out of the way of the main text */
+  .floating-card { padding: 8px 12px; font-size: 0.7rem; box-shadow: 0 8px 30px rgba(79, 99, 61, 0.15); backdrop-filter: blur(20px); border: 1.5px solid rgba(255, 255, 255, 0.4); }
+  .fcard-1 { top: 2%; right: -5%; transform: scale(0.75); animation: intenseFloat 4s ease-in-out infinite; }
+  .fcard-2 { bottom: 12%; left: -5%; transform: scale(0.75); animation: intenseFloat 6s ease-in-out infinite reverse; }
+  .fcard-3 { bottom: 5%; right: -2%; transform: scale(0.7); }
+  .fcard-icon { font-size: 1.1rem; }
 
   /* 2x2 Stats Grid for Mobile (Looks much cleaner) */
   .features-grid { grid-template-columns: 1fr; }
@@ -609,7 +610,7 @@
   .section-title { font-size: 2.2rem; }
 }
 /* ========= MOBILE HOW IT WORKS OVERRIDES ========= */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .how-it-works-section {
     gap: 30px !important;
     padding: 0 10px !important;

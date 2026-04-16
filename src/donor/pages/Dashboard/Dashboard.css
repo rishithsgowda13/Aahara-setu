@@ -968,10 +968,15 @@
   }
 
   .heatmap-zone {
-    padding: 16px;
+    padding: 12px;
+    gap: 8px;
   }
   
   .zone-name {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+  }
+
+  .zone-bar {
+    height: 4px;
   }
 }

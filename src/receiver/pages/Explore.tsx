@@ -88,30 +88,33 @@ export const Explore: React.FC = () => {
     const checkLockStatus = async () => {
       if (!user) return;
       
-      // 1. Get current receiver profile ID
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', user.email)
-        .maybeSingle();
-      
-      const profileId = profile?.id;
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', user.email)
+          .maybeSingle();
+        
+        const profileId = profile?.id;
 
-      // 2. Count ONLY this receiver's unverified claims
-      const { count, error } = await supabase
-        .from('claims')
-        .select('*', { count: 'exact', head: true })
-        .eq('receiver_id', profileId) // Filter by YOUR ID
-        .not('status', 'in', '("completed", "cancelled")');
+        const { count, error } = await supabase
+          .from('claims')
+          .select('*', { count: 'exact', head: true })
+          .eq('receiver_id', profileId)
+          .not('status', 'in', '("completed", "cancelled")');
 
-      if (error) {
-        console.error('Error checking lock status:', error);
-        return;
+        if (error) {
+          console.error('Error checking lock status:', error);
+          return;
+        }
+
+        const activeCount = count || 0;
+        setActiveClaimsCount(activeCount);
+        setIsLocked(activeCount >= 2);
+      } catch (err) {
+        console.error('Final claim catch:', err);
+        addToast('Claim Error', 'Something went wrong. Please check your active claims.', 'error');
       }
-
-      const activeCount = count || 0;
-      setActiveClaimsCount(activeCount);
-      setIsLocked(activeCount >= 2);
     };
 
     fetchItems();

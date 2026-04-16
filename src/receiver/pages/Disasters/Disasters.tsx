@@ -4,7 +4,7 @@ import { Button } from '../../../donor/components/ui/Button/Button';
 import { Card } from '../../../donor/components/ui/Card/Card';
 import { 
   AlertTriangle, MapPin, Users, Heart, 
-  Zap, Plus, X, Globe, Send
+  Zap, Plus, X, Globe
 } from 'lucide-react';
 import './Disasters.css';
 import { supabase } from '../../../lib/supabase';
@@ -28,14 +28,6 @@ export const Disasters: React.FC = () => {
 
   const [activeDisasters, setActiveDisasters] = useState<DisasterAlert[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [broadcastData, setBroadcastData] = useState({
-    title: '',
-    location: '',
-    severity: 'high',
-    needs: '',
-    people_in_need: ''
-  });
 
   const fetchAlerts = async () => {
     try {
@@ -97,36 +89,6 @@ export const Disasters: React.FC = () => {
     };
   }, []);
 
-  const handleBroadcast = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    // Format needs as an array
-    const needsArray = broadcastData.needs
-      ? broadcastData.needs.split(',').map(s => s.trim()).filter(s => s.length > 0)
-      : [];
-
-    const { error } = await supabase.from('disaster_alerts').insert({
-      title: broadcastData.title,
-      location_name: broadcastData.location,
-      severity: broadcastData.severity.toLowerCase(),
-      needs: needsArray,
-      people_in_need: parseInt(broadcastData.people_in_need) || 0,
-      impact_desc: `Urgent requirement for ${broadcastData.title} in ${broadcastData.location}`,
-      location_point: 'SRID=4326;POINT(77.5946 12.9716)' // Standard PostGIS format for Supabase
-    });
-
-    if (!error) {
-      showToast('Emergency Alert Broadcasted Globally!');
-      setIsModalOpen(false);
-      setBroadcastData({ title: '', location: '', severity: 'high', needs: '', people_in_need: '' });
-      fetchAlerts(); // Refresh list immediately
-    } else {
-      console.error('Broadcast error details:', error);
-      showToast(`Error: ${error.message || 'Failed to broadcast'}`);
-    }
-    setLoading(false);
-  };
 
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportMessage, setReportMessage] = useState('');
@@ -267,13 +229,6 @@ export const Disasters: React.FC = () => {
               </Button>
             </div>
             
-            <div style={{ marginTop: '24px', textAlign: 'center' }}>
-              <p style={{ fontSize: '0.8rem', color: '#666' }}>
-                Need to create a global public alert instead? 
-                <button onClick={() => { setIsReportModalOpen(false); setIsModalOpen(true); }} style={{ background: 'none', border: 'none', color: '#e11d48', fontWeight: 700, cursor: 'pointer', marginLeft: '8px' }}>
-                  Create Public SOS
-                </button>
-              </p>
             </div>
           </div>
         </div>

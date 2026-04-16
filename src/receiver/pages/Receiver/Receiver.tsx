@@ -13,7 +13,7 @@ interface ClaimedItem {
   name: string;
   donor: string;
   quantity: string;
-  status: 'pending' | 'in_transit' | 'proof_required' | 'proof_submitted' | 'completed';
+  status: 'pending' | 'in_transit' | 'proof_submitted' | 'completed' | 'proof_required' | 'delivered' | 'cancelled';
   eta: string;
   distance: string;
 }
@@ -37,13 +37,7 @@ export const Receiver: React.FC = () => {
 
   const displayItems = 
     activeTab === 'active' ? items.active : 
-    activeTab === 'pending_proofs' ? items.proofs : 
     items.history;
-
-  const requiresProof = items.proofs.some(i => i.status === 'proof_required');
-
-  const unverifiedCount = items.active.length; // items.active already filters out 'completed'
-  const accountLocked = unverifiedCount >= 2;
 
   const handleUploadClick = (id: string) => {
     setUploadingForId(id);
@@ -187,7 +181,7 @@ export const Receiver: React.FC = () => {
       const receiverProfileId = profile?.id;
 
       // 2. Fetch all claims with a local filter for demo stability
-      const { data, error } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('claims')
         .select(`
           id, 
@@ -201,6 +195,11 @@ export const Receiver: React.FC = () => {
         `)
         .order('created_at', { ascending: false });
 
+      if (fetchError) {
+        console.error("Error fetching claims:", fetchError);
+        return;
+      }
+
       if (data) {
         const userClaims = data.filter(c => 
           c.receiver_id === receiverProfileId || 
@@ -210,33 +209,42 @@ export const Receiver: React.FC = () => {
         );
 
         setItems({
-          active: userClaims.filter(c => c.status !== 'completed' && c.status !== 'cancelled').map(c => ({
-            id: c.id,
-            name: c.donations?.food_name || 'Food Item',
-            donor: (c.donations?.profiles as any)?.organization_name || 'Donor',
-            quantity: c.status === 'proof_submitted' ? 'Validating...' : 'Active Rescue',
-            status: c.status as any,
-            eta: c.status === 'proof_submitted' ? 'Under Admin Review' : 'View details',
-            distance: '--'
-          })),
-          proofs: userClaims.filter(c => c.status === 'delivered' || c.status === 'proof_required').map(c => ({
-            id: c.id,
-            name: c.donations?.food_name || 'Food Item',
-            donor: (c.donations?.profiles as any)?.organization_name || 'Donor',
-            quantity: 'Proof Needed',
-            status: 'proof_required',
-            eta: new Date(c.created_at).toLocaleDateString(),
-            distance: '--'
-          })),
-          history: userClaims.filter(c => c.status === 'completed').map(c => ({
-            id: c.id,
-            name: c.donations?.food_name || 'Food Item',
-            donor: (c.donations?.profiles as any)?.organization_name || 'Donor',
-            quantity: 'Verified Distribution',
-            status: 'completed',
-            eta: 'Successfully Verified',
-            distance: '--'
-          }))
+          active: userClaims.filter(c => c.status !== 'completed' && c.status !== 'cancelled').map(c => {
+            const donation = Array.isArray(c.donations) ? c.donations[0] : c.donations;
+            return {
+              id: c.id,
+              name: (donation as any)?.food_name || 'Food Item',
+              donor: (donation as any)?.profiles?.organization_name || 'Donor',
+              quantity: c.status === 'proof_submitted' ? 'Validating...' : 'Active Rescue',
+              status: c.status as ClaimedItem['status'],
+              eta: c.status === 'proof_submitted' ? 'Under Admin Review' : 'View details',
+              distance: '--'
+            };
+          }),
+          proofs: userClaims.filter(c => c.status === 'delivered' || c.status === 'proof_required').map(c => {
+            const donation = Array.isArray(c.donations) ? c.donations[0] : c.donations;
+            return {
+              id: c.id,
+              name: (donation as any)?.food_name || 'Food Item',
+              donor: (donation as any)?.profiles?.organization_name || 'Donor',
+              quantity: 'Verification Needed',
+              status: c.status as ClaimedItem['status'],
+              eta: new Date(c.created_at).toLocaleDateString(),
+              distance: '--'
+            };
+          }),
+          history: userClaims.filter(c => c.status === 'completed').map(c => {
+            const donation = Array.isArray(c.donations) ? c.donations[0] : c.donations;
+            return {
+              id: c.id,
+              name: (donation as any)?.food_name || 'Food Item',
+              donor: (donation as any)?.profiles?.organization_name || 'Donor',
+              quantity: 'Verified Distribution',
+              status: c.status as ClaimedItem['status'],
+              eta: 'Successfully Verified',
+              distance: '--'
+            };
+          })
         });
       }
     };

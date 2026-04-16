@@ -73,13 +73,44 @@ export const Upload: React.FC = () => {
   };
 
   const handleFetchLocation = () => {
+    if (!navigator.geolocation) {
+      addToast('Error', 'Geolocation is not supported by your browser', 'warning');
+      return;
+    }
+
     setIsDetecting(true);
-    // Simulate geolocation
-    setTimeout(() => {
-      setAddress('Bangalore Tech Park, Phase 2, Tower B (77.64, 12.97)');
-      setIsDetecting(false);
-      addToast('Location Detected', 'Your current GPS coordinates have been synced.', 'success');
-    }, 1500);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const coordsStr = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+        
+        try {
+          // Reverse geocoding using OpenStreetMap (Nominatim)
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          );
+          const data = await response.json();
+          // Extract the most relevant part of the address
+          const addressParts = data.display_name.split(',');
+          const streetAddress = addressParts.slice(0, 3).join(',').trim();
+          
+          setAddress(`${streetAddress} (${coordsStr})`);
+          addToast('Location Found', `Detected: ${addressParts[1] || 'Your Area'}`, 'success');
+        } catch (error) {
+          console.error('Reverse geocoding error:', error);
+          setAddress(`GPS: ${coordsStr}`);
+          addToast('Info', 'Location coordinates detected, but address lookup failed.', 'info');
+        } finally {
+          setIsDetecting(false);
+        }
+      },
+      (error) => {
+        console.error('Error fetching location:', error);
+        addToast('Error', 'Unable to retrieve your location. Check browser permissions.', 'warning');
+        setIsDetecting(false);
+      },
+      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+    );
   };
 
   const [itemName, setItemName] = useState('');

@@ -144,8 +144,8 @@ export const Notifications: React.FC = () => {
                   
                   <div className="notif-action-row">
                     {n.type === 'urgent' && (
-                      <Button size="sm" onClick={(e) => { e.stopPropagation(); showToast('Redistribution Priority Escalated! NGOs notified via SMS.'); }}>
-                        FAST TRACK ACTION
+                      <Button size="sm" onClick={(e) => { e.stopPropagation(); showToast('Coordinates shared! Logistics volunteer dispatched.'); }}>
+                        COORDINATE PICKUP
                       </Button>
                     )}
                   </div>

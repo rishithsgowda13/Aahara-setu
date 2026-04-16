@@ -63,12 +63,9 @@ const TYPE_STYLES: Record<string, { label: string; bg: string; color: string }> 
 export const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>(MOCK_NOTIFICATIONS);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3500);
-  };
+
+
 
   const unreadCount = notifications.filter(n => !n.read).length;
   const filtered = filter === 'unread' ? notifications.filter(n => !n.read) : notifications;
@@ -143,11 +140,6 @@ export const Notifications: React.FC = () => {
                   <p className="notif-message">{n.message}</p>
                   
                   <div className="notif-action-row">
-                    {n.type === 'urgent' && (
-                      <Button size="sm" onClick={(e) => { e.stopPropagation(); showToast('Redistribution Priority Escalated! NGOs notified via SMS.'); }}>
-                        FAST TRACK ACTION
-                      </Button>
-                    )}
                   </div>
                 </div>
               </Card>
@@ -164,15 +156,7 @@ export const Notifications: React.FC = () => {
           </Card>
         </div>
       )}
-    {toastMessage && (
-      <div style={{
-        position: 'fixed', bottom: '40px', left: '50%', transform: 'translateX(-50%)',
-        background: 'var(--color-primary)', color: 'white', padding: '16px 32px', borderRadius: '100px',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.2)', zIndex: 10000, fontWeight: 700
-      }}>
-        ✨ {toastMessage}
-      </div>
-    )}
+
   </div>
   );
 };

@@ -113,7 +113,7 @@ export const Explore: React.FC = () => {
         setIsLocked(activeCount >= 2);
       } catch (err) {
         console.error('Final claim catch:', err);
-        addToast('Claim Error', 'Something went wrong. Please check your active claims.', 'error');
+        addToast('Claim Error', 'Something went wrong. Please check your active claims.', 'warning');
       }
     };
 
@@ -492,8 +492,7 @@ export const Explore: React.FC = () => {
                                 if (profile) {
                                   receiverId = profile.id;
                                 } else {
-                                  // Create a receiver profile if missing using UPSERT
-                                  const { data: upserted, error: uErr } = await supabase
+                                  const { data: upserted } = await supabase
                                     .from('profiles')
                                     .upsert({ 
                                       organization_name: user.email.split('@')[0].toUpperCase(),

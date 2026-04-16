@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import { 
-  ShieldCheck, 
-  LayoutDashboard, 
   CheckCircle, 
   XCircle, 
   User, 
   Users, 
   Package, 
-  AlertCircle,
   Clock,
   LogOut,
-  Settings,
-  Bell,
-  Search,
   Siren,
   AlertTriangle,
   MapPin
@@ -47,7 +41,6 @@ export const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'verification' | 'profile' | 'emergencies'>('verification');
   const [requests, setRequests] = useState<VerificationRequest[]>([]);
   const [emergencies, setEmergencies] = useState<EmergencyReport[]>([]);
-  const [loading, setLoading] = useState(false);
   const [zoomImage, setZoomImage] = useState<string | null>(null);
 
   const fetchRealVerifications = async () => {

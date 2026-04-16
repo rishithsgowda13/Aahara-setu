@@ -4,7 +4,7 @@ import { Button } from '../../../donor/components/ui/Button/Button';
 import { Card } from '../../../donor/components/ui/Card/Card';
 import { 
   AlertTriangle, MapPin, Users, Heart, 
-  Zap, Plus, X, Globe
+  Zap, Plus
 } from 'lucide-react';
 import './Disasters.css';
 import { supabase } from '../../../lib/supabase';
@@ -27,7 +27,6 @@ export const Disasters: React.FC = () => {
   const location = useLocation();
 
   const [activeDisasters, setActiveDisasters] = useState<DisasterAlert[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const fetchAlerts = async () => {
     try {

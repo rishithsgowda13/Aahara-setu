@@ -300,8 +300,6 @@ export const Receiver: React.FC = () => {
     return () => clearTimeout(timer);
   }, [demands, availableItems]);
 
-  const matchedDemand = demands.find(d => d.status === 'matched');
-
   return (
     <div className="receiver-dashboard-container">
       {/* ... header ... */}

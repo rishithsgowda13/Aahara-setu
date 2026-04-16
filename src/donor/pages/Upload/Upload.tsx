@@ -172,7 +172,7 @@ export const Upload: React.FC = () => {
       if (error) throw error;
       setSubmitted(true);
     } catch (error: any) {
-      addToast('Error', `Upload failed: ${error.message}`, 'error');
+      addToast('Error', `Upload failed: ${error.message}`, 'warning');
     } finally {
       setIsSubmitting(false);
     }

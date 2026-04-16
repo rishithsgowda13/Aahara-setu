@@ -17,7 +17,6 @@ import { Explore as ReceiverExplore } from './receiver/pages/Explore';
 import { Notifications as ReceiverNotifications } from './receiver/pages/Notifications';
 import { ClaimView } from './receiver/pages/ClaimView';
 import { AdminDashboard as Admin } from './admin/pages/AdminDashboard';
-import { Toast } from './donor/components/ui/Toast/Toast';
 import { LanguageProvider } from './donor/context/LanguageContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider, useToast } from './context/ToastContext';

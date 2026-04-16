@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card } from '../../../donor/components/ui/Card/Card';
-import { Button } from '../../../donor/components/ui/Button/Button';
+import { Card } from '../../../components/ui/Card/Card';
+import { Button } from '../../../components/ui/Button/Button';
 import { 
   ShieldAlert, Radio, MapPin, Truck, 
   CheckCircle2, AlertOctagon, Share2, Search,

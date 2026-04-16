@@ -411,10 +411,10 @@
   }
 
   .match-visual-row {
-    gap: 12px;
-    flex-direction: row; /* Keep side by side unless super narrow */
-    flex-wrap: wrap;
-    justify-content: center;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
   }
 
   .match-item-bubble {
@@ -464,6 +464,15 @@
 
   .add-demand-row {
     flex-direction: column;
+    gap: 12px;
+  }
+
+  .add-demand-row .btn {
+    width: 100%;
+    border-radius: 100px !important;
+    height: 48px;
+    padding: 0 24px;
+    white-space: nowrap;
   }
 }
 

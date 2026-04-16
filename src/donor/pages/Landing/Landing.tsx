@@ -13,29 +13,38 @@ import { useAuth } from '../../../context/AuthContext';
 
 const COUNTER_TARGETS = { meals: 12450, people: 8300, donors: 450, co2: 3200 };
 
-function useCounter(target: number, duration: number) {
+import { useInView } from 'react-intersection-observer';
+
+const CountUp: React.FC<{ target: number; duration: number; suffix?: string }> = ({ target, duration, suffix = '' }) => {
   const [count, setCount] = useState(0);
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
   useEffect(() => {
-    let start = 0;
-    const step = Math.ceil(target / (duration / 16));
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setCount(target); clearInterval(timer); }
-      else setCount(start);
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target, duration]);
-  return count;
-}
+    if (inView) {
+      let start = 0;
+      const step = Math.ceil(target / (duration / 16));
+      const timer = setInterval(() => {
+        start += step;
+        if (start >= target) {
+          setCount(target);
+          clearInterval(timer);
+        } else {
+          setCount(start);
+        }
+      }, 16);
+      return () => clearInterval(timer);
+    }
+  }, [inView, target, duration]);
+
+  return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
+};
 
 export const Landing: React.FC = () => {
   const { t } = useTranslation();
   const { role } = useAuth();
-  const meals = useCounter(COUNTER_TARGETS.meals, 1800);
-  const people = useCounter(COUNTER_TARGETS.people, 1800);
-  const donors = useCounter(COUNTER_TARGETS.donors, 1800);
-  const co2 = useCounter(COUNTER_TARGETS.co2, 1800);
-
   const isReceiver = role === 'receiver';
   const ctaLink = isReceiver ? '/receiver/explore' : '/upload';
   const ctaText = isReceiver ? 'Request Food' : t('donate_btn');
@@ -43,7 +52,7 @@ export const Landing: React.FC = () => {
 
   const features = [
     { icon: <Zap size={22} />, title: 'Urgency Score System', desc: 'Real-time priority based on expiry, quantity, distance & demand.' },
-    { icon: <MapPin size={22} />, title: 'Hunger vs Surplus Heatmap', desc: 'Visualize high-waste zones vs high-demand areas on live maps.', highlighted: true },
+    { icon: <MapPin size={22} />, title: 'Hunger vs Surplus Heatmap', desc: 'Visualize high-waste zones vs high-demand areas on live maps.' },
     { icon: <RefreshCw size={22} />, title: 'Auto Redistribution', desc: 'Unclaimed food auto-alerts backup NGOs and nearest shelters.' },
     { icon: <ShieldCheck size={22} />, title: 'Trust & Safety', desc: 'Food safety checklists, expiry validation & verified donors.' },
     { icon: <Star size={22} />, title: 'Kindness Score', desc: 'Track community impact — "You helped feed 120 people ❤️"' },
@@ -111,14 +120,16 @@ export const Landing: React.FC = () => {
         </div>
         <div className="stats-grid">
           {[
-            { icon: <Utensils size={24} />, value: meals.toLocaleString(), label: t('meals_dist'), suffix: '+' },
-            { icon: <Users size={24} />, value: people.toLocaleString(), label: 'People Fed', suffix: '+' },
-            { icon: <Heart size={24} />, value: donors, label: 'Active Donors', suffix: '' },
-            { icon: <Leaf size={24} />, value: co2.toLocaleString(), label: t('co2_reduced'), suffix: '+' },
+            { icon: <Utensils size={24} />, target: COUNTER_TARGETS.meals, label: t('meals_dist'), suffix: '+' },
+            { icon: <Users size={24} />, target: COUNTER_TARGETS.people, label: 'People Fed', suffix: '+' },
+            { icon: <Heart size={24} />, target: COUNTER_TARGETS.donors, label: 'Active Donors', suffix: '' },
+            { icon: <Leaf size={24} />, target: COUNTER_TARGETS.co2, label: t('co2_reduced'), suffix: '+' },
           ].map((s, i) => (
             <div key={i} className="stat-card-replica">
               <div className="stat-icon-circle">{s.icon}</div>
-              <div className="stat-value-large">{s.value}{s.suffix}</div>
+              <div className="stat-value-large">
+                <CountUp target={s.target} duration={2000} suffix={s.suffix} />
+              </div>
               <div className="stat-label-text">{s.label}</div>
             </div>
           ))}

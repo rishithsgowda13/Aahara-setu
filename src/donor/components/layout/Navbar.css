@@ -266,7 +266,7 @@
   .donate-pill { padding: 12px !important; }
   
   .disaster-pill {
-    background: var(--color-primary) !important;
+    background: transparent !important;
     width: 55px;
     height: 55px;
     border-radius: 50% !important;
@@ -274,15 +274,25 @@
     align-items: center;
     justify-content: center;
     margin-left: 8px;
-    box-shadow: 0 8px 24px rgba(79, 99, 61, 0.4);
     flex-shrink: 0;
+    border: 1.5px solid var(--color-primary) !important;
+    transition: all 0.3s ease;
+  }
+  
+  .disaster-pill.active {
+    background: var(--color-primary) !important;
+    box-shadow: 0 8px 24px rgba(79, 99, 61, 0.4);
   }
   
   .disaster-pill svg {
-    color: white !important;
+    color: var(--color-primary) !important;
     width: 24px;
     height: 24px;
     opacity: 1 !important;
+  }
+
+  .disaster-pill.active svg {
+    color: white !important;
   }
 
   .nav-link.active {

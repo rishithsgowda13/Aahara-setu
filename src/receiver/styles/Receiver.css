@@ -763,23 +763,26 @@
 }
 
 .match-visual-row {
-  display: flex;
-  align-items: stretch; /* Make bubbles same height */
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
   gap: 12px;
   margin: 24px 0;
+  width: 100%;
 }
 
 .match-item-bubble {
   flex: 1;
   background: #f1f5f9;
-  padding: 16px 12px;
+  padding: 18px 12px;
   border-radius: 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 0; /* Allow shrinking */
+  align-items: center;
+  min-height: 90px;
+  min-width: 0;
 }
 
 .match-item-bubble.highlight {

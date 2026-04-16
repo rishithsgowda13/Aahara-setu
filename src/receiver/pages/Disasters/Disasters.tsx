@@ -228,8 +228,6 @@ export const Disasters: React.FC = () => {
                 {isReporting ? 'Broadcasting...' : 'Signal Admin'}
               </Button>
             </div>
-            
-            </div>
           </div>
         </div>
       )}

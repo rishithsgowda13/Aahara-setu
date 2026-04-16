@@ -98,7 +98,7 @@ function AppContent() {
     <>
       {!isAuthPage && <Navbar />}
       <main style={{ 
-        padding: isAuthPage ? '0' : '120px 24px 0', 
+        padding: isAuthPage ? '0' : '95px 24px 0', 
         maxWidth: isAuthPage ? 'none' : '1200px', 
         margin: '0 auto', 
         minHeight: '80vh' 

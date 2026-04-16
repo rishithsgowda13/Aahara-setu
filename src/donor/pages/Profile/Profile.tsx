@@ -41,11 +41,7 @@ export const Profile: React.FC = () => {
   const trustScore = 88;
   const isReceiver = role === 'receiver';
 
-  const handleEditProfile = () => {
-    setToastMessage('✨ Settings mode enabled. You can now modify your organization details.');
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 4000);
-  };
+
 
   const handleSaveFssai = () => {
     if (!fssaiInput) return;
@@ -122,7 +118,6 @@ export const Profile: React.FC = () => {
                   <Clock size={16} /> {isReceiver ? t('ngo_joined_date') : t('joined_date')}
                 </div>
               </div>
-              <Button variant="outline" size="sm" className="premium-edit-btn" onClick={handleEditProfile}>{t('edit_profile')}</Button>
             </div>
           </Card>
 

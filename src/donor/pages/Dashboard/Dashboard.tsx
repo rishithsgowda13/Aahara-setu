@@ -225,22 +225,6 @@ export const Dashboard: React.FC = () => {
             </Card>
           </div>
 
-          <Card className="heatmap-card">
-            <div className="chart-header">
-              <h3><MapPin size={18} /> Hunger vs Surplus Heatmap</h3>
-              <span className="tag-badge">Live Zones</span>
-            </div>
-            <div className="heatmap-zones">
-              {HEATMAP_ZONES.map((zone, i) => (
-                <div key={i} className={`heatmap-zone zone-${zone.type}`}>
-                  <div className="zone-name">{zone.name}</div>
-                  <div className="zone-bar-row">
-                    <div className="zone-bar"><div className="zone-bar-fill surplus-fill" style={{ width: `${zone.waste}%` }} /></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
 
           <Card className="activity-card" style={{ marginTop: '24px' }}>
             <div className="chart-header">

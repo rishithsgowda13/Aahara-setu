@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { 
+  ShieldCheck,
   CheckCircle, 
   XCircle, 
   User, 
@@ -119,7 +120,6 @@ export const AdminDashboard: React.FC = () => {
   };
 
   const handleAction = async (id: string, action: 'approved' | 'declined') => {
-    setLoading(true);
     try {
       // If approved -> completed (unlocked)
       // If declined -> delivered (which triggers 'Proof Required' UI for re-upload)
@@ -137,7 +137,6 @@ export const AdminDashboard: React.FC = () => {
     } catch (err) {
       console.error('Action failed:', err);
     } finally {
-      setLoading(false);
     }
   };
 

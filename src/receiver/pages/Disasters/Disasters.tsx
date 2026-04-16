@@ -68,7 +68,6 @@ export const Disasters: React.FC = () => {
     } catch (err) {
       console.error('Fetch error:', err);
     } finally {
-      setLoading(false);
     }
   };
 

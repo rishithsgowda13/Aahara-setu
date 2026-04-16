@@ -287,7 +287,6 @@ export const Receiver: React.FC = () => {
           newMatches.push({
             ...match,
             donor: detailedAvail?.donor,
-            quantity: detailedAvail?.quantity,
             id: detailedAvail?.id
           });
         }

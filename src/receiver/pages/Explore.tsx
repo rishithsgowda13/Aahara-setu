@@ -139,6 +139,13 @@ export const Explore: React.FC = () => {
                           item.donor.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = activeFilter === 'all' || item.urgencyLevel === activeFilter;
     return matchesSearch && matchesFilter;
+  }).sort((a, b) => {
+    // Priority 1: Disaster Relief ALWAYS floats to top
+    if (a.isDisaster && !b.isDisaster) return -1;
+    if (!a.isDisaster && b.isDisaster) return 1;
+    
+    // Priority 2: Standard Urgency Score Sorting
+    return b.urgencyScore - a.urgencyScore;
   });
 
   const highUrgencyCount = foodItems.filter(i => i.urgencyLevel === 'high').length;

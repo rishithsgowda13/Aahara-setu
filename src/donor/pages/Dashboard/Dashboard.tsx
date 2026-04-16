@@ -47,11 +47,52 @@ export const Dashboard: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [leaders, setLeaders] = useState<Leader[]>([]);
 
+  const [liveStats, setLiveStats] = useState({
+    foodSaved: 452,
+    mealsDist: 1280,
+    co2Reduced: 3200,
+    matchRate: 94
+  });
+
+  useEffect(() => {
+    const fetchLiveStats = async () => {
+      // Fetch available donations
+      const { count: availableCount } = await supabase
+        .from('donations')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'available');
+
+      // Fetch claimed/delivered donations for impact
+      const { data: distributed } = await supabase
+        .from('donations')
+        .select('quantity_value')
+        .in('status', ['claimed', 'delivered', 'in-transit']);
+
+      if (distributed) {
+        const totalMeals = distributed.reduce((sum, item) => sum + (item.quantity_value || 0), 0);
+        setLiveStats(prev => ({
+          ...prev,
+          mealsDist: 1280 + totalMeals, // Base + Live
+          foodSaved: 452 + (totalMeals * 0.4) // Assuming 0.4kg per meal
+        }));
+      }
+    };
+
+    fetchLiveStats();
+    
+    // Subscribe to changes to refresh stats
+    const channel = supabase.channel('dashboard_stats')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'donations' }, fetchLiveStats)
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
   const stats = [
-    { label: t('food_saved'), value: '452 kg', icon: <Package size={22} />, color: '#4F633D', trend: '+12%' },
-    { label: t('meals_dist'), value: '1,280', icon: <BarChart3 size={22} />, color: '#8BA194', trend: '+8%' },
-    { label: t('co2_reduced'), value: '3,200 kg', icon: <Leaf size={22} />, color: '#22c55e', trend: '+15%' },
-    { label: 'Match Rate', value: '94%', icon: <CheckCircle2 size={22} />, color: '#f59e0b', trend: '+2%' },
+    { label: t('food_saved'), value: `${Math.floor(liveStats.foodSaved)} kg`, icon: <Package size={22} />, color: '#4F633D', trend: '+12%' },
+    { label: t('meals_dist'), value: liveStats.mealsDist.toLocaleString(), icon: <BarChart3 size={22} />, color: '#8BA194', trend: '+8%' },
+    { label: t('co2_reduced'), value: `${Math.floor(liveStats.foodSaved * 8.5)} kg`, icon: <Leaf size={22} />, color: '#22c55e', trend: '+15%' },
+    { label: 'Match Rate', value: `${liveStats.matchRate}%`, icon: <CheckCircle2 size={22} />, color: '#f59e0b', trend: '+2%' },
     { label: 'Waste Reduced', value: '32%', icon: <TrendingDown size={22} />, color: '#3b82f6', trend: '+5%' },
     { label: 'Kindness Score', value: '210 pts', icon: <Trophy size={22} />, color: '#a855f7', trend: '+10' },
   ];

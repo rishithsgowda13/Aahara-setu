@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button } from '../../components/ui/Button/Button';
-import { Card } from '../../components/ui/Card/Card';
+import { Button } from '../../../donor/components/ui/Button/Button';
+import { Card } from '../../../donor/components/ui/Card/Card';
 import { 
   Flame, AlertTriangle, MapPin, Users, Heart, 
   ArrowRight, Zap, Shield, Plus, X, Globe, Send, Siren

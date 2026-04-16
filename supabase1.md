@@ -51,8 +51,9 @@ CREATE TABLE IF NOT EXISTS public.claims (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   donation_id UUID REFERENCES public.donations(id) NOT NULL,
   receiver_id UUID REFERENCES public.profiles(id) NOT NULL,
-  status TEXT CHECK (status IN ('pending', 'delivered', 'cancelled')) DEFAULT 'pending',
+  status TEXT CHECK (status IN ('pending', 'delivered', 'cancelled', 'proof_submitted', 'completed')) DEFAULT 'pending',
   quantity_claimed NUMERIC,
+  proof_images TEXT[],
   created_at TIMESTAMPTZ DEFAULT NOW(),
   fulfilled_at TIMESTAMPTZ
 );

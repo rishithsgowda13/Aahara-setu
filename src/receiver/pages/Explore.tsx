@@ -22,45 +22,7 @@ interface FoodItem {
   isDisaster?: boolean;
 }
 
-const MOCK_FOOD_ITEMS: FoodItem[] = [
-  {
-    id: 'mock-1',
-    name: 'Assorted Pastries',
-    donor: 'Gaurav Sweets',
-    quantity: '25 portions',
-    expiresIn: '45 mins',
-    distance: '0.4 km',
-    demand: 'High',
-    category: 'Bakery',
-    urgencyScore: 98,
-    urgencyLevel: 'high'
-  },
-  {
-    id: 'mock-2',
-    name: 'Paneer Tikka Thali',
-    donor: 'Skyline Hotels',
-    quantity: '10 packs',
-    expiresIn: '2 hrs',
-    distance: '1.2 km',
-    demand: 'Medium',
-    category: 'Cooked Meals',
-    urgencyScore: 85,
-    urgencyLevel: 'medium'
-  },
-  {
-    id: 'mock-disaster-1',
-    name: 'Survival Kits (Bread & Milk)',
-    donor: 'Central Relief Hub',
-    quantity: '50 units',
-    expiresIn: 'ASAP',
-    distance: '2.5 km',
-    demand: 'Critical',
-    category: 'Emergency',
-    urgencyScore: 100,
-    urgencyLevel: 'critical',
-    isDisaster: true
-  }
-];
+// Mock data removed. Fetching from database.
 
 export const Explore: React.FC = () => {
   const { addToast } = useToast();
@@ -68,7 +30,7 @@ export const Explore: React.FC = () => {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'high' | 'medium' | 'low'>('all');
-  const [foodItems, setFoodItems] = useState<FoodItem[]>(MOCK_FOOD_ITEMS);
+  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<FoodItem | null>(null);
   const [claimQty, setClaimQty] = useState(1);
   const [modalStep, setModalStep] = useState<'init' | 'logistics'>('init');
@@ -112,9 +74,7 @@ export const Explore: React.FC = () => {
           urgencyLevel: (d.urgency_score > 90 ? 'high' : d.urgency_score > 60 ? 'medium' : 'low') as any,
           isDisaster: d.is_disaster
         }));
-        setFoodItems([...MOCK_FOOD_ITEMS, ...formatted]);
-      } else {
-        setFoodItems(MOCK_FOOD_ITEMS);
+        setFoodItems(formatted);
       }
     };
 

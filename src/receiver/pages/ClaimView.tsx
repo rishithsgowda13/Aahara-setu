@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../../donor/components/ui/Card/Card';
 import { Button } from '../../donor/components/ui/Button/Button';
-import { MapPin, Phone, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { MapPin, Phone, ShieldCheck, ArrowLeft, CheckCircle2, Zap } from 'lucide-react';
 import { LeafletMap } from '../../donor/components/ui/LeafletMap/LeafletMap';
 import { supabase } from '../../lib/supabase';
 import '../styles/Explore.css';
@@ -147,6 +147,52 @@ export const ClaimView: React.FC = () => {
                     <ShieldCheck size={16} /> Verified Partner
                   </p>
                 </div>
+              </div>
+            </Card>
+
+            <Card style={{ background: 'white', borderRadius: '24px', padding: '32px', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
+              <h3 style={{ fontSize: '0.8rem', fontWeight: 800, color: '#666', letterSpacing: '1px', marginBottom: '24px' }}>DONATION LIFECYCLE</h3>
+              <div className="flow-tracker" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {(() => {
+                  const flowSteps = [
+                    { name: 'Upload', status: 'completed' },
+                    { name: 'Match', status: 'completed' },
+                    { name: 'Claim', status: step === 'details' ? 'active' : 'completed' },
+                    { name: 'Pickup', status: step === 'logistics' ? 'active' : 'pending' },
+                    { name: 'Feedback', status: 'pending' },
+                  ];
+
+                  return flowSteps.map((s, i) => (
+                    <div key={s.name} style={{ display: 'flex', alignItems: 'center', gap: '16px', position: 'relative' }}>
+                      <div 
+                        style={{
+                          width: '42px', height: '42px', borderRadius: '50%',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: '1rem', fontWeight: 800, zIndex: 1,
+                          backgroundColor: s.status === 'completed' ? '#4f633d' : s.status === 'active' ? '#f4f7f2' : '#f5f5f5',
+                          color: s.status === 'completed' ? 'white' : s.status === 'active' ? '#4f633d' : '#999',
+                          border: s.status === 'active' ? '2px solid #4f633d' : s.status === 'pending' ? '2px solid #e0e0e0' : '2px solid transparent',
+                        }}
+                      >
+                        {s.status === 'completed' ? <CheckCircle2 size={20} /> :
+                         s.name === 'Claim' && s.status === 'active' ? <Zap size={20} /> : i + 1}
+                      </div>
+                      <div style={{ flex: 1, fontSize: '1.2rem', fontWeight: 800, color: s.status === 'pending' ? '#666' : '#1a1a1a' }}>
+                        {s.name}
+                      </div>
+                      {i < flowSteps.length - 1 && (
+                        <div 
+                          style={{
+                            position: 'absolute', left: '20px', top: '42px',
+                            width: '2px', height: '20px',
+                            background: s.status === 'completed' ? '#4f633d' : '#e0e0e0',
+                            zIndex: 0
+                          }} 
+                        />
+                      )}
+                    </div>
+                  ));
+                })()}
               </div>
             </Card>
           </div>

@@ -58,8 +58,8 @@ function AppContent() {
 
     // Demo notifications: Only show once per session/browser
     const seen = JSON.parse(localStorage.getItem('seen_demo_notifications') || '[]');
-    let t1: NodeJS.Timeout;
-    let t2: NodeJS.Timeout;
+    let t1: any;
+    let t2: any;
 
     if (!seen.includes('alert_demo')) {
       t1 = setTimeout(() => {

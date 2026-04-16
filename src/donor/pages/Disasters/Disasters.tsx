@@ -90,8 +90,6 @@ export const Disasters: React.FC = () => {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-
   return (
     <div className="disasters-container">
       <header className="disasters-header">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Mail, Shield, Camera, Share2, Code } from 'lucide-react';
+import { Heart, Shield, Camera, Share2, Code } from 'lucide-react';
 import './Footer.css';
 
 export const Footer: React.FC = () => {

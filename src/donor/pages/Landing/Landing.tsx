@@ -230,7 +230,7 @@ export const Landing: React.FC = () => {
         </div>
         <div className="features-grid">
           {features.map((f, i) => (
-            <Card key={i} className={`feature-card ${f.highlighted ? 'highlighted-feature' : ''}`}>
+            <Card key={i} className="feature-card">
               <div className="feature-icon-circle">
                 {f.icon}
               </div>

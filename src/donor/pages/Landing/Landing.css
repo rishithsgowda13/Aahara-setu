@@ -9,21 +9,22 @@
 .hero-section {
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start; /* LEFT ALIGNED */
-  text-align: left; /* LEFT ALIGNED */
-  min-height: 80vh;
+  flex-direction: row; /* SIDE BY SIDE */
+  justify-content: space-between;
+  align-items: center;
+  min-height: 85vh;
   gap: 40px;
+  width: 100%;
 }
 
 .hero-content {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* LEFT ALIGNED */
+  align-items: flex-start;
   gap: 20px;
   z-index: 10;
-  max-width: 800px;
+  max-width: 600px; /* Reduced to fit side-by-side */
+  flex: 1.2;
 }
 
 .hero-eyebrow {
@@ -85,13 +86,15 @@
 
 /* Hero Visual */
 .hero-visual {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
+  position: relative; /* No longer absolute */
+  width: 100%;
+  height: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
   z-index: 1;
+  flex: 0.8;
 }
 
 .hero-blob {
@@ -116,7 +119,7 @@
 .blob-3 {
   width: 130px; height: 130px;
   background: radial-gradient(circle, rgba(255, 247, 226, 0.9), rgba(139, 161, 148, 0.3));
-  top: 45%; right: 48%;
+  top: 45%; right: 10%; /* Shifted from center to right */
   animation-delay: -4s;
 }
 
@@ -142,9 +145,9 @@
   animation: floatBlob 5s ease-in-out infinite;
 }
 
-.fcard-1 { top: 18%; right: 2%; animation-delay: -0.5s; }
-.fcard-2 { bottom: 22%; left: 2%; animation-delay: -3s; }
-.fcard-3 { bottom: 8%; right: 12%; animation-delay: -1.5s; font-size: 0.85rem; font-weight: 600; color: var(--color-primary); }
+.fcard-1 { top: 10%; right: -10%; animation-delay: -0.5s; }
+.fcard-2 { bottom: 30%; left: -5%; animation-delay: -3s; }
+.fcard-3 { bottom: 10%; right: 5%; animation-delay: -1.5s; font-size: 0.85rem; font-weight: 600; color: var(--color-primary); }
 
 .fcard-icon { font-size: 1.6rem; }
 .fcard-title { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
@@ -446,7 +449,7 @@
 }
 
 .feature-card.highlighted-feature {
-  background: white !important;
+  background: #E8EDE4 !important;
   box-shadow: 0 40px 80px rgba(0,0,0,0.08) !important;
   transform: translateY(-12px);
   border: 1px solid rgba(79, 99, 61, 0.15) !important;

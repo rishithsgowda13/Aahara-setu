@@ -36,7 +36,7 @@ export const ClaimView: React.FC = () => {
   const navigate = useNavigate();
   const [item, setItem] = useState<FoodItem | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [step, setStep] = useState<'details' | 'logistics'>('details');
+  const [step, setStep] = useState<'details' | 'logistics' | 'success'>('details');
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -232,14 +232,14 @@ export const ClaimView: React.FC = () => {
                   <Button fullWidth style={{ borderRadius: '14px', height: '54px', fontWeight: 700 }} onClick={() => setStep('logistics')}>Confirm Claim</Button>
                 </div>
               </Card>
-            ) : (
+            ) : step === 'logistics' ? (
               <Card className="animate-fade-in" style={{ background: 'white', borderRadius: '24px', padding: '32px', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
                 <h3 style={{ fontSize: '0.8rem', fontWeight: 800, color: '#666', letterSpacing: '1px', marginBottom: '24px' }}>LOGISTICS SUPPORT</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <Button 
                     variant="glass" 
                     style={{ height: 'auto', padding: '20px', justifyContent: 'flex-start', border: '2px solid #4f633d', background: 'rgba(79,99,61,0.03)', borderRadius: '16px' }}
-                    onClick={() => alert(`Successfully claimed ${quantity} portions for Self-Pickup!`)}
+                    onClick={() => setStep('success')}
                   >
                     <div style={{ fontSize: '1.6rem', marginRight: '20px' }}>🏠</div>
                     <div style={{ textAlign: 'left' }}>
@@ -251,15 +251,28 @@ export const ClaimView: React.FC = () => {
                   <div style={{ textAlign: 'center', margin: '8px 0', fontSize: '0.75rem', fontWeight: 800, color: '#999', letterSpacing: '1px' }}>OR BOOK PARTNER</div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                    <Button variant="outline" style={{ borderRadius: '12px', height: '50px', fontWeight: 700 }} onClick={() => window.open('https://ola.com')}>🚕 Ola</Button>
-                    <Button variant="outline" style={{ borderRadius: '12px', height: '50px', fontWeight: 700 }} onClick={() => window.open('https://rapido.com')}>🏍️ Rapido</Button>
-                    <Button variant="outline" style={{ borderRadius: '12px', height: '50px', fontWeight: 700 }} onClick={() => window.open('https://uber.com')}>🚙 Uber</Button>
+                    <Button variant="outline" style={{ borderRadius: '12px', height: '50px', fontWeight: 700 }} onClick={() => window.open('https://www.olacabs.com/')}>🚕 Ola</Button>
+                    <Button variant="outline" style={{ borderRadius: '12px', height: '50px', fontWeight: 700 }} onClick={() => window.open('https://www.rapido.bike/')}>🏍️ Rapido</Button>
+                    <Button variant="outline" style={{ borderRadius: '12px', height: '50px', fontWeight: 700 }} onClick={() => window.open('https://www.uber.com/')}>🚙 Uber</Button>
                   </div>
                   
                   <Button variant="ghost" fullWidth style={{ marginTop: '16px', color: '#666', fontWeight: 700 }} onClick={() => setStep('details')}>
                     ← Change Quantity
                   </Button>
                 </div>
+              </Card>
+            ) : (
+              <Card className="animate-fade-in" style={{ background: 'white', borderRadius: '24px', padding: '40px 32px', textAlign: 'center', border: '1px solid rgba(0,0,0,0.04)', boxShadow: '0 10px 30px rgba(0,0,0,0.04)' }}>
+                <div style={{ width: '80px', height: '80px', background: '#e8f5e9', border: '2px solid #4f633d', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                  <ShieldCheck size={40} color="#4f633d" />
+                </div>
+                <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#1a1a1a', marginBottom: '12px' }}>Food Claimed!</h2>
+                <p style={{ color: '#666', fontSize: '1rem', marginBottom: '32px', lineHeight: 1.5 }}>
+                  You have successfully claimed <b>{quantity} portions</b>. The donor has been notified that you will handle the self-pickup.
+                </p>
+                <Button fullWidth style={{ borderRadius: '14px', height: '54px', fontWeight: 700 }} onClick={() => navigate('/explore')}>
+                  Back to Explore
+                </Button>
               </Card>
             )}
           </div>
